@@ -5,6 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no">
         <title>Quantum Sudoku</title>
         <link rel="stylesheet" href="sudoku.css">
+        <!-- <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css"> -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script src="sudoku.js"></script>
     </head>
     <body>
@@ -13,6 +15,8 @@
         <div class="heading">
             <h2 id="errors">Errors: 0</h2>
             <p id="clock">00:00</p>
+            <button id="play" class="button"><i class="fa fa-play" aria-hidden="true"></i></button>
+            <button id="pause" class="button"><i class="fa fa-pause" aria-hidden="true"></i></button>
         </div>
         <!-- 9x9 Board -->
         <div id="board"></div>

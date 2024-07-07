@@ -94,6 +94,7 @@ function timer(){
     var sec = 0;
     var min = 0;
     var timer = setInterval(function(){
+        
         sec++;
         
         if (sec < 10) {
@@ -126,4 +127,8 @@ function timer(){
             }
         }
     }, 1000);
+}
+
+function play() {
+    
 }
