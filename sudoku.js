@@ -90,13 +90,15 @@ function selectTile() {
     }
 }
 
+var playButton = true;
+
 function timer(){
     var sec = 0;
     var min = 0;
     var timer = setInterval(function(){
-        
-        sec++;
-        
+        if(playButton){
+            sec++;
+        }
         if (sec < 10) {
             if (min < 10) {
                 document.getElementById('clock').innerHTML="0" + min + ":0" +sec;
@@ -130,5 +132,11 @@ function timer(){
 }
 
 function play() {
-    
+    if (playButton){
+        playButton = false;
+    }
+    else{
+        playButton = true;
+    }
+    console.log(playButton);
 }
