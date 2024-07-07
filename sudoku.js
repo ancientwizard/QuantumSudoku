@@ -30,6 +30,7 @@ var solution = [
 window.onload = function() {
     timer();
     setGame();
+    play();
 }
 
 function setGame() {
