@@ -72,3 +72,7 @@ hr {
 .vertical-line {
     border-right: 2px solid black;
 }
+
+.heading {
+    margin: auto;
+}

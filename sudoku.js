@@ -28,6 +28,7 @@ var solution = [
 ]
 
 window.onload = function() {
+    timer();
     setGame();
 }
 
@@ -89,3 +90,40 @@ function selectTile() {
     }
 }
 
+function timer(){
+    var sec = 0;
+    var min = 0;
+    var timer = setInterval(function(){
+        sec++;
+        
+        if (sec < 10) {
+            if (min < 10) {
+                document.getElementById('clock').innerHTML="0" + min + ":0" +sec;
+            }
+            else{
+                document.getElementById('clock').innerHTML=min + ":0" +sec;
+            }
+        }
+        else if (sec < 60){
+            if (min < 10) {
+                document.getElementById('clock').innerHTML="0" + min + ":" +sec;
+            }
+            else{
+                document.getElementById('clock').innerHTML=min + ":" +sec;
+            }
+        }
+        else{
+            sec = 0;
+            min++;
+            if (min >= 60){
+                clearInterval(timer);
+            }
+            else if (min < 10) {
+                document.getElementById('clock').innerHTML="0" + min + ":0" +sec;
+            }
+            else{
+                document.getElementById('clock').innerHTML=min + ":0" +sec;
+            }
+        }
+    }, 1000);
+}
