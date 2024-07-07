@@ -62,3 +62,11 @@ hr {
 .tile-start {
     background-color: rgba(129, 242, 250, 0.774);
 }
+
+.horizontal-line {
+    border-bottom: 2px solid black;
+}
+
+.vertical-line {
+    border-right: 2px solid black;
+}
