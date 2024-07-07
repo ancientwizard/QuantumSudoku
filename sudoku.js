@@ -132,11 +132,30 @@ function timer(){
 }
 
 function play() {
+    playIcon = document.getElementById('play');
+    pauseIcon = document.getElementById('pause');
+
     if (playButton){
         playButton = false;
+        playIcon.classList.remove('button-clicked');
+        pauseIcon.classList.remove('button-unclicked');
+        playIcon.classList.add('button-unclicked');
+        pauseIcon.classList.add('button-clicked');
     }
     else{
         playButton = true;
+        playIcon.classList.remove('button-unclicked');
+        pauseIcon.classList.remove('button-clicked');
+        playIcon.classList.add('button-clicked');
+        pauseIcon.classList.add('button-unclicked');
     }
     console.log(playButton);
+
+    /*
+    if (numSelected != null){
+         numSelected.classList.remove("number-selected");
+    }
+    numSelected = this;
+    numSelected.classList.add("number-selected");
+    */
 }

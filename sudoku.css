@@ -90,3 +90,11 @@ hr {
 .button:hover {
     background-color: RoyalBlue;
 }
+
+.button-clicked {
+    visibility: hidden;
+}
+
+.button-unclicked {
+    visibility: visible;
+}
