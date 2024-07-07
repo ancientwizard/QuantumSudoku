@@ -84,7 +84,7 @@ function selectTile() {
         }
         else{
             errors += 1;
-            document.getElementById("errors").innerText = errors;
+            document.getElementById("errors").innerText = "Errors: " + errors;
         }
     }
 }
