@@ -91,7 +91,7 @@ function selectTile() {
     }
 }
 
-var playButton = false;
+var playButton = true;
 
 function timer(){
     var sec = 0;
