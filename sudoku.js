@@ -148,5 +148,4 @@ function play() {
     else{
         playButton = true;
     }
-    console.log(playButton);
 }
