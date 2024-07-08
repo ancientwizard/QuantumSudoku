@@ -10,12 +10,13 @@
         <script src="sudoku.js"></script>
     </head>
     <body>
-        <h1>Quantum Sudoku</h1>
+        <h1 id="Title">Quantum Sudoku</h1>
         <hr>
         <div class="heading">
             <p id="clock" class="heading-child">00:00</p>
             <i onclick="button(this)" class="fa fa-play" aria-hidden="true"></i>
             <h3 id="errors" class="heading-child">Errors: 0</h2>
+            <button onclick="reset()">Reset</button>
         </div>
         <!-- 9x9 Board -->
         <div id="board"></div>

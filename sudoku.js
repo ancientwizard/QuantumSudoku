@@ -92,10 +92,9 @@ function selectTile() {
 }
 
 var playButton = true;
-
+var sec = 0;
+var min = 0;
 function timer(){
-    var sec = 0;
-    var min = 0;
     var timer = setInterval(function(){
         if(playButton){
             sec++;
@@ -148,4 +147,17 @@ function play() {
     else{
         playButton = true;
     }
+}
+
+function reset() {
+    sec = 0;
+    min = 0;
+    document.getElementById('clock').innerHTML="0" + min + ":0" +sec;
+
+    errors = 0;
+    document.getElementById("errors").innerText = "Errors: " + errors;
+
+    playButton = true;
+
+
 }
