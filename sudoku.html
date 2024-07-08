@@ -13,10 +13,10 @@
         <h1>Quantum Sudoku</h1>
         <hr>
         <div class="heading">
-            <h2 id="errors">Errors: 0</h2>
-            <p id="clock">00:00</p>
-            <button id="play" class="button" class="button-clicked" onclick="play()"><i class="fa fa-play" aria-hidden="true"></i></button>
-            <button id="pause" class="button" class="button-unclicked" onclick="play()"><i class="fa fa-pause" aria-hidden="true"></i></button>
+            <p id="clock" class="heading-child">00:00</p>
+            <!-- <button id="play" class="button button-clicked heading-child" onclick="play()"><i onclick="togglePlay(this)" class="fa fa-play" aria-hidden="true"></i></button> -->
+            <i onclick="button(this)" class="fa fa-play" aria-hidden="true"></i>
+            <h2 id="errors" class="heading-child">Errors: 0</h2>
         </div>
         <!-- 9x9 Board -->
         <div id="board"></div>

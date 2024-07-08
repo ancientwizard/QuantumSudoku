@@ -98,3 +98,12 @@ hr {
 .button-unclicked {
     visibility: visible;
 }
+
+.heading {
+    width: 450px;
+    padding: 10px;
+}
+
+.heading-child {
+    display: inline;
+}
