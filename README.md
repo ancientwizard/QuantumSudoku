@@ -10,7 +10,7 @@ I'm looking to build a quantum sudoku game as a project for my resume
 - [ ] Reset/Clear Game Button
 - [ ] Dull Out Completed Numbers
 - [ ] Highlight the row tiles and column tiles of a selected tile
-- [ ] Place error inducing number in slot with a red color
+- [x] Place error inducing number in slot with a red color
 - [ ] Celebration after conclusion of game
 - [ ] Quantum Entanglement and/or Superposition
 
