@@ -57,6 +57,10 @@ hr {
     align-items: center;
 }
 
+.number-incorrect {
+    color: red;
+}
+
 .number-selected {
     background-color: gray;
 }
@@ -108,3 +112,7 @@ hr {
     display: inline;
     padding: 10px;
 }
+
+.noClick {
+    pointer-events: none;
+ }

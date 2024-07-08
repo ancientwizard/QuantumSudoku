@@ -1,7 +1,9 @@
 var numSelected = null;
 var tileSelected = null;
-
+var playButton = true;
 var errors = 0;
+var sec = 0;
+var min = 0;
 
 var board = [
     "--74916-5",
@@ -50,6 +52,7 @@ function setGame() {
             if (board[r][c] != "-"){
                 tile.innerText = board[r][c];
                 tile.classList.add("tile-start");
+                tile.classList.add("noClick");
             }
             if (r == 2 || r == 5){
                 tile.classList.add("horizontal-line");
@@ -74,26 +77,28 @@ function selectNumber() {
 
 function selectTile() {
     if (numSelected) {
-        if(this.innerText != ""){
-            return;
-        }
+        // if(this.innerText != ""){
+        //     return;
+        // }
         let coords = this.id.split("-");
         let r = parseInt(coords[0]);
         let c = parseInt(coords[1]);
 
         if (solution[r][c] == numSelected.id){
             this.innerText = numSelected.id;
+            this.classList.remove("number-incorrect");
+            this.classList.add("noClick");
         }
         else{
             errors += 1;
             document.getElementById("errors").innerText = "Errors: " + errors;
+            this.innerText = numSelected.id;
+            this.classList.add("number-incorrect");
         }
     }
 }
 
-var playButton = true;
-var sec = 0;
-var min = 0;
+
 function timer(){
     var timer = setInterval(function(){
         if(playButton){
@@ -156,8 +161,5 @@ function reset() {
 
     errors = 0;
     document.getElementById("errors").innerText = "Errors: " + errors;
-
-    playButton = true;
-
 
 }
