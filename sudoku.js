@@ -4,6 +4,8 @@ var playButton = true;
 var errors = 0;
 var sec = 0;
 var min = 0;
+var completionStatus = {};
+var percentageDone = 0;
 
 var board = [
     "--74916-5",
@@ -50,6 +52,7 @@ function setGame() {
             let tile = document.createElement("div");
             tile.id = r.toString() + "-" + c.toString();
             if (board[r][c] != "-"){
+                populateTracker(board[r][c]);
                 tile.innerText = board[r][c];
                 tile.classList.add("tile-start");
                 tile.classList.add("noClick");
@@ -88,6 +91,7 @@ function selectTile() {
             this.innerText = numSelected.id;
             this.classList.remove("number-incorrect");
             this.classList.add("noClick");
+            updateTracker(solution[r][c]);
         }
         else{
             errors += 1;
@@ -161,5 +165,42 @@ function reset() {
 
     errors = 0;
     document.getElementById("errors").innerText = "Errors: " + errors;
+
+}
+
+
+
+function populateTracker(value) {
+    if(value in completionStatus){
+        completionStatus[value]++;
+    }  
+    else{
+        completionStatus[value]=1;
+    }
+}
+
+function updateTracker(value){
+    // When a tile is completed and is correct then get that number and update the tracker
+    // If that value is 9, then call dullNumber to hide it and make it unclickable
+    // I also want to be able to track the overall completion status of the game
+    if(value in completionStatus){
+        completionStatus[value]++;
+    }  
+    else{
+        completionStatus[value]=1;
+    }
+    let sum = 0;
+    for (let i = 0; i < completionStatus.length; i++){
+        sum = sum + completionStatus[i];
+        console.log(completionStatus[i]);
+    }
+    percentageDone = sum/81;
+    // console.log("sum: " + sum);
+    // console.log("percent: " + percentageDone);
+}
+
+function dullNumber(){
+    // All this will do is take a specific digit from the row and update the css
+    // so that it can no longer be clicked on and its visibly complete
 
 }
