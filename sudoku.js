@@ -178,6 +178,11 @@ function populateTracker(value) {
     else{
         completionStatus[value]=1;
     }
+    const sumValues = obj => Object.values(obj).reduce((a, b) => a + b, 0);
+    let sum = sumValues(completionStatus);
+    percentageDone = sum/81;
+    percentageShown =(sum/81*100).toFixed(0);
+    document.getElementById('percentage').innerHTML = percentageShown + '% Done';
 }
 
 function updateTracker(value){
@@ -194,10 +199,8 @@ function updateTracker(value){
     const sumValues = obj => Object.values(obj).reduce((a, b) => a + b, 0);
     let sum = sumValues(completionStatus);
     percentageDone = sum/81;
-    percentageShown =(sum/81).toFixed(2) + '%';
-    console.log("sum: " + sum);
-    console.log("percent: " + percentageDone);
-    console.log("percent: " + percentageShown);
+    percentageShown =(sum/81*100).toFixed(0);
+    document.getElementById('percentage').innerHTML = percentageShown + '% Done';
 }
 
 function dullNumber(){
