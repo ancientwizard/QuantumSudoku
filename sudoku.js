@@ -6,6 +6,7 @@ var sec = 0;
 var min = 0;
 var completionStatus = {};
 var percentageDone = 0;
+var percentageShown = '0%';
 
 var board = [
     "--74916-5",
@@ -189,14 +190,14 @@ function updateTracker(value){
     else{
         completionStatus[value]=1;
     }
-    let sum = 0;
-    for (let i = 0; i < completionStatus.length; i++){
-        sum = sum + completionStatus[i];
-        console.log(completionStatus[i]);
-    }
+
+    const sumValues = obj => Object.values(obj).reduce((a, b) => a + b, 0);
+    let sum = sumValues(completionStatus);
     percentageDone = sum/81;
-    // console.log("sum: " + sum);
-    // console.log("percent: " + percentageDone);
+    percentageShown =(sum/81).toFixed(2) + '%';
+    console.log("sum: " + sum);
+    console.log("percent: " + percentageDone);
+    console.log("percent: " + percentageShown);
 }
 
 function dullNumber(){
