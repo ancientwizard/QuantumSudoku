@@ -7,6 +7,8 @@ var min = 0;
 var completionStatus = {};
 var percentageDone = 0;
 var percentageShown = '0%';
+var totalPreFilled = 0;
+var totalFilled = 0;
 
 var board = [
     "--74916-5",
@@ -57,6 +59,7 @@ function setGame() {
                 tile.innerText = board[r][c];
                 tile.classList.add("tile-start");
                 tile.classList.add("noClick");
+                totalPreFilled++;
             }
             if (r == 2 || r == 5){
                 tile.classList.add("horizontal-line");
@@ -167,6 +170,8 @@ function reset() {
     errors = 0;
     document.getElementById("errors").innerText = "Errors: " + errors;
 
+    totalFilled = 0;
+    document.getElementById('percentage').innerHTML = '0% Done';
 }
 
 
@@ -178,10 +183,12 @@ function populateTracker(value) {
     else{
         completionStatus[value]=1;
     }
-    let sum = sumValues(completionStatus);
-    percentageDone = sum/81;
-    percentageShown =(sum/81*100).toFixed(0);
-    document.getElementById('percentage').innerHTML = percentageShown + '% Done';
+    // let sum = sumValues(completionStatus);
+    // percentageDone = sum/81;
+    // percentageShown =(sum/81*100).toFixed(0);
+    // document.getElementById('percentage').innerHTML = percentageShown + '% Done';
+    // document.getElementById('percentage').innerHTML = percentageShown + '0% Done';
+
 }
 
 function updateTracker(value){
@@ -194,10 +201,10 @@ function updateTracker(value){
     else{
         completionStatus[value]=1;
     }
-
+    totalFilled += 1
     let sum = sumValues(completionStatus);
-    percentageDone = sum/81;
-    percentageShown =(sum/81*100).toFixed(0);
+    percentageDone = totalFilled/(81-totalPreFilled);
+    percentageShown =((totalFilled/(81-totalPreFilled))*100).toFixed(0);
     document.getElementById('percentage').innerHTML = percentageShown + '% Done';
 }
 
