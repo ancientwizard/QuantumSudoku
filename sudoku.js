@@ -84,9 +84,6 @@ function selectNumber() {
 
 function selectTile() {
     if (numSelected) {
-        // if(this.innerText != ""){
-        //     return;
-        // }
         let coords = this.id.split("-");
         let r = parseInt(coords[0]);
         let c = parseInt(coords[1]);
@@ -174,8 +171,8 @@ function reset() {
     document.getElementById('percentage').innerHTML = '0% Done';
 }
 
-
 const sumValues = obj => Object.values(obj).reduce((a, b) => a + b, 0);
+
 function populateTracker(value) {
     if(value in completionStatus){
         completionStatus[value]++;
@@ -197,6 +194,9 @@ function updateTracker(value){
     // I also want to be able to track the overall completion status of the game
     if(value in completionStatus){
         completionStatus[value]++;
+        if(completionStatus[value] == 9){
+            dullNumber(value);
+        }
     }  
     else{
         completionStatus[value]=1;
@@ -208,8 +208,6 @@ function updateTracker(value){
     document.getElementById('percentage').innerHTML = percentageShown + '% Done';
 }
 
-function dullNumber(){
-    // All this will do is take a specific digit from the row and update the css
-    // so that it can no longer be clicked on and its visibly complete
-
+function dullNumber(number){
+    document.getElementById(number).classList.add("number-dulled");
 }

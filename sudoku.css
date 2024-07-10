@@ -45,9 +45,9 @@ hr {
 }
 
 .number {
-    width: 43px;
+    width: 41px;
     height: 48px;
-    border: 1px solid rgb(0, 32, 150);
+    border: 2px solid lightblue;
     margin: 2px;
 
     /* Text */
@@ -60,6 +60,11 @@ hr {
 
 .number-incorrect {
     color: red;
+}
+
+.number-dulled {
+    background-color: rgba(128, 128, 128, 0.713);
+    pointer-events: none;
 }
 
 .number-selected {
