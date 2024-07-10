@@ -170,7 +170,7 @@ function reset() {
 }
 
 
-
+const sumValues = obj => Object.values(obj).reduce((a, b) => a + b, 0);
 function populateTracker(value) {
     if(value in completionStatus){
         completionStatus[value]++;
@@ -178,7 +178,6 @@ function populateTracker(value) {
     else{
         completionStatus[value]=1;
     }
-    const sumValues = obj => Object.values(obj).reduce((a, b) => a + b, 0);
     let sum = sumValues(completionStatus);
     percentageDone = sum/81;
     percentageShown =(sum/81*100).toFixed(0);
@@ -196,7 +195,6 @@ function updateTracker(value){
         completionStatus[value]=1;
     }
 
-    const sumValues = obj => Object.values(obj).reduce((a, b) => a + b, 0);
     let sum = sumValues(completionStatus);
     percentageDone = sum/81;
     percentageShown =(sum/81*100).toFixed(0);
