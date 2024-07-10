@@ -64,6 +64,7 @@ hr {
 
 .number-dulled {
     background-color: rgba(128, 128, 128, 0.713);
+    display: none;
     pointer-events: none;
 }
 

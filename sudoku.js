@@ -208,6 +208,9 @@ function updateTracker(value){
     document.getElementById('percentage').innerHTML = percentageShown + '% Done';
 }
 
+var dulled = []
+
 function dullNumber(number){
+    numSelected = null;
     document.getElementById(number).classList.add("number-dulled");
 }
