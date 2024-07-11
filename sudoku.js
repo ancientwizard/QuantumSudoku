@@ -158,6 +158,26 @@ function play() {
     }
 }
 
+function clearBoard() {
+    for (let r = 0; r < 9; r++){
+        for (let c = 0; c < 9; c++){
+            tile = document.getElementById(r.toString() + "-" + c.toString());
+            if (board[r][c] == "-"){
+                tile.innerText = "";
+                tile.classList.remove("noClick");
+            }
+        }
+    }
+}
+
+function resetDigits() {
+    for (let i = 1; i <= 9; i++) {
+        document.getElementById(i).classList.remove('number-complete');
+        document.getElementById(i).classList.remove('number-selected');
+        console.log(i + " Removed");
+    }
+}
+
 function reset() {
     sec = 0;
     min = 0;
@@ -168,6 +188,10 @@ function reset() {
 
     totalFilled = 0;
     document.getElementById('percentage').innerHTML = '0% Done';
+
+    clearBoard();
+    resetDigits();
+    numSelected = null;
 }
 
 const sumValues = obj => Object.values(obj).reduce((a, b) => a + b, 0);
