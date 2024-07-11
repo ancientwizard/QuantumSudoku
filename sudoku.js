@@ -57,7 +57,6 @@ function setGame() {
             tile.id = r.toString() + "-" + c.toString();
             if (board[r][c] != "-"){
                 populateTracker(board[r][c]);
-                ogStatus = completionStatus;
                 tile.innerText = board[r][c];
                 tile.classList.add("tile-start");
                 tile.classList.add("noClick");
@@ -74,6 +73,9 @@ function setGame() {
             document.getElementById("board").append(tile);
         }
     }
+    console.log(completionStatus, ogStatus);
+    Object.assign(ogStatus, completionStatus);
+    console.log(completionStatus, ogStatus);
 }
 
 function selectNumber() {
@@ -194,7 +196,7 @@ function reset() {
     clearBoard();
     resetDigits();
     numSelected = null;
-    completionStatus = ogStatus;
+    Object.assign(completionStatus, ogStatus);
     console.log(completionStatus);
     console.log(ogStatus);
 }
