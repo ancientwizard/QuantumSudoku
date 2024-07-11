@@ -5,6 +5,7 @@ var errors = 0;
 var sec = 0;
 var min = 0;
 var completionStatus = {};
+var ogStatus = {};
 var percentageDone = 0;
 var percentageShown = '0%';
 var totalPreFilled = 0;
@@ -56,6 +57,7 @@ function setGame() {
             tile.id = r.toString() + "-" + c.toString();
             if (board[r][c] != "-"){
                 populateTracker(board[r][c]);
+                ogStatus = completionStatus;
                 tile.innerText = board[r][c];
                 tile.classList.add("tile-start");
                 tile.classList.add("noClick");
@@ -192,6 +194,9 @@ function reset() {
     clearBoard();
     resetDigits();
     numSelected = null;
+    completionStatus = ogStatus;
+    console.log(completionStatus);
+    console.log(ogStatus);
 }
 
 const sumValues = obj => Object.values(obj).reduce((a, b) => a + b, 0);
@@ -203,12 +208,6 @@ function populateTracker(value) {
     else{
         completionStatus[value]=1;
     }
-    // let sum = sumValues(completionStatus);
-    // percentageDone = sum/81;
-    // percentageShown =(sum/81*100).toFixed(0);
-    // document.getElementById('percentage').innerHTML = percentageShown + '% Done';
-    // document.getElementById('percentage').innerHTML = percentageShown + '0% Done';
-
 }
 
 function updateTracker(value){
