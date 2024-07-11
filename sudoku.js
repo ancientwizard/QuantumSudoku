@@ -103,7 +103,6 @@ function selectTile() {
     }
 }
 
-
 function timer(){
     var timer = setInterval(function(){
         if(playButton){
@@ -195,7 +194,7 @@ function updateTracker(value){
     if(value in completionStatus){
         completionStatus[value]++;
         if(completionStatus[value] == 9){
-            dullNumber(value);
+            completeNumber(value);
         }
     }  
     else{
@@ -208,9 +207,8 @@ function updateTracker(value){
     document.getElementById('percentage').innerHTML = percentageShown + '% Done';
 }
 
-var dulled = []
-
-function dullNumber(number){
+function completeNumber(number){
     numSelected = null;
-    document.getElementById(number).classList.add("number-dulled");
+    document.getElementById(number).classList.add("number-complete");
+    document.getElementById(number).classList.remove("number-selected");
 }
