@@ -7,8 +7,8 @@ I'm looking to build a quantum sudoku game as a project for my resume
 - [x] Error Counter
 - [ ] Candidate Mode
 - [ ] Auto Candidate Mode
-- [ ] Reset/Clear Game Button
-- [ ] Dull Out Completed Numbers
+- [x] Reset/Clear Game Button
+- [x] Dull Out Completed Numbers
 - [ ] Highlight the row tiles and column tiles of a selected tile
 - [x] Place error inducing number in slot with a red color
 - [ ] Celebration after conclusion of game
