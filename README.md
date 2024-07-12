@@ -13,6 +13,8 @@ I'm looking to build a quantum sudoku game as a project for my resume
 - [x] Place error inducing number in slot with a red color
 - [ ] Celebration after conclusion of game
 - [ ] Quantum Entanglement and/or Superposition
+- [ ] Rules Pop Up Icon with description & explanation
+- [ ] Dedication to Career Center and Professor Obermyer
 
 ### Extra Ideas
 - [ ] Profile Page (Complete with Profile Pic, UserName, Name, Editable Info, and Statistics)
