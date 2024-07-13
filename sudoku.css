@@ -85,10 +85,6 @@ hr {
     border-right: 2px solid black;
 }
 
-.heading {
-    margin: auto;
-}
-
 .button {
     background-color: DodgerBlue; /* Blue background */
     border: none; /* Remove borders */
@@ -111,14 +107,37 @@ hr {
     visibility: visible;
 }
 
+.title-row {
+    width: 450px;
+    padding: 10px;
+    margin: auto;
+}
+
+.title-row-child {
+    display: inline;
+    padding: 10px;
+}
+
+#title {
+    padding: 30px;
+    justify-self: center;
+    justify-content: center;
+    align-content: center;
+}
+
 .heading {
     width: 450px;
     padding: 10px;
+    margin: auto;
 }
 
 .heading-child {
     display: inline;
     padding: 10px;
+}
+
+.icon:hover {
+    cursor:pointer;
 }
 
 .noClick {
