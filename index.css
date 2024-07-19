@@ -20,3 +20,24 @@ body {
     background-color: rgb(79, 203, 252);
     color: white;
 }
+
+.wrapper h1 {
+    font-size: 36px;
+    text-align: center;
+}
+
+.wrapper .input-box {
+    width: 100%;
+    height: 50px;
+    background-color: rgb(167, 48, 199);
+    margin: 30px 0px;
+}
+
+.input-box input{
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    border: 2px solid rgba(255,255,255,0.2);
+}
