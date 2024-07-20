@@ -12,13 +12,16 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: rgb(30, 0, 255);
+    background: url('img/starrynight.jpg') no-repeat;
+    background-size: cover;
+    background-position: center;
 }
 
 .wrapper {
     width: 420px;
-    background-color: rgb(79, 203, 252);
+    background-color: rgba(44, 83, 210, 0.5);
     color: white;
+    border: 2px solid rgba(255,255,255,0.2);
     border-radius: 10px;
     padding: 30px 40px;
 }
@@ -97,7 +100,7 @@ body {
 .wrapper .register-link {
     font-size: 14.5px;
     text-align: center;
-    margin-top: 20px;
+    margin: 20px 0 15px;
 }
 
 .register-link p a {
