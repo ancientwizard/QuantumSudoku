@@ -19,6 +19,17 @@ try:
     )
     cur = conn.cursor()
 
+    create_script = ''' CREATE TABLE IF NOT EXISTS authenticate (
+                        id          int PRIMARY KEY,
+                        username    varchar(40) NOT NULL,
+                        password    varchar(40) NOT NULL,
+                        email       varchar(40),
+                        phonenumber int)
+    '''
+
+    cur.execute(create_script)
+    conn.commit()
+
     
 except Exception as error:
     print(error)
