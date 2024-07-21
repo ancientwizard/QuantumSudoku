@@ -1,9 +1,9 @@
 import psycopg2
+import psycopg2.extras
 
 hostname = 'localhost'
 database = 'QuantumSudoku'
 username = 'postgres'
-#Not sure if I remember my password but here goes I guess
 pwd = 'mcsplashbro'
 port_id = 5432
 cur = None
@@ -17,17 +17,34 @@ try:
         password = pwd,
         port = port_id
     )
-    cur = conn.cursor()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    cur.execute('DROP TABLE IF EXISTS authenticate')
 
     create_script = ''' CREATE TABLE IF NOT EXISTS authenticate (
                         id          int PRIMARY KEY,
                         username    varchar(40) NOT NULL,
                         password    varchar(40) NOT NULL,
                         email       varchar(40),
-                        phonenumber int)
+                        phonenumber varchar(10))
     '''
-
     cur.execute(create_script)
+
+    insert_script = 'INSERT INTO authenticate (id, username, password, email, phonenumber) VALUES (%s, %s, %s, %s, %s)'
+    insert_values = [(1, 'GucciGoola23', 'SecretPassword', 'email@email.com', '9123212166'),
+                     (2, 'RizzskiBidness', 'fluffyBunny19', 'email2@outlook.com', '8529992039'),
+                     (3, 'MegaKaren', '!BigPassC0de!', 'email3@gmail.com', '4129920808'),
+                     (4, 'slimeBoss555', 'slimy9420', 'email4@yahoo.com', '1234567890'),
+                     (5, 'GenericPigeon', '7qwerty#Security', 'email5@hotmail.com', '9902498573')]
+
+    for record in insert_values:
+        cur.execute(insert_script, record)
+
+    cur.execute('SELECT * FROM authenticate')
+
+    for record in cur.fetchall():
+        print(record['username']) #You can do by index or by column name!
+    
     conn.commit()
 
     
