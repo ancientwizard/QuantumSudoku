@@ -17,8 +17,8 @@ try:
         dbname = database,
         user = username,
         password = pwd,
-        port = port_id
-    ) as conn:
+        port = port_id) as conn:
+        
         with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
 
             cur.execute('DROP TABLE IF EXISTS authenticate')
