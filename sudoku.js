@@ -228,7 +228,7 @@ function updateTracker(value){
     totalFilled += 1
     let sum = sumValues(completionStatus);
     percentageDone = totalFilled/(81-totalPreFilled);
-    percentageShown =((totalFilled/(81-totalPreFilled))*100).toFixed(0);
+    percentageShown =(percentageDone*100).toFixed(0);
     document.getElementById('percentage').innerHTML = percentageShown + '% Done';
 }
 
