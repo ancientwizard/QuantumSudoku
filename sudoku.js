@@ -10,6 +10,7 @@ var percentageDone = 0;
 var percentageShown = '0%';
 var totalPreFilled = 0;
 var totalFilled = 0;
+var gameComplete = false;
 
 var board = [
     "--74916-5",
@@ -213,9 +214,6 @@ function populateTracker(value) {
 }
 
 function updateTracker(value){
-    // When a tile is completed and is correct then get that number and update the tracker
-    // If that value is 9, then call dullNumber to hide it and make it unclickable
-    // I also want to be able to track the overall completion status of the game
     if(value in completionStatus){
         completionStatus[value]++;
         if(completionStatus[value] == 9){
@@ -230,6 +228,10 @@ function updateTracker(value){
     percentageDone = totalFilled/(81-totalPreFilled);
     percentageShown =(percentageDone*100).toFixed(0);
     document.getElementById('percentage').innerHTML = percentageShown + '% Done';
+
+    if(percentageDone == 1){
+        gameComplete = true;
+    }
 }
 
 function completeNumber(number){
