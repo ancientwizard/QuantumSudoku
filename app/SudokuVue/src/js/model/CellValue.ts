@@ -14,18 +14,18 @@ class CellValue {
   static EIGHT   = new CellValue(8,"8")
   static NINE    = new CellValue(9,"9")
 
-  #value_int: integer
+  #value_int: number
   #value_str: string
 
-  private constructor ( value: integer, label: string )
+  private constructor ( value: number, label: string )
   {
     this.#value_int = value
     this.#value_str = label
   }
 
-  value () : string { return this.#value_str }
+  get value () : string { return this.#value_str }
 
-  factory () {
+  static get arrayFactory () : Array<CellValue> {
     return [
           CellValue.ONE,   CellValue.TWO,   CellValue.THREE
         , CellValue.FOUR,  CellValue.FIVE,  CellValue.SIX

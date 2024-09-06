@@ -6,50 +6,53 @@
 //    puzzle solving & building
 //
 
-import { CellValue  } from './CellValue.ts'
-//import { Observer   } from '../interface/Observer.ts'
-import { Observable   } from './Observable.ts'
+//port { Observer       } from '../interface/Observer'
+import { Observable     } from './Observable'
+import { CellValue      } from './CellValue'
+import { CellIdent      } from './CellIdent'
+
+//export   CellIdent
+//export { CellIdent  } from './CellIdent'
 
 export
 class CellModel extends Observable // implements Observer
 {
   // Identification
-  private #id: CellIdentification
+  #id: CellIdent
 
   // state
-  private #value: CellValue
-  private #candidates: array
+  #value: CellValue
+  #candidates: Array<CellValue>
 
-  constructor ( location: CellIdentification )
+  static factory ( x: number, y: number )
+  {
+    return new CellModel(CellIdent.factory(x,y))
+  }
+
+  private constructor ( location: CellIdent )
   {
     super()
     this.#id = location
-    this.reset()
+    this.#value = CellValue.HIDDEN
+    this.#candidates = CellValue.arrayFactory
   }
 
   reset () : CellModel
   {
     this.#value = CellValue.HIDDEN
-    this.#candidates = //CellValue.factory
-      [
-          CellValue.ONE,   CellValue.TWO,   CellValue.THREE
-        , CellValue.FOUR,  CellValue.FIVE,  CellValue.SIX
-        , CellValue.SEVEN, CellValue.EIGHT, CellValue.NINE
-      ] 
-
-
+    this.#candidates = CellValue.arrayFactory
     return this
   }
 
-  name  () : string { return this.#id.name }
-  coord () : string { return this.#id.coord }
-  value () : string { return this.#value.value() }
+  get name  () : string { return this.#id.name }
+  get coord () : string { return this.#id.coord }
+  get value () : string { return this.#value.value }
 
   is ( value: CellValue ) : boolean
   {
     const changed =
         // We must be un-known!
-           this.isUnknown()
+           this.isUnknown
         // And the value is a valid candidate
         && this.#candidates.filter( item => item === value ).length == 1;
 
@@ -62,11 +65,11 @@ class CellModel extends Observable // implements Observer
     return changed
   }
 
-  exclude ( value: CellValue ) : array
+  exclude ( value: CellValue ) : Boolean
   {
     const changed =
         // We must be un-known!
-           this.isUnknown()
+           this.isUnknown
         && this.#candidates.length > 1
         // And the value is a valid candidate
         && this.#candidates.filter( item => item === value ).length == 1;
@@ -85,20 +88,20 @@ class CellModel extends Observable // implements Observer
     return changed
   }
 
-  isKnown () : boolean
+  get isKnown () : boolean
   {
     return this.#value !== CellValue.HIDDEN
   }
 
-  isUnknown () : boolean
+  get isUnknown () : boolean
   {
     return this.#value === CellValue.HIDDEN
   }
 
-  toArray () : array
+  toArray () : Array<String>
   {
-    const _z = []
-    this.#candidates.forEach( item => _z.push( item.value() ))
+    const _z: Array<String> = []
+    this.#candidates.forEach( item => _z.push( item.value ))
     return _z
   }
 

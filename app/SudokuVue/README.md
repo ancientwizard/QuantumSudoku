@@ -1,6 +1,24 @@
-# Sudoku
+# Sudoku Solver
 
+<<<<<<< HEAD
 An example Sudoku "SOLVER" using Vue 3 in Vite.
+=======
+I'm Exploring SUDOKU as a problem to solve not necessarily as a game
+to play but as tool to explore the techbologies below. This code is based
+on a Java solution I have tinkered with, though the Java is far more indepth.
+    
+- includes unused code ( a work in progress )
+- unfinished code
+- VueJS to simply UI modeling within a browser
+- Using typescript for the first time so excuse the mistakes
+  (I used knowledge of other languages and docs to make
+   educated guesses about syntax)
+- Lint is enabled (see README.md)
+- Cypress is included (see README.md)
+  ( not configured to do anything yet useful yet! )
+- Jest is included for unit testing (all typescript)
+- Hints on how to run/build (See below)
+>>>>>>> fa2d10a (Created Jest/typescript unit tests.  Spruced up various typescript Sudoku Models)
 
 ## Recommended IDE Setup
 
@@ -49,5 +67,11 @@ npm run lint
 
 ```sh
 npx cypress open
+```
+
+### Run Tests (Jest)
+
+```sh
+npm test
 ```
 
