@@ -3,10 +3,10 @@
 import { describe, expect, test, beforeAll } from '@jest/globals'
 import { CellIdent    } from '../src/js/model/CellIdent'
 
-function _p(x:number,y:number) : CellIdent { return CellIdent.factory(x,y); }
+function _p( x: number, y: number) : CellIdent { return CellIdent.factory(x,y); }
 
 describe('model/cell-ident (defaults)', () => {
-  var point : CellIdent
+  let point : CellIdent
 
   beforeAll(() => { point = _p(0,0); })
 
@@ -22,8 +22,8 @@ describe('model/cell-ident (defaults)', () => {
 
 describe('model/cell-ident (X,Y)', () => {
 
-  for ( var x=1 ; x < 9 ; x++ )
-  for ( var y=1 ; y < 9 ; y++ )
+  for ( let x=1 ; x < 9 ; x++ )
+  for ( let y=1 ; y < 9 ; y++ )
   {
     test('X', () => expect(_p(x,y).x).toBe(x))
     test('Y', () => expect(_p(x,y).y).toBe(y))
@@ -34,14 +34,14 @@ describe('model/cell-ident (X,Y)', () => {
 })
 
 describe('model/cell-ident (NAMES)', () => {
-  for ( var y=1 ; y < 9 ; y++ )
+  for ( let y=1 ; y < 9 ; y++ )
     test('Name', () => expect(_p(1,y).name).toBe('A'+y))
 
-  let names = [ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I' ]
+  const names = [ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I' ]
 
   names.forEach((name) =>
     test('Name', () => expect(_p(names.indexOf(name)+1,1).name).toBe(name+'1')))
 })
 
-// vim: expandtab tabstop=2 number
+// vim: expandtab number tabstop=2
 // END

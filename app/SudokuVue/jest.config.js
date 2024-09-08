@@ -1,3 +1,6 @@
+// JEST
+
+// eslint-disable-next-line no-undef
 module.exports = {
 //injectGlobals: true,
   transform: {'^.+\\.ts?$': 'ts-jest'},

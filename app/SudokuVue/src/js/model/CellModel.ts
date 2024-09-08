@@ -6,23 +6,23 @@
 //    puzzle solving & building
 //
 
-//port { Observer       } from '../interface/Observer'
-import { Observable     } from './Observable'
-import { CellValue      } from './CellValue'
-import { CellIdent      } from './CellIdent'
-
-//export   CellIdent
-//export { CellIdent  } from './CellIdent'
+import type { iObserver     } from '../interface/iObserver'
+import      { Subject       } from './Observable'
+import      { CellValue     } from './CellValue'
+import      { CellIdent     } from './CellIdent'
 
 export
-class CellModel extends Observable // implements Observer
+class CellModel extends Subject implements iObserver
 {
   // Identification
-  #id: CellIdent
+  private id: CellIdent
 
-  // state
-  #value: CellValue
-  #candidates: Array<CellValue>
+  // State
+  private cvalue: CellValue
+  private candidates: Array<CellValue>
+
+  // Control
+  public autosolve = false
 
   static factory ( x: number, y: number )
   {
@@ -32,21 +32,21 @@ class CellModel extends Observable // implements Observer
   private constructor ( location: CellIdent )
   {
     super()
-    this.#id = location
-    this.#value = CellValue.HIDDEN
-    this.#candidates = CellValue.arrayFactory
+    this.id = location
+    this.cvalue = CellValue.HIDDEN
+    this.candidates = CellValue.arrayFactory
   }
 
   reset () : CellModel
   {
-    this.#value = CellValue.HIDDEN
-    this.#candidates = CellValue.arrayFactory
+    this.cvalue = CellValue.HIDDEN
+    this.candidates = CellValue.arrayFactory
     return this
   }
 
-  get name  () : string { return this.#id.name }
-  get coord () : string { return this.#id.coord }
-  get value () : string { return this.#value.value }
+  get name  () : string { return this.id.name }
+  get coord () : string { return this.id.coord }
+  get value () : string { return this.cvalue.value }
 
   is ( value: CellValue ) : boolean
   {
@@ -54,62 +54,67 @@ class CellModel extends Observable // implements Observer
         // We must be un-known!
            this.isUnknown
         // And the value is a valid candidate
-        && this.#candidates.filter( item => item === value ).length == 1;
+        && this.candidates.filter( item => item === value ).length == 1;
 
     if ( changed )
     {
-      this.#value = value
-      this.#candidates = []
+      this.cvalue = value
+      this.candidates = []
+      this.autosolve && this.notifyObservers( value )
     }
 
     return changed
   }
 
-  exclude ( value: CellValue ) : Boolean
+  exclude ( value: CellValue ) : boolean
   {
     const changed =
         // We must be un-known!
            this.isUnknown
-        && this.#candidates.length > 1
+        && this.candidates.length > 1
         // And the value is a valid candidate
-        && this.#candidates.filter( item => item === value ).length == 1;
+        && this.candidates.filter( item => item === value ).length == 1;
 
     if ( changed )
     {
-      this.#candidates =
-      this.#candidates.filter( item => item !== value )
+      this.candidates =
+      this.candidates.filter( item => item !== value )
 
-    // Solution Strategy:
-    //   Naked Single detection - disabled
-    //if ( this.#candidates.length == 1 )
-    //  console.log(this.is( this.#candidates[0] ))
+      // Solution Strategy:
+      //   Naked Single detection
+      if ( this.autosolve && this.candidates.length == 1 )
+        this.is( this.candidates[0] )
     }
 
     return changed
   }
 
+  update ( subject: Subject, arg: CellValue )
+  {
+    this.exclude( arg )
+  }
+
   get isKnown () : boolean
   {
-    return this.#value !== CellValue.HIDDEN
+    return this.cvalue !== CellValue.HIDDEN
   }
 
   get isUnknown () : boolean
   {
-    return this.#value === CellValue.HIDDEN
+    return this.cvalue === CellValue.HIDDEN
   }
 
-  toArray () : Array<String>
+  get length () : number
   {
-    const _z: Array<String> = []
-    this.#candidates.forEach( item => _z.push( item.value ))
+    return this.candidates.length
+  }
+
+  toArray () : Array<string>
+  {
+    const _z: Array<string> = []
+    this.candidates.forEach( item => _z.push( item.value ))
     return _z
   }
-
-//update ( cell: Observable, arg: CellValue ) : void
-//{
-//  if ( this.exclude( arg ))
-//    this.#HUM.notifyObservers( arg )
-//}
 }
 
 // vim: expandtab number tabstop=2

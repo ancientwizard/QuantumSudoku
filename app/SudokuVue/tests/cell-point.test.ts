@@ -3,10 +3,10 @@
 import { describe, expect, test, beforeAll } from '@jest/globals'
 import { CellPoint              } from '../src/js/model/CellPoint'
 
-function _p(x:number,y:number) : CellPoint { return new CellPoint(x,y); }
+function _p( x: number, y: number ) : CellPoint { return new CellPoint(x,y); }
 
 describe('model/cell-point (defaults)', () => {
-  var point : CellPoint
+  let point : CellPoint
 
   beforeAll(() => { point = new CellPoint(0,0); })
 
@@ -21,8 +21,8 @@ describe('model/cell-point (defaults)', () => {
 
 describe('model/cell-point (X,Y)', () => {
 
-  for ( var x=1 ; x < 9 ; x++ )
-  for ( var y=1 ; y < 9 ; y++ )
+  for ( let x=1 ; x < 9 ; x++ )
+  for ( let y=1 ; y < 9 ; y++ )
   {
     test('X', () => expect(_p(x,y).x).toBe(x))
     test('Y', () => expect(_p(x,y).y).toBe(y))
@@ -33,14 +33,14 @@ describe('model/cell-point (X,Y)', () => {
 })
 
 describe('model/cell-point (NAMES)', () => {
-  for ( var y=1 ; y < 9 ; y++ )
+  for ( let y=1 ; y < 9 ; y++ )
     test('Name', () => expect(_p(1,y).name).toBe('A'+y))
 
-  let names = [ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I' ]
+  const names = [ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I' ]
 
   names.forEach((name) =>
     test('Name', () => expect(_p(names.indexOf(name)+1,1).name).toBe(name+'1')))
 })
 
-// vim: expandtab tabstop=2 number
+// vim: expandtab number tabstop=2
 // END

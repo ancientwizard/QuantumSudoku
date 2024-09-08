@@ -18,5 +18,5 @@ describe('model/cell-value', () => {
   test('NINE',    () => expect(CellValue.NINE.value).toBe('9'))
 })
 
-// vim: expandtab tabstop=2 number
+// vim: expandtab number tabstop=2
 // END

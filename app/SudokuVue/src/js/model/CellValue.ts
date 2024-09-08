@@ -1,7 +1,8 @@
 // Sudoku Cell values
 
 export
-class CellValue {
+class CellValue
+{
 
   static HIDDEN  = new CellValue(0,"?")
   static ONE     = new CellValue(1,"1")
