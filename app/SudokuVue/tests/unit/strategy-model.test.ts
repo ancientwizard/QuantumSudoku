@@ -1,9 +1,9 @@
 // strategy-model.test.ts
 
 import { describe, expect, test } from '@jest/globals'
-import type { iUnit             } from '../src/js/interface/iUnit'
-import type { iObservedState    } from '../src/js/interface/iObservedState'
-import      { aStrategyBase     } from '../src/js/abstract/aStrategyBase'
+import type { iUnit             } from '@/js/interface/iUnit'
+//port type { iObservedState    } from '@/js/interface/iObservedState'
+import      { aStrategyBase     } from '@/js/abstract/aStrategyBase'
 
 /* Feels Broken - not ready yet
 class MyUnit implements iUnit

@@ -1,7 +1,7 @@
 // aStrategyBase.ts
 
-import type { iStrategy         } from 'src/js/interface/iStrategy'
-import type { iUnit             } from 'src/js/interface/iUnit'
+import type { iStrategy         } from '@/js/interface/iStrategy'
+import type { iUnit             } from '@/js/interface/iUnit'
 
 export
 abstract class aStrategyBase implements iStrategy

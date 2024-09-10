@@ -1,8 +1,8 @@
 // cell-model.test.ts
 
 import { describe, expect, test } from '@jest/globals'
-import { CellModel              } from '../src/js/model/CellModel'
-import { CellValue              } from '../src/js/model/CellValue'
+import { CellModel              } from '@/js/model/CellModel'
+import { CellValue              } from '@/js/model/CellValue'
 
 describe('model/cell-model', () => {
 

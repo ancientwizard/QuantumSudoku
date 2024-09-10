@@ -3,10 +3,11 @@
 // Sudoku Unit Model
 //
 
-//import { CellValue    } from './CellValue.ts'
-import { CellModel    } from './CellModel'
-//import { Observer     } from '../interface/Observer.ts'
-//import { Observable   } from './Observable.ts'
+import type { iUnit     } from '@/js/interface/iUnit'
+//port { Observer       } from '@/js/interface/Observer'
+//port { CellValue      } from '@/js/model/CellValue'
+import { CellModel      } from '@/js/model/CellModel'
+//port { Observable     } from '@/js/model/Observable'
 
 export
 class UnitModel implements iUnit

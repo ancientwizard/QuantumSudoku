@@ -4,17 +4,17 @@
 //  1) 
 //
 
-//port { CellValue } from './CellValue.ts'
-import { CellModel } from './CellModel.ts'
+//port { CellValue } from '@/js/model/CellValue'
+import { CellModel } from '@/js/model/CellModel'
 
 export
 class LineModel {
 
-  #cell_set: array
+  private cell_set: array
 
   constructor ()
   {
-    this.#cell_set = [
+    this.cell_set = [
         new CellModel()
       , new CellModel()
       , new CellModel()
@@ -29,13 +29,13 @@ class LineModel {
 
   set ( index: integer, value: CellValue ) : boolean
   {
-    this.#cell_set.at( index ).is( value )
+    this.cell_set.at( index ).is( value )
     return this.toArray()
   }
 
   reset () : array
   {
-    this.#cell_set.forEach( c => c.reset() )
+    this.cell_set.forEach( c => c.reset() )
 
     return this.toArray()
   }
@@ -43,7 +43,7 @@ class LineModel {
   toArray () : array
   {
     const _z = []
-    this.#cell_set.forEach( c => _z.push( c.isKnown() ? c.value() : c.toArray() ))
+    this.cell_set.forEach( c => _z.push( c.isKnown() ? c.value() : c.toArray() ))
     return _z
   }
 }

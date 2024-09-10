@@ -1,6 +1,9 @@
 // iObservable
 //  The "SUBJECT" in the Observer model implements this Interface
 
+import type { iObserver         } from '@/js/interface/iObserver'
+import type { iObservedState    } from '@/js/interface/iObservedState'
+
 export
 interface iObservable
 {

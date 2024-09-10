@@ -1,6 +1,9 @@
 // Sudoku Stategy interface
 //  A "CHAIN" of Sudoku "LOGIC" Strategy(ies)
 
+import type { iUnit             } from '@/js/interface/iUnit'
+import type { iStrategy         } from '@/js/interface/iStrategy'
+
 export
 interface iStrategy
 {

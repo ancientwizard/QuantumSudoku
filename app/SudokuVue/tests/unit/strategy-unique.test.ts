@@ -1,11 +1,11 @@
 // strategy-model.test.ts
 
 import { describe, expect, test } from '@jest/globals'
-import type { iUnit             } from '../src/js/interface/iUnit'
-import type { iObservedState    } from '../src/js/interface/iObservedState'
-import      { CellValue         } from '../src/js/model/CellValue'
-import      { UnitModel         } from '../src/js/model/UnitModel'
-import      { StrategyUnique    } from '../src/js/strategy/StrategyUnique'
+import type { iUnit             } from '@/js/interface/iUnit'
+import type { iObservedState    } from '@/js/interface/iObservedState'
+import      { CellValue         } from '@/js/model/CellValue'
+import      { UnitModel         } from '@/js/model/UnitModel'
+import      { StrategyUnique    } from '@/js/strategy/StrategyUnique'
 
 interface iCell { readonly value: string }
 class MyCell implements iCell
@@ -35,7 +35,7 @@ describe('strategy/unique', () => {
     test('false', () => expect(false).toBe(false))
     test('GUESS?', () => {
         expect(true).toBe(true)
-        var u: StrategyUnique = new StrategyUnique()
+        const u: StrategyUnique = new StrategyUnique()
 
         expect(u.toString()).toBe(new StrategyUnique().toString())
         u.apply(new MyUnit())

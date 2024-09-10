@@ -1,6 +1,6 @@
 // Sudoku Cell Ident
 
-import { CellPoint    } from './CellPoint'
+import { CellPoint          } from '@/js/model/CellPoint'
 
 // Smells like a layer that provides no value
 // Unless I migrate the naming up from CellPoint;

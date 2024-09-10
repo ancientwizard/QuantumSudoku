@@ -1,7 +1,7 @@
 // StrategyUnique.ts
 
-import type { iUnit             } from '../interface/iUnit'
-import      { aStrategyBase     } from '../abstract/StrategyBase'
+import type { iUnit             } from '@/js/interface/iUnit'
+import      { aStrategyBase     } from '@/js/abstract/aStrategyBase'
 
 export
 class StrategyUnique extends aStrategyBase
@@ -18,7 +18,7 @@ class StrategyUnique extends aStrategyBase
 
     private strategy_unique () : boolean
     {
-        var solved: number = 0;
+        const solved = 0;
 
 //		UNIQUE:
 //		{

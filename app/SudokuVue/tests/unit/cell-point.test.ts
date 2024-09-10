@@ -1,7 +1,7 @@
 // cell-point.test.ts
 
-import { describe, expect, test, beforeAll } from '@jest/globals'
-import { CellPoint              } from '../src/js/model/CellPoint'
+import { describe, expect, test, beforeAll  } from '@jest/globals'
+import { CellPoint                          } from '@/js/model/CellPoint'
 
 function _p( x: number, y: number ) : CellPoint { return new CellPoint(x,y); }
 

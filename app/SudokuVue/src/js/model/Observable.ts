@@ -1,8 +1,8 @@
 // Observable.ts
 
-import type { iObservedState    } from 'src/js/interface/iObservedState'
-import type { iObservable       } from 'src/js/interface/iObservable'
-import type { iObserver         } from 'src/js/interface/iObserver'
+import type { iObservedState    } from '@/js/interface/iObservedState'
+import type { iObservable       } from '@/js/interface/iObservable'
+import type { iObserver         } from '@/js/interface/iObserver'
 
 export
 class Observable implements iObservable
@@ -14,7 +14,7 @@ class Observable implements iObservable
       // We don't intend to observe ourself in this implementation
       //  The child class should implement this and the super.includeObserver()
       //  called.  In the real world people that "talk" to themselves get funny looks
-//    if ( observer == this ) return
+//    if ( observer === this ) return
 
       // Keep our observers clean and unique!
       if ( ! this.observers.includes(observer))

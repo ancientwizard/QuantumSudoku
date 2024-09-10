@@ -6,10 +6,10 @@
 //    puzzle solving & building
 //
 
-import type { iObserver     } from '../interface/iObserver'
-import      { Subject       } from './Observable'
-import      { CellValue     } from './CellValue'
-import      { CellIdent     } from './CellIdent'
+import type { iObserver     } from '@/js/interface/iObserver'
+import      { Subject       } from '@/js/model/Observable'
+import      { CellValue     } from '@/js/model/CellValue'
+import      { CellIdent     } from '@/js/model/CellIdent'
 
 export
 class CellModel extends Subject implements iObserver

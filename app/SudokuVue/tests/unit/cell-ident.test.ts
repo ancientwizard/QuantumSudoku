@@ -1,7 +1,7 @@
 // cell-ident.test.ts
 
-import { describe, expect, test, beforeAll } from '@jest/globals'
-import { CellIdent    } from '../src/js/model/CellIdent'
+import { describe, expect, test, beforeAll  } from '@jest/globals'
+import { CellIdent                          } from '@/js/model/CellIdent'
 
 function _p( x: number, y: number) : CellIdent { return CellIdent.factory(x,y); }
 
