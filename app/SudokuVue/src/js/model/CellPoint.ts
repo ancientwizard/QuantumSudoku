@@ -12,7 +12,7 @@ class CellPoint
     if ( col  > 9 || col < 0 || row > 9 || row < 0 )
       throw new Error(`Invalid Sudoku location [ ${col}, ${row} ]`)
     if ( col == 0 && row != 0 || row == 0 && col != 0 )
-      throw new Error(`Invalid Sudoku null-location [ ${col}, ${row} ]`)
+      throw new Error(`Invalid Sudoku NON-location [ ${col}, ${row} ]`)
 
     this.COL = col
     this.ROW = row

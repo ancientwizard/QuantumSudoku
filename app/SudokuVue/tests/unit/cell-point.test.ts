@@ -9,8 +9,8 @@ describe('model/cell-point(outerlimits)', () => {
 
   test('ROW < 0', () => expect(() => { new CellPoint(-1,0) }).toThrow('Invalid Sudoku location'))
   test('ROW < 0', () => expect(() => { new CellPoint(0,-1) }).toThrow('Invalid Sudoku location'))
-  test('ROW < 0', () => expect(() => { new CellPoint(0, 2) }).toThrow('Invalid Sudoku null-location [ 0, 2 ]'))
-  test('ROW < 0', () => expect(() => { new CellPoint(5, 0) }).toThrow('Invalid Sudoku null-location [ 5, 0 ]'))
+  test('ROW < 0', () => expect(() => { new CellPoint(0, 2) }).toThrow('Invalid Sudoku NON-location [ 0, 2 ]'))
+  test('ROW < 0', () => expect(() => { new CellPoint(5, 0) }).toThrow('Invalid Sudoku NON-location [ 5, 0 ]'))
 })
 
 describe('model/cell-point (defaults)', () => {

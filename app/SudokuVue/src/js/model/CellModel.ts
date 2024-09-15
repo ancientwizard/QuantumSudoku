@@ -82,21 +82,18 @@ class CellModel extends Subject implements iObserver
       // ( I.E. still a value candidate we've not already eliminated )
       let is_candidate : boolean = this.candidates.filter( mbr_value => mbr_value === value ).length == 1;
 
-      // Remove this one candidate, leaving others
-      if ( this.candidates.length > 1 )
+      // Remove [exclude] this candidate, leaving others
+      if ( is_candidate && this.candidates.length > 1 )
       {
         changed = true
         this.candidates =
         this.candidates.filter( item => item !== value )
-        break CANDIDATE
       }
 
       // Solution Strategy:
       //   Naked Single detection
-      if ( this.autosolve && is_candidate )
-      {
-        changed = this.is( this.candidates[0] )
-      }
+      if ( this.autosolve && is_candidate && this.candidates.length == 1 )
+        changed = this.is( this.candidates[0] ) || changed
     }
 
     return changed

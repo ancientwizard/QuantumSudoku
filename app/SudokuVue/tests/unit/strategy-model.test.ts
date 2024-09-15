@@ -30,19 +30,18 @@ class MyUnit implements iUnit
     }
 }
 
-// interface iMyStrategy { readonly label : string }
- // implements iMyStrategy
-    // label our mocked strategy
-//  readonly label : string = 'my-name'
-
-//  constructor ( 
-
-
 class MyStrategy extends aStrategyBase
 {
+    public label : string
+
+    constructor ( label: string = 'N/A/' )
+    {
+        super()
+        this.label = label
+    }
+
     protected applyStrategy ( unit: iUnit ) : boolean
     {
-        // TBD
         return false
     }
 }
@@ -53,19 +52,19 @@ describe('strategy/base', () => {
 
     function _mk_strategy_set ( chaincount: number = 1 ) : MyStrategy
     {
-        let _head : MyStrategy = new MyStrategy()
+        let _head : MyStrategy = new MyStrategy('A1')
         let _tail : MyStrategy = _head
 
         for ( let i = 1 ; i < chaincount ; i ++ )
-            _tail = _tail.setNext( new MyStrategy() ) as MyStrategy
+            _tail = _tail.setNext( new MyStrategy('A'+(i+1)) ) as MyStrategy
 
         return _head
     }
 
-//  test('apply', () => expect(new MyStrategy().apply()).toBe(false))
+    test('apply', () => expect(new MyStrategy().apply(new MyUnit())).toBe(false))
 
-//  for ( let x = 1 ; x <= 20 ; x++ )
-//      test('apply x '+x, () => expect(_mk_strayegy_set(x).apply).toBe(false))
+    for ( let x = 1 ; x <= 20 ; x++ )
+        test('apply x '+x, () => expect(_mk_strategy_set(x).apply(new MyUnit())).toBe(false))
 })
 
 // vim: expandtab number tabstop=4

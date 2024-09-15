@@ -70,14 +70,16 @@ describe('model/unit-model-solved', () => {
     let u : UnitModel = unit()
     let v : Array<CellValue> = CellValue.arrayFactory
     let P : string[] = [ '1', '2', '3', '4', '5', '6', '7', '8', '9' ]
-    let S : CellValue = CellValue.ONE  // END of set (reverse)
-    let N : CellValue = CellValue.NINE // END of set (forward)
+//  let S : CellValue = CellValue.ONE  // END of set (reverse)
+//  let N : CellValue = CellValue.NINE // END of set (forward)
     let x : number
 
     // Foreward
     CellIndex.arrayFactory.forEach( c => {
       expect(c.name).toBe(P[c.index])
-      expect(u.is(c, v[c.index])).toBe(true); expect(u.isSolved()).toBe(v[c.index]===N)
+//    console.log(c,u.is(c, v[c.index]))
+      expect(u.is(c, v[c.index])).toBe(c.index<8)
+      expect(u.isSolved()).toBe(v[c.index]===CellValue.NINE || v[c.index]===CellValue.EIGHT)
     })
 
     // Backward
@@ -87,7 +89,8 @@ describe('model/unit-model-solved', () => {
 
     CellIndex.arrayFactory.reverse().forEach( c => {
       expect(c.name).toBe(P[c.index])
-      expect(u.is(c, v[8-c.index])).toBe(true); expect(u.isSolved()).toBe(v[c.index]===S)
+      expect(u.is(c, v[8-c.index])).toBe(c.index>0)
+      expect(u.isSolved()).toBe(v[c.index]===CellValue.ONE || v[c.index]===CellValue.TWO)
     })
   })
 
@@ -96,8 +99,6 @@ describe('model/unit-model-solved', () => {
     let u : UnitModel = unit()
     let v : Array<CellValue> = CellValue.arrayFactory
     let P : string[] = [ '1', '2', '3', '4', '5', '6', '7', '8', '9' ]
-    let S : CellValue = CellValue.ONE  // END of set (reverse)
-    let N : CellValue = CellValue.NINE // END of set (forward)
     let x : number
 
     // Foreward
@@ -105,7 +106,7 @@ describe('model/unit-model-solved', () => {
       let t:boolean = false
       expect(c.name).toBe(P[c.index])
       v.forEach( x => { expect(t=u.exclude(c, x)).toBe(t) })
-      expect(u.isSolved()).toBe(c==CellIndex.NINE)
+      expect(u.isSolved()).toBe(c===CellIndex.NINE || c===CellIndex.EIGHT)
     })
 
     // Backward
@@ -115,7 +116,7 @@ describe('model/unit-model-solved', () => {
       let t:boolean = false
       expect(c.name).toBe(P[c.index])
       shuffleArray(v).forEach( x => { expect(t=u.exclude(c, x)).toBe(t) })
-      expect(u.isSolved()).toBe(c==CellIndex.ONE)
+      expect(u.isSolved()).toBe(c===CellIndex.ONE || c===CellIndex.TWO)
     })
   })
 })

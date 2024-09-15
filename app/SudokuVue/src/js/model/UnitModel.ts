@@ -111,6 +111,8 @@ class UnitModel implements iUnit
     }
 
 //  public final ArrayList<Cell> getCells() { return cells; }
+    public getCells () : Array<CellModel> { return [...this.cells] }
+
 //  public void showUndetermined() { show_undetermined = true; }
 //  public void hideUndetermined() { show_undetermined = false; }
 
@@ -211,20 +213,21 @@ class UnitModel implements iUnit
         return s
     }
 
-//	public String toStringII()
-//	{
-//		String s = "";
-//		Iterator<Cell> i = cells.iterator();
+    public toStringII () : string
+    {
+//      let s : string = ''
 
+//      s += this.cells.map( m => m.value ).join(' ')
 //		while ( i.hasNext())
 //		{
 //			Cell c = i.next();
 //			s += c.isKnown() ? " " + Integer.toString(c.getValue()) : " ?";
 //		}
-//		s += "\n";
+//      s += "\n";
 
-//		return s;
-//	}
+//      return s;
+        return this.cells.map( m => m.value ).join(' ')
+    }
 
 //	public String toStringIII()
 //	{
@@ -303,134 +306,6 @@ class UnitModel implements iUnit
 //	}
 
 //	public String toStringName() { return this.getCellNames(cells).toString(); }
-
-
-// MOVE INTO A TEST!!!!!!!!!!
-
-//	public static void main(String args[])
-//	{
-//		ArrayList<Cell> members = new ArrayList<Cell>(9);
-
-//		for ( int i = 1 ; i < 10 ; i++ )
-//		{
-//			members.add( new Cell( "C" + Integer.toString(i), new Point(1,i)));
-//		}
-
-//		Cell c = members.get(0);
-
-//		Unit unit = new Unit(members);
-//		unit.showUndetermined();
-
-//		c = members.get(1);
-//		System.out.println("# Observers : " + Integer.toString(c.countObservers()));
-
-//		unit.is(1,5);
-
-//		//	System.out.print(unit.toString());
-
-//		unit.is(4, 8);
-//		unit.is(9, 1);
-//		unit.is(8, 3);
-//		unit.is(6, 9);
-//		unit.is(2, 6);
-//		unit.is(7, 4);
-//		unit.is(5, 7);
-
-//	//	System.out.print(unit.toString());
-
-//		// Naked pair
-//		unit.reset();
-//		unit.is(9, 9);
-//	//	System.out.print(unit.toString());
-//	//	System.out.println(c.toString2());
-
-//		for ( int i = 1 ; i < 7 ; i++ )
-//		{
-//			unit.exclude(4, i);
-//			unit.exclude(5, i);
-//		}
-
-//	//	System.out.print(unit.toString());
-//		unit.strategy_set_naked_pair();
-//	//	System.out.print(unit.toString());
-
-//		// Hidden Pair
-//	//	System.out.println("# ---------------------");
-//	//	System.out.println("# strategy_set_hidden_pair()");
-
-//		unit.exclude(3, 3); unit.exclude(3, 4);
-//		unit.exclude(6, 3); unit.exclude(6, 4);
-//		unit.exclude(7, 3); unit.exclude(7, 4);
-//		unit.exclude(8, 3); unit.exclude(8, 4);
-
-//	//	System.out.print(unit.toString());
-//	//	System.out.print("# unit:" + unit.toStringII());
-//		unit.strategy_set_hidden_pair();
-//	//	System.out.print(unit.toString());
-//	//	System.out.print("# unit:" + unit.toStringII());
-
-//		// Unique
-//	//	System.out.println("# ---------------------");
-//	//	System.out.println("# strategy_unique()");
-//		unit.exclude(6, 1);
-//		unit.exclude(7, 1);
-//		unit.exclude(8, 1);
-//	//	System.out.print(unit.toString());
-//	//	System.out.print("# unit:" + unit.toStringII());
-//		unit.strategy_unique();
-//	//	System.out.println("# ---------------------");
-//	//	System.out.print(unit.toString());
-//	//	System.out.print("# unit:" + unit.toStringII());
-
-//		unit.reset();
-//		for ( int x = 1 ; x < 10 ; x+=2 )
-//		{
-//			int cnt = 4;
-//			for ( Cell cell : unit.getCells())
-//			{
-//				cell.exclude(x);
-//				cnt--;
-//				if ( cnt < 1 ) { break; }
-//			}
-//		}
-//		unit.strategy_set_naked_quad();
-//	//	System.out.print(unit.toString());
-
-//		int cnt = 7;
-//		for ( Cell cell : unit.getCells())
-//		{
-//			cnt--;
-//			if ( cnt > 0 ){ continue; }
-//			cell.exclude(1);
-//			cell.exclude(6);
-//			cell.exclude(9);
-//		}
-//	//	System.out.print(unit.toString());
-//		unit.strategy_set_naked_triple();
-//	//	System.out.print(unit.toString());
-
-//		// Hidden Tripple
-//		unit.reset();
-//		for ( int i=1 ; i < 7 ; i++ )
-//		{
-//			unit.exclude(i, 4);
-//			unit.exclude(i, 5);
-//			unit.exclude(i, 6);
-//		}
-//		unit.strategy_set_hidden_triple();
-
-//		// Hidden Quad
-//		for ( int i=1 ; i < 3 ; i++ )
-//		{
-//			unit.exclude(i, 2);
-//			unit.exclude(i, 3);
-//			unit.exclude(i, 7);
-//			unit.exclude(i, 8);
-//		}
-//		unit.strategy_set_hidden_quad();
-
-//		System.out.print(unit.toString());
-//	}
 
 }
 
