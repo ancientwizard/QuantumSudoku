@@ -3,142 +3,145 @@
 // Sudoku Unit Model
 //
 
-import type { iUnit     } from '@/js/interface/iUnit'
-//port { Observer       } from '@/js/interface/Observer'
-//port { CellValue      } from '@/js/model/CellValue'
-import { CellModel      } from '@/js/model/CellModel'
-//port { Observable     } from '@/js/model/Observable'
+import type { iUnit         } from '@/js/interface/iUnit'
+import type { CellValue     } from '@/js/model/CellValue'
+import type { CellIndex     } from '@/js/model/CellIndex'
+import type { CellModel     } from '@/js/model/CellModel'
 
 export
 class UnitModel implements iUnit
 {
-  static DEBUG = false;
+    static DEBUG = false;
 
-  // The Unit is the second logical layer in our implementation of the
-  // Sudoku Solver. The Sudoku puzzle is made up of nine (9) 3x3 grids
-  // we'll call a block as well as nine (9) columns and nine (9) rows.
-  // Therefore each Cell is a member of three basic units.
-  //  - a block
-  //  - a column and
-  //  - a row
-  // Each of these units have Sudoku rules (logic/laws) they must
-  // adhere too no matter how they are organized visually within a
-  // puzzle. Such rules do not care if the nine cells are in a row,
-  // a column or a 3x3 grid. Therefore rules and hence the Strategies
-  // applied to them are the same.
-  //
-  // Each is simple: a set of nine cells and their order
-  // or position within the set do not matter. Our implementation
-  // keeps them as an ordered set for convenience but otherwise is
-  // not important for solving the puzzle within this logic layer.
-  //
-  // The Unit uses the Observer design pattern provided by Cell.
-  //  Therefore the moment a Cell has eliminated all but one candidate
-  //   (knows it can only be that las remaining value)
-  //  the Cell communicates this change to every other Cell that is
-  //  an observer of that Cell. You can quickly see how it will
-  //  notify all of its observers in this unit and all other units it
-  //  is a member of. It essentially ripples throughout the puzzle.
-  //
-  // The UNIT employs those Strategies based on a single unit of Cells
-  //  can be imposed on one another. Each strategy tries to eliminate
-  //  candidates in an attempt to trigger a Cell into knowing its
-  //  final value and further eliminating candidates from other cells.
-  //  If you've solved many Sudoku puzzles you know that most often
-  //  you're eliminating possibilities more othen than saying
-  //  "look that one is a 5"
-  //
-  // Strategies: (Level 0)
-  //  Unique: A candidate can be found in only one of the unit's cells.
-  //          That candidate solves the "Unique" Cell. (hidden single)
-  //
-  //  Clean-up: A solved Cell tells the other cells within its influence
-  //    they can remove it's solution as a candidate. This is implemented
-  //    in the Cell however the neighbors are defined in a Unit.
-  //    Together Unit
-  //     and Cell work together to produce the cleanup. This is the observer
-  //     and observable pattern spoke of before.
-  //
-  // Strategies: (Level 1)   (Level 2)
-  //  Naked SET: Pair        Triple & Quad
-  //   A set of Cells having the same number of cells as the number of
-  //   matching set of candidates will eliminate those candidates from all
-  //   Cells not in that set matching candidates. This is called naked
-  //   because these Cells only have these candidates, making them naked!
-  //   Therefore three cells all having only candidates {5,7,9} will
-  //   safely remove those candidates from the remaining Cells in the unit.
-  //
-  // Hidden SET: Pair        Triple & Quad
-  //   A set of Cells having the same number of Cells as matching
-  //   candidates that cannot be found in any other Cell in the unit
-  //   may safely have any other candidates in the same Cell set
-  //   excluded. It's called hidden because the selected set can have
-  //   additional candidates; otherwise this would be a Naked
-  //   set as described above.
-  //   Therefore when three Cells include candidates {2,4,6} as well
-  //   as other candidates and they {2,4,6} cannot be found in any
-  //   other Cells in the remaining candidates may safely be excluded from
-  //   the Hidden candidate Cell set.
-  //
+    // The Unit is the second logical layer in our implementation of the
+    // Sudoku Solver. The Sudoku puzzle is made up of nine (9) 3x3 grids
+    // we'll call a block as well as nine (9) columns and nine (9) rows.
+    // Therefore each Cell is a member of three basic units.
+    //  - a block
+    //  - a column and
+    //  - a row
+    // Each of these units have Sudoku rules (logic/laws) they must
+    // adhere too no matter how they are organized visually within a
+    // puzzle. Such rules do not care if the nine cells are in a row,
+    // a column or a 3x3 grid. Therefore rules and hence the Strategies
+    // applied to them are the same.
+    //
+    // Each is simple: a set of nine cells and their order
+    // or position within the set do not matter. Our implementation
+    // keeps them as an ordered set for convenience but otherwise is
+    // not important for solving the puzzle within this logic layer.
+    //
+    // The Unit uses the Observer design pattern provided by Cell.
+    //  Therefore the moment a Cell has eliminated all but one candidate
+    //   (knows it can only be that las remaining value)
+    //  the Cell communicates this change to every other Cell that is
+    //  an observer of that Cell. You can quickly see how it will
+    //  notify all of its observers in this unit and all other units it
+    //  is a member of. It essentially ripples throughout the puzzle.
+    //
+    // The UNIT employs those Strategies based on a single unit of Cells
+    //  can be imposed on one another. Each strategy tries to eliminate
+    //  candidates in an attempt to trigger a Cell into knowing its
+    //  final value and further eliminating candidates from other cells.
+    //  If you've solved many Sudoku puzzles you know that most often
+    //  you're eliminating possibilities more othen than saying
+    //  "look that one is a 5"
+    //
+    // Strategies: (Level 0)
+    //  Unique: A candidate can be found in only one of the unit's cells.
+    //          That candidate solves the "Unique" Cell. (hidden single)
+    //
+    //  Clean-up: A solved Cell tells the other cells within its influence
+    //    they can remove it's solution as a candidate. This is implemented
+    //    in the Cell however the neighbors are defined in a Unit.
+    //    Together Unit
+    //     and Cell work together to produce the cleanup. This is the observer
+    //     and observable pattern spoke of before.
+    //
+    // Strategies: (Level 1)   (Level 2)
+    //  Naked SET: Pair        Triple & Quad
+    //   A set of Cells having the same number of cells as the number of
+    //   matching set of candidates will eliminate those candidates from all
+    //   Cells not in that set matching candidates. This is called naked
+    //   because these Cells only have these candidates, making them naked!
+    //   Therefore three cells all having only candidates {5,7,9} will
+    //   safely remove those candidates from the remaining Cells in the unit.
+    //
+    // Hidden SET: Pair        Triple & Quad
+    //   A set of Cells having the same number of Cells as matching
+    //   candidates that cannot be found in any other Cell in the unit
+    //   may safely have any other candidates in the same Cell set
+    //   excluded. It's called hidden because the selected set can have
+    //   additional candidates; otherwise this would be a Naked
+    //   set as described above.
+    //   Therefore when three Cells include candidates {2,4,6} as well
+    //   as other candidates and they {2,4,6} cannot be found in any
+    //   other Cells in the remaining candidates may safely be excluded from
+    //   the Hidden candidate Cell set.
+    //
 
-  // Protected variables (Block extends us)
-  protected cells: Array<CellModel>
-  protected show_undetermined: boolean
+    // Protected variables (Block etc extends us)
+    protected cells: Array<CellModel>
+    protected show_undetermined: boolean
 
-  constructor ( content: Array<CellModel> )
-  {
-    console.log(CellModel.factory(0,0))
-    this.cells = content
-    this.show_undetermined = false
-
-    if ( content.length != 9 )
+    constructor ( content: Array<CellModel> )
     {
-      throw new Error("Content size incorrect");
+    //  console.log(CellModel.factory(0,0))
+        this.cells = content
+        this.show_undetermined = false
+
+        if ( content.length != 9 )
+        {
+            throw new Error("Content size incorrect");
+        }
+
+        UnitModel.setObservers( content );
     }
 
-//  for ( var i: number = 0 ; i < 9 ; i++ )
-//  {
-//    setObservers( i, content );
-//  }
-  }
+	// Configure cell "unit members" with its observers
+	// (used by the constructor)
+
+    private static setObservers ( lst: Array<CellModel> ) : void
+    {
+        lst.forEach( subject => {
+            lst.forEach( observer => {
+                subject != observer && subject.includeObserver( observer );
+            })
+        })
+    }
 
 //  public final ArrayList<Cell> getCells() { return cells; }
 //  public void showUndetermined() { show_undetermined = true; }
 //  public void hideUndetermined() { show_undetermined = false; }
 
 
-	// Cells are 1-9
-	// value are 1-9
-//	public void is( int cell, int caldidate )
-//	{
-//		if ( cell > 0 && cell < 10 && caldidate > 0 && caldidate < 10 )
-//		{
-//			cells.get( cell-1 ).is( caldidate );
-//		}
+	// Exclude
+    exclude ( cell: CellIndex, candidate: CellValue ) : boolean
+    {
+        return this.cells[ cell.index ].exclude( candidate );
+    }
 
-//		// Lets turn off "all the time" auto solve.
-//		//	solve();
-//  }
 
-//	public boolean isSolved()
-//	{
-//		boolean solved = true;
+    is ( cell: CellIndex, candidate: CellValue ) : boolean
+    {
+        return this.cells[ cell.index ].is( candidate );
+    }
 
-//		for ( Cell cell : cells )
-//		{
-//			if (cell.isUndetermined())
-//			{
-//				solved = false;
-//				break;
-//			}
-//		}
+    isSolved () : boolean
+    {
+        // console.log( this.cells.find( cell => cell.isUnknown ))
+        // When all Unit cell members KNOWN then this unit is-solved
+        //  The first UNKNOWN is our clue
+        return this.cells.find( cell => cell.isUnknown ) === undefined
+    }
 
-//		return solved;
-//    }
+    isBroken () : boolean
+    {
+        var broken : boolean = false;
 
-//	public boolean isBroken()
-//	{
-//		boolean broken = false;
+        // I performed this CHECK IN Java; however
+        //  this implementation *may* make this unnecessary TBD OR not!
+
 //		ArrayList<ArrayList<Cell>> distribution = new ArrayList<ArrayList<Cell>>(9);
 
 //		for ( int i = 1 ; i < 10 ; i++ ) { distribution.add(new ArrayList<Cell>(1)); }
@@ -164,618 +167,9 @@ class UnitModel implements iUnit
 //		if ( broken )
 //			System.out.println(this.toStringII());
 
-//		return broken;
-//	}
+        return broken;
+    }
 
-
-	// Exclude
-//	public void exclude( int cell, int candidate )
-//	{
-//		if ( cell > 0 && cell < 10 && candidate > 0 && candidate < 10 )
-//		{
-//			cells.get( cell - 1 ).exclude( candidate );
-//		}
-//	}
-
-
-	// A Level 1 Strategy
-	//  Naked Pair: The set of identical candidates found in a
-	//       pair of cell may safely remove those candidates
-	//       from all other unsolved cells in the Unit.
-//	public boolean strategy_set_naked_pair()
-//	{
-//		int removed = 0;
-
-//		NAKED_PAIR:
-//		{
-//			// We only need to work with those Cells that are undetermined (not solved)
-//			//  its a waste of time looking at stuff that is already solved
-//			ArrayList<Cell> setOfUndeterminedCells = getUndeterminedCellList();
-
-//			if ( show_undetermined )
-//			{ System.out.println("# Undetermined Cells: " + getCellNames(setOfUndeterminedCells)); }
-
-//			// No point in looking for pairs when there are less than four Cells
-//			// to compare! Basically if two Cells match the third will always be unique
-//			// and solved using the Unique Strategy.
-//			if ( setOfUndeterminedCells.size() < 4 ){ break NAKED_PAIR; }
-//
-//			ArrayList<CandidateMatch> match = new ArrayList<CandidateMatch>(2);
-
-//			for ( Cell cell : setOfUndeterminedCells )
-//			{
-//				if ( cell.getSize() == 2 )
-//				{
-//					ADD:
-//					{
-//					for ( CandidateMatch candidate : match )
-//					{
-//						if ( candidate.first.getSet().containsAll(cell.getSet()))
-//						{
-//							candidate.all.add(cell);
-//							break ADD;
-//						}
-//					}
-
-//					CandidateMatch candidate = new CandidateMatch(4);
-//					candidate.first = cell;
-//					candidate.all.add(cell);
-//					match.add(candidate);
-//					}
-//				}
-//			}
-
-//			// Inspect set for naked pairs
-//			for ( CandidateMatch candidate : match )
-//			{
-//				//	System.out.println("# " + candidate.first.toString2());
-//				if ( candidate.all.size() == 2 )
-//				{
-//					boolean naked = false;
-
-//					// We have a winner
-//					for ( Cell cell : setOfUndeterminedCells )
-//					{
-//						if ( candidate.all.contains(cell))
-//						{
-//							continue;
-//						}
-
-//						for ( Integer N : candidate.first.getSet())
-//						{
-//							if ( ! naked && cell.includes(N))
-//							{
-//								naked = true;
-//								if ( DEBUG )
-//									System.out.println("# Strategy 1 - Naked  Pair " + candidate );
-//							}
-//							if ( cell.exclude(N)) { removed++; }
-//						}
-//					}
-//				}
-//			}
-//		}
-
-//		return removed > 0;
-//    }
-
-	// A level 1 Strategy
-	// Hidden Pair: Exactly one pair of cells contain two matching candidates
-	//   not found in any other Cells. The the candidate set are the solutions for these
-	//   pair of cells. All other candidates in this Cell set may be removed. This pair
-	//   which was "Hidden" now becomes A "Naked" pair; however we already know that these
-	//   candidates are not in any other Cells so no further action is required
-//	public boolean strategy_set_hidden_pair()
-//	{
-//		int removed = 0;
-
-//		HIDDEN:
-//		{
-//			// We only need to work with those Cells that are undetermined (not solved)
-//			//  its a waste of time looking at stuff that is already solved
-//			ArrayList<Cell> setOfUndeterminedCells = getUndeterminedCellList();
-
-//			if ( show_undetermined )
-//			{ System.out.println("# Undetermined Cells: " + getCellNames(setOfUndeterminedCells)); }
-
-//			// No point in looking for pairs when there are less than three Cells
-//			// to compare! Basically if the last two match, so what! There are only two
-//			// candidates remaining so there is nothing to do
-//			if ( setOfUndeterminedCells.size() < 3 ){ break HIDDEN; }
-
-//			// Map each candidate to the Cells that have it
-//			ArrayList<ArrayList<Cell>> mapOfVals2Cells = new ArrayList<ArrayList<Cell>>(9);
-
-//			for ( int i = 0 ; i < 9 ; i++ )
-//			{ mapOfVals2Cells.add(new ArrayList<Cell>(9)); }
-
-//			for ( Cell cell_undetermined : setOfUndeterminedCells )
-//			{
-//				for ( Integer candidate : cell_undetermined.getSet())
-//				{
-//					// Candidate of this cell
-//					mapOfVals2Cells.get( candidate - 1 ).add( cell_undetermined );
-//				}
-//			}
-
-//			// We're looking for Hidden Pairs, they are seen as two candidates
-//			//   having the same set set of two Cells; the two candidates can't
-//			//   be found any where else so we can make these Cells A "Naked"
-//			//   pair
-
-//			Iterator<ArrayList<Cell>> Ai = mapOfVals2Cells.iterator();
-//			int Apos = 0;
-
-//			while ( Ai.hasNext())
-//			{
-//				ArrayList<Cell> A = Ai.next(); Apos++;
-//				//	System.out.println("# " + Apos + ":" + getCellNames(A));
-
-//				Iterator<ArrayList<Cell>> Bi = mapOfVals2Cells.iterator();
-//				int Bpos = 0;
-
-//				// A bit of magic to avoid comparing the same pairs twice!
-//				// Skip the pairs we've seen before moving Bi just past Ai
-//				for ( int skip = 0 ; skip < Apos && Bi.hasNext() ; skip++ )
-//				{ Bi.next(); Bpos++; }
-
-//				// We're now pointing at the first Cell past Ai or this is the end
-//				//  test each Bi with the current Ai if we're not at the end
-//				while ( Bi.hasNext())
-//				{
-//					ArrayList<Cell> B = Bi.next(); Bpos++;
-
-//					// PAIRS
-//					// Candidate A is found in two cells &&
-//					// Candidate B is found in two cells &&
-//					// and its the same two cells
-//					if ( A.size() == 2 && B.size() == 2 && A.containsAll(B))
-//					{
-//						// Nothing to clean up?
-//						if ( A.get(0).getSize() == 2 && B.get(1).getSize() == 2) { continue; }
-
-//						if ( DEBUG )
-//							System.out.println("# Strategy 1 - Hidden Pair (" +
-//								A.get(0).getName() + "," +
-//								A.get(1).getName() +
-//								")" );
-
-//						// Clean up
-//						for ( Cell cell : A )
-//						{
-//							for ( Integer N : cell.getSet() )
-//							{
-//								if ( N == Apos || N == Bpos ){ continue; }
-//								if ( cell.exclude(N)) { removed++; }
-//							}
-//						}
-//					}
-//				}
-//			}
-//		}
-
-//		if ( removed > 0  && DEBUG )
-//			System.out.println("# Strategy 1 - Hidden Pair cleaned " + removed + " candidates");
-
-//		return removed > 0;
-//  }
-
-//	// A Level 2 Strategy
-//	//  Naked Triple(Quad): A set of identical candidates found in a
-//	//       in a set of Cells of the same size. I.E exactly three cells
-//	//		 have the same set of three candidates. OR exactly four cells
-//	//       have the same set of four candidates.
-//	//       The candidates of the matching cells may safely be removed
-//	//       from all other unsolved cells in the Unit.
-//	public boolean strategy_set_naked_triple()
-//	{
-//		int removed = 0;
-
-//		NAKED_TRIPLE:
-//		{
-//			// We only need to work with those Cells that are undetermined (not solved)
-//			ArrayList<Cell> setOfUndeterminedCells = getUndeterminedCellList();
-
-//			if ( show_undetermined )
-//			{ System.out.println("# Undetermined Cells: " + getCellNames(setOfUndeterminedCells)); }
-
-//			// No point in looking for quad when there are less than six Cells
-//			// to compare! Basically if four Cells match the fifth will always be unique
-//			// and solved using the Unique Strategy. It could be a naked five-some but thats
-//			// very rare and will very likely show up as a simpler strategy
-//			if ( setOfUndeterminedCells.size() < 5 ){ break NAKED_TRIPLE; }
-
-//			ArrayList<CandidateMatch> match = new ArrayList<CandidateMatch>(2);
-
-//			for ( Cell cell : setOfUndeterminedCells )
-//			{
-//				if ( cell.getSize() == 3 )
-//				{
-//					ADD:
-//					{
-//					for ( CandidateMatch candidate : match )
-//					{
-//						if ( candidate.first.getSet().containsAll(cell.getSet()))
-//						{
-//							candidate.all.add(cell);
-//							break ADD;
-//						}
-//					}
-
-//					CandidateMatch candidate = new CandidateMatch(4);
-//					candidate.first = cell;
-//					candidate.all.add(cell);
-//					match.add(candidate);
-//					}
-//				}
-//			}
-
-//			// Inspect set for naked Quad's
-//			for ( CandidateMatch candidate : match )
-//			{
-//				//	System.out.println("# " + candidate.first.toString2());
-//				if ( candidate.all.size() == 3 )
-//				{
-//					boolean naked = false;
-//					// We have a winner
-//					for ( Cell cell : setOfUndeterminedCells )
-//					{
-//						if ( candidate.all.contains(cell))
-//						{
-//							continue;
-//						}
-
-//						for ( Integer N : candidate.first.getSet())
-//						{
-//							if ( ! naked && cell.includes(N))
-//							{
-//								naked = true;
-//								if ( DEBUG )
-//									System.out.println("# Strategy 2 - Naked Triple " + candidate );
-//							}
-
-//							if ( cell.exclude(N)) { removed++; }
-//						}
-//					}
-//				}
-//			}
-//		}
-
-//		if ( removed > 0 && DEBUG )
-//			System.out.println("# Strategy 2 - Naked Triple cleaned " + removed + " candidates");
-
-//		return removed > 0;
-//	}
-
-//	public boolean strategy_set_naked_quad()
-//	{
-//		int removed = 0;
-
-//		NAKED_QUAD:
-//		{
-//			// We only need to work with those Cells that are undetermined (not solved)
-//			//  its a waste of time looking at stuff that is already solved
-//			ArrayList<Cell> setOfUndeterminedCells = getUndeterminedCellList();
-
-//			if ( show_undetermined )
-//			{ System.out.println("# Undetermined Cells: " + getCellNames(setOfUndeterminedCells)); }
-
-//			// No point in looking for quad when there are less than six Cells
-//			// to compare! Basically if four Cells match the fifth will always be unique
-//			// and solved using the Unique Strategy. It could be a naked five-some but thats
-//			// very rare and will very likely show up as a simpler strategy
-//			if ( setOfUndeterminedCells.size() < 6 ){ break NAKED_QUAD; }
-
-//			ArrayList<CandidateMatch> match = new ArrayList<CandidateMatch>(2);
-
-//			for ( Cell cell : setOfUndeterminedCells )
-//			{
-//				if ( cell.getSize() == 4 )
-//				{
-//					ADD:
-//					{
-//					for ( CandidateMatch candidate : match )
-//					{
-//						if ( candidate.first.getSet().containsAll(cell.getSet()))
-//						{
-//							candidate.all.add(cell);
-//							break ADD;
-//						}
-//					}
-
-//					CandidateMatch candidate = new CandidateMatch(4);
-//					candidate.first = cell;
-//					candidate.all.add(cell);
-//					match.add(candidate);
-//					}
-//				}
-//			}
-
-//			// Inspect set for naked Quad's
-//			for ( CandidateMatch candidate : match )
-//			{
-//				//	System.out.println("# " + candidate.first.toString2());
-//				if ( candidate.all.size() == 4 )
-//				{
-//					boolean naked = false;
-//					// We have a winner
-//					for ( Cell cell : setOfUndeterminedCells )
-//					{
-//						if ( candidate.all.contains(cell))
-//						{
-//							continue;
-//						}
-
-//						for ( Integer N : candidate.first.getSet())
-//						{
-//							if ( ! naked && cell.includes(N))
-//							{
-//								naked = true;
-//								if ( DEBUG )
-//									System.out.println("# Strategy 2 - Naked Quad " + candidate );
-//							}
-//							if ( cell.exclude(N)) { removed++; }
-//						}
-//					}
-//				}
-//			}
-//		}
-
-//		if ( removed > 0 && DEBUG )
-//			System.out.println("# Strategy 2 - Naked Quad cleaned " + removed + " candidates");
-
-//		return removed > 0;
-//  }
-
-//	// A Level 2 Strategy
-//	//  Hidden Triple(Quad): Three candidates are found only in three Cells. These calls
-//	//     have other candidates which may safely be eliminated as candidates because
-//	//     the three unique candidate set "will" solve the three cells.
-//	public boolean strategy_set_hidden_triple()
-//	{
-//		int removed = 0;
-
-//		HIDDEN:
-//		{
-//			// We only need to work with those Cells that are undetermined (not solved)
-//			//  its a waste of time looking at stuff that is already solved
-//			ArrayList<Cell> setOfUndeterminedCells = getUndeterminedCellList();
-
-//			if ( show_undetermined )
-//			{ System.out.println("# Undetermined Cells: " + getCellNames(setOfUndeterminedCells)); }
-
-//			// No point in looking for triple's when there are less than four Cells
-//			// to compare!
-//			if ( setOfUndeterminedCells.size() < 4 ){ break HIDDEN; }
-
-//			// Map each candidate to the Cells that have it
-//			ArrayList<ArrayList<Cell>> mapOfVals2Cells = new ArrayList<ArrayList<Cell>>(9);
-
-//			for ( int i = 0 ; i < 9 ; i++ )
-//			{ mapOfVals2Cells.add(new ArrayList<Cell>(9)); }
-
-//			for ( Cell cell_undetermined : setOfUndeterminedCells )
-//			{
-//				for ( Integer candidate : cell_undetermined.getSet())
-//				{
-//					// Candidate of this cell
-//					mapOfVals2Cells.get(candidate-1).add(cell_undetermined);
-//				}
-//			}
-
-//			// We're looking for Hidden Triple's, they are seen as three candidates
-//			//   having the same set set of three Cells; the three candidates can't
-//			//   be found any where else so we can make these Cells A "Naked"
-//			//   triple by removing any other candidates safely because the candidate
-//			//   triple solved the three cell set.
-
-//			Iterator<ArrayList<Cell>> Ai = mapOfVals2Cells.iterator();
-//			int Apos = 0;
-
-//			while ( Ai.hasNext())
-//			{
-//				ArrayList<Cell> A = Ai.next(); Apos++;
-//				//	System.out.println("# " + Apos + ":" + getCellNames(A));
-
-//				Iterator<ArrayList<Cell>> Bi = mapOfVals2Cells.iterator();
-//				int Bpos = 0;
-
-//				// A bit of magic to avoid comparing the same candidate sets
-//				// Skip the combo's we've seen before moving Bi just past Ai
-//				for ( int skip = 0 ; skip < Apos && Bi.hasNext() ; skip++ )
-//				{ Bi.next(); Bpos++; }
-
-//				// We're now pointing at the first Cell past Ai or this is the end
-//				//  test each Bi with the current Ai if we're not at the end
-//				while ( Bi.hasNext())
-//				{
-//					ArrayList<Cell> B = Bi.next(); Bpos++;
-
-//					Iterator<ArrayList<Cell>> Ci = mapOfVals2Cells.iterator();
-//					int Cpos = 0;
-
-//					// A bit of magic to avoid comparing the same candidate sets
-//					for ( int skip = 0 ; skip < Bpos && Ci.hasNext() ; skip++ )
-//					{ Ci.next(); Cpos++ ; }
-
-//					while ( Ci.hasNext())
-//					{
-//						ArrayList<Cell> C = Ci.next(); Cpos++;
-
-//						// Candidate A is found in three cells &&
-//						// Candidate B is found in three cells &&
-//						// Candidate C is found in three cells &&
-//						// and its the same three cells
-//						if ( A.size() == 3 && B.size() == 3 && C.size() == 3 &&
-//								A.containsAll(B) && A.containsAll(C))
-//						{
-//							// Nothing to clean up?
-//							if ( A.get(0).getSize() == 3 &&
-//								 B.get(1).getSize() == 3 &&
-//								 C.get(2).getSize() == 3 )
-//							{ continue; }
-
-//							ArrayList<Integer> p = new ArrayList<Integer>(3);
-//							p.add(Apos); p.add(Bpos); p.add(Cpos);
-
-//							if ( DEBUG )
-//								System.out.println("# Strategy 2 - Hidden Triple (" +
-//									A.get(0).getName() + "," +
-//									A.get(1).getName() + "," +
-//									A.get(2).getName() +
-//									") " + p );
-
-//							// Clean up unwanted candidates from the hidden triple
-//							for ( Cell cell : A )
-//							{
-//								for ( Integer N : cell.getSet() )
-//								{
-//									if ( N == Apos || N == Bpos || N == Cpos ){ continue; }
-//									if ( cell.exclude(N)) { removed++; }
-//								}
-//							}
-//						}
-//					}
-//				}
-//			}
-//		}
-
-//		if ( removed > 0 && DEBUG )
-//			System.out.println("# Strategy 2 - Hidden Triple cleaned " + removed + " candidates");
-
-//		return removed > 0;
-//	}
-
-//	public boolean strategy_set_hidden_quad()
-//	{
-//		int removed = 0;
-
-//		HIDDEN:
-//		{
-//			// We only need to work with those Cells that are undetermined (not solved)
-//			//  its a waste of time looking at stuff that is already solved
-//			ArrayList<Cell> setOfUndeterminedCells = getUndeterminedCellList();
-
-//			if ( show_undetermined )
-//			{ System.out.println("# Undetermined Cells: " + getCellNames(setOfUndeterminedCells)); }
-
-//			// No point in looking for quad's when there are less than five Cells
-//			// to compare!
-//			if ( setOfUndeterminedCells.size() < 5 ) { break HIDDEN; }
-
-//			// Map each candidate to the Cells that have it
-//			ArrayList<ArrayList<Cell>> mapOfVals2Cells = new ArrayList<ArrayList<Cell>>(9);
-
-//			for ( int i = 0 ; i < 9 ; i++ )
-//			{ mapOfVals2Cells.add(new ArrayList<Cell>(9)); }
-
-//			for ( Cell cell_undetermined : setOfUndeterminedCells )
-//			{
-//				for ( Integer candidate : cell_undetermined.getSet())
-//				{
-//					// Candidate of this cell
-//					mapOfVals2Cells.get( candidate - 1 ).add( cell_undetermined );
-//				}
-//			}
-
-//			// We're looking for Hidden Quad'sple's, they are seen as four candidates
-//			//   having the same set set of four Cells; the quad candidates can't
-//			//   be found any where else so we can make these Cells A "Naked"
-//			//   quad by removing any other candidates safely because the candidate
-//			//   quad solves the quad cell set.
-
-//			Iterator<ArrayList<Cell>> Ai = mapOfVals2Cells.iterator();
-//			int Apos = 0;
-
-//			while ( Ai.hasNext())
-//			{
-//				ArrayList<Cell> A = Ai.next(); Apos++;
-//				//	System.out.println("# " + Apos + ":" + getCellNames(A));
-
-//				Iterator<ArrayList<Cell>> Bi = mapOfVals2Cells.iterator();
-//				int Bpos = 0;
-
-//				// A bit of magic to avoid comparing the same candidate sets
-//				// Skip the combo's we've seen before moving Bi just past Ai
-//				for ( int skip = 0 ; skip < Apos && Bi.hasNext() ; skip++ )
-//				{ Bi.next(); Bpos++; }
-
-//				// We're now pointing at the first Cell past Ai or this is the end
-//				//  test each Bi with the current Ai if we're not at the end
-//				while ( Bi.hasNext())
-//				{
-//					ArrayList<Cell> B = Bi.next(); Bpos++;
-
-//					Iterator<ArrayList<Cell>> Ci = mapOfVals2Cells.iterator();
-//					int Cpos = 0;
-
-//					// A bit of magic to avoid comparing the same candidate sets
-//					for ( int skip = 0 ; skip < Bpos && Ci.hasNext() ; skip++ )
-//					{ Ci.next(); Cpos++ ; }
-
-//					while ( Ci.hasNext())
-//					{
-//						ArrayList<Cell> C = Ci.next(); Cpos++;
-
-//						Iterator<ArrayList<Cell>> Di = mapOfVals2Cells.iterator();
-//						int Dpos = 0;
-
-//						// A bit of magic to avoid comparing the same candidate sets
-//						for ( int skip = 0 ; skip < Cpos && Di.hasNext() ; skip++ )
-//						{ Di.next(); Dpos++ ; }
-
-//						while ( Di.hasNext())
-//						{
-//							ArrayList<Cell> D = Di.next(); Dpos++;
-
-//							// Candidate A is found in four cells &&
-//							// Candidate B is found in four cells &&
-//							// Candidate C is found in four cells &&
-//							// Candidate D is found in four cells &&
-//							// and its the same four cells
-//							if ( A.size() == 4 && B.size() == 4 && C.size() == 4 && D.size() == 4 &&
-//									A.containsAll(B) && A.containsAll(C) && A.containsAll(D))
-//							{
-//								// Nothing to clean up?
-//								if (	A.get(0).getSize() == 4 &&
-//										B.get(1).getSize() == 4 &&
-//										C.get(2).getSize() == 4 &&
-//										D.get(3).getSize() == 4 )
-//								{ continue; }
-
-//								ArrayList<Integer> p = new ArrayList<Integer>(4);
-//								p.add(Apos); p.add(Bpos); p.add(Cpos); p.add(Dpos);
-
-//								if ( DEBUG )
-//									System.out.println("# Strategy 2 - Hidden Quad (" +
-//										A.get(0).getName() + "," +
-//										A.get(1).getName() + "," +
-//										A.get(2).getName() + "," +
-//										A.get(3).getName() +
-//										") " + p );
-
-//								// Clean up unwanted candidates from the hidden triple
-//								for ( Cell cell : A )
-//								{
-//									for ( Integer N : cell.getSet() )
-//									{
-//										if ( N == Apos || N == Bpos || N == Cpos || N == Dpos )
-//										{ continue; }
-//										if ( cell.exclude(N)) { removed++; }
-//									}
-//								}
-//							}
-//						}
-//					}
-//				}
-//			}
-//		}
-
-//		if ( removed > 0  && DEBUG )
-//			System.out.println("# Strategy 2 - Hidden Quad cleaned " + removed + " candidates");
-
-//		return removed > 0;
-//	}
 
 //	private ArrayList<String> getCellNames(ArrayList<Cell> list)
 //	{
@@ -799,6 +193,8 @@ class UnitModel implements iUnit
 //		strategy_set_hidden_pair();
 //		strategy_set_naked_triple();
 //		strategy_set_naked_quad();
+//	//	strategy_set_hidden_triple();   // never turn on in Java
+//	//	strategy_set_hidden_quad();     // never turn on in Java
 //	}
 
 //	public void reset()
@@ -806,18 +202,14 @@ class UnitModel implements iUnit
 //		for ( Cell cell : cells ) { cell.reset(); }
 //	}
 
-//	public String toString()
-//	{
-//		String s = "";
-//		Iterator<Cell> i = cells.iterator();
+    public toString () : string
+    {
+        let s : string = ""
 
-//		while ( i.hasNext())
-//		{
-//			s += i.next().toString2() + "\n";
-//		}
+        this.cells.forEach((c) => { s += c.toString2() + "\n" })
 
-//		return s;
-//	}
+        return s
+    }
 
 //	public String toStringII()
 //	{
@@ -912,6 +304,8 @@ class UnitModel implements iUnit
 
 //	public String toStringName() { return this.getCellNames(cells).toString(); }
 
+
+// MOVE INTO A TEST!!!!!!!!!!
 
 //	public static void main(String args[])
 //	{
@@ -1038,52 +432,7 @@ class UnitModel implements iUnit
 //		System.out.print(unit.toString());
 //	}
 
-	// Setup a cell with all its observers
-	// (used by the constructor)
-/*
-  private static setObservers ( idx: number, lst: Array<CellModel> ) : void
-  {
-    // Iterators are used so we don't try and observe ourself.
-    Cell observer = lst.get(idx);
-    Iterator<Cell> observable = lst.iterator();
-
-    while ( observable.hasNext())
-    {
-      Cell target = observable.next();
-
-      // Observe everyone but ourself
-      if ( target != observer)
-      {
-        observer.addObserver( target );
-      }
-    }
-  }
-*/
-
-//	public class CandidateMatch
-//	{
-//		public Cell				first;
-//		public ArrayList<Cell>	all;
-
-//		CandidateMatch(int size)
-//		{
-//			all = new ArrayList<Cell>(size);
-//		}
-
-//		public String toString()
-//		{
-//			String str = "(";
-//			boolean first = true;
-//			for ( Cell cell : all )
-//			{
-//				str += (first ? "" : "," ) + cell.getName();
-//				first = false;
-//			}
-//			str += ")";
-//			return str;
-//		}
-//	}
 }
 
-// vim: expandtab number tabstop=2
+// vim: expandtab number tabstop=4
 // END

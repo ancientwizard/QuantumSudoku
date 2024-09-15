@@ -9,7 +9,8 @@ class Observable implements iObservable
 {
     private observers: iObserver[] = [];
 
-    includeObserver ( observer: iObserver ): void {
+    includeObserver ( observer: iObserver ): void
+    {
 
       // We don't intend to observe ourself in this implementation
       //  The child class should implement this and the super.includeObserver()
@@ -21,12 +22,14 @@ class Observable implements iObservable
              this.observers.push(observer);
     }
 
-    excludeObserver ( observer: iObserver ): void {
+    excludeObserver ( observer: iObserver ): void
+    {
       if ( this.observers.includes(observer))
            this.observers = this.observers.filter( obs => obs !== observer );
     }
 
-    notifyObservers ( arg: iObservedState ): void {
+    notifyObservers ( arg: iObservedState ): void
+    {
       for ( const observer of this.observers )
           observer.update( this, arg );
     }
@@ -35,7 +38,7 @@ class Observable implements iObservable
     observers_as_array () : iObserver[]
     {
       return [...this.observers]
-      // is cryptic I happen to like
+      // is cryptic! I happen to like ...
       // return this.observers.filter( () => true )
     }
 

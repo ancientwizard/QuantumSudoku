@@ -6,7 +6,7 @@ import      { aStrategyBase     } from '@/js/abstract/aStrategyBase'
 export
 class StrategyUnique extends aStrategyBase
 {
-    protected applyStrategy ( unit: iUnit ) : boolean
+    public applyStrategy ( unit: iUnit ) : boolean
     {
         return false
     }

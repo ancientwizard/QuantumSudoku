@@ -6,7 +6,7 @@ import type { iUnit             } from '@/js/interface/iUnit'
 export
 abstract class aStrategyBase implements iStrategy
 {
-    private nextStrategy: iStrategy | null = null;
+    protected nextStrategy: aStrategyBase | null = null;
 
     public apply ( unit: iUnit ) : boolean
     {
@@ -15,12 +15,13 @@ abstract class aStrategyBase implements iStrategy
         //  ( perhaps ending early is better to help avoid deep
         //    recursive calls, if its even possible )
         const modified = this.applyStrategy(unit);
+
         return ( this.nextStrategy && this.nextStrategy.apply(unit)) || modified
     }
 
-    public setNext ( strategy: iStrategy ) : void
+    public setNext ( strategy: aStrategyBase ) : aStrategyBase
     {
-        this.nextStrategy = strategy;
+        return ( this.nextStrategy = strategy )
     }
 
     protected abstract applyStrategy ( unit: iUnit  ): boolean

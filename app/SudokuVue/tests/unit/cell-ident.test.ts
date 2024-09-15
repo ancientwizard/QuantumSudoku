@@ -1,23 +1,26 @@
 // cell-ident.test.ts
 
 import { describe, expect, test, beforeAll  } from '@jest/globals'
-import { CellIdent                          } from '@/js/model/CellIdent'
+import type { iCellIdentification           } from '@/js/interface/iCellIdentification'
+import      { CellIdent                     } from '@/js/model/CellIdent'
 
-function _p( x: number, y: number) : CellIdent { return CellIdent.factory(x,y); }
+function _p( x: number, y: number) : iCellIdentification { return CellIdent.factory(x,y); }
 
 describe('model/cell-ident (defaults)', () => {
-  let point : CellIdent
+
+  let point : iCellIdentification
 
   beforeAll(() => { point = _p(0,0); })
 
   test('A Point type',    () => expect(point).toBe(point))
   test('A Point x',       () => expect(point.x).toBe(0))
   test('A Point y',       () => expect(point.y).toBe(0))
-  test('A Point column',  () => expect(point.column).toBe(0))
+  test('A Point column',  () => expect(point.col).toBe(0))
   test('A Point row',     () => expect(point.row).toBe(0))
   test('A Point name',    () => expect(point.name).toBe('X0'))
-  test('A Point coord',   () => expect(point.coord).toBe('r0c0'))
-  test('A Point ourname', () => expect(point.ourname).toBe('N/A'))
+  test('A Point coord',   () => expect(point.coord).toBe('(0,0)'))
+  test('A Point label',   () => expect(point.label).toBe('N/A'))
+  test('A custom label',  () => expect(point.label='T2').toBe('T2'))
 })
 
 describe('model/cell-ident (X,Y)', () => {
@@ -27,9 +30,10 @@ describe('model/cell-ident (X,Y)', () => {
   {
     test('X', () => expect(_p(x,y).x).toBe(x))
     test('Y', () => expect(_p(x,y).y).toBe(y))
-    test('C', () => expect(_p(x,y).column).toBe(x))
+    test('C', () => expect(_p(x,y).col).toBe(x))
     test('R', () => expect(_p(x,y).row).toBe(y))
-    test('P', () => expect(_p(x,y).coord).toBe('r'+y+'c'+x))
+    test('P', () => expect(_p(x,y).coord).toBe('('+x+','+y+')'))
+    test('L', () => expect(_p(x,y).label).toBe('N/A'))
   }
 })
 

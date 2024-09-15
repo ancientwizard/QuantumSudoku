@@ -6,30 +6,33 @@
 //    puzzle solving & building
 //
 
-import type { iObserver     } from '@/js/interface/iObserver'
-import      { Subject       } from '@/js/model/Observable'
-import      { CellValue     } from '@/js/model/CellValue'
-import      { CellIdent     } from '@/js/model/CellIdent'
+import type { iObserver           } from '@/js/interface/iObserver'
+import type { iCellIdentification } from '@/js/interface/iCellIdentification'
+import      { Subject             } from '@/js/model/Observable'
+import      { CellValue           } from '@/js/model/CellValue'
+import      { CellIdent           } from '@/js/model/CellIdent'
 
 export
 class CellModel extends Subject implements iObserver
 {
   // Identification
-  private id: CellIdent
+  private id: iCellIdentification
 
   // State
   private cvalue: CellValue
   private candidates: Array<CellValue>
 
   // Control
-  public autosolve = false
+  public autosolve : boolean = false
 
-  static factory ( x: number, y: number )
+  static factory ( x: number = 0, y: number = 0, solve: boolean = false )
   {
-    return new CellModel(CellIdent.factory(x,y))
+    let cell = new CellModel(CellIdent.factory(x,y))
+    cell.autosolve = solve
+    return cell
   }
 
-  private constructor ( location: CellIdent )
+  private constructor ( location: iCellIdentification )
   {
     super()
     this.id = location
@@ -68,22 +71,32 @@ class CellModel extends Subject implements iObserver
 
   exclude ( value: CellValue ) : boolean
   {
-    const changed =
-        // We must be un-known!
-           this.isUnknown
-        && this.candidates.length > 1
-        // And the value is a valid candidate
-        && this.candidates.filter( item => item === value ).length == 1;
+    let changed : boolean = false
 
-    if ( changed )
+    CANDIDATE:
     {
-      this.candidates =
-      this.candidates.filter( item => item !== value )
+      // Our FINAL value is known
+      if ( this.isKnown ) break CANDIDATE
+
+      // And the value is a member candidate
+      // ( I.E. still a value candidate we've not already eliminated )
+      let is_candidate : boolean = this.candidates.filter( mbr_value => mbr_value === value ).length == 1;
+
+      // Remove this one candidate, leaving others
+      if ( this.candidates.length > 1 )
+      {
+        changed = true
+        this.candidates =
+        this.candidates.filter( item => item !== value )
+        break CANDIDATE
+      }
 
       // Solution Strategy:
       //   Naked Single detection
-      if ( this.autosolve && this.candidates.length == 1 )
-        this.is( this.candidates[0] )
+      if ( this.autosolve && is_candidate )
+      {
+        changed = this.is( this.candidates[0] )
+      }
     }
 
     return changed
@@ -115,6 +128,20 @@ class CellModel extends Subject implements iObserver
     this.candidates.forEach( item => _z.push( item.value ))
     return _z
   }
+
+  // TO BE RETIRED
+  //   OR better suited on an adaptor as a TEXT formatter???
+  public toString2 () : string
+  {
+    let first : boolean = true
+    let s : string = '# ' + this.name + ': ' +  this.value + ' [ '
+
+    s += this.candidates.map( c => c.value ).join()
+    s += this.candidates.length ? ' ]' : ']'
+
+    return s;
+  }
+
 }
 
 // vim: expandtab number tabstop=2

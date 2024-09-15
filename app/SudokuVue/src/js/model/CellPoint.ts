@@ -1,30 +1,28 @@
 // Sudoku Cell Point
 
-enum CELLNAMES { 'X', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I' }
-
 export
-class CellPoint {
+class CellPoint
+{
 
-  #x: number
-  #y: number
+  private COL: number
+  private ROW: number
 
-  constructor ( x: number, y: number )
+  constructor ( col: number, row: number )
   {
-    if ( x > 9 || x < 0 || y > 9 || y < 0 )
-      throw new Error(`Invalid Sudoku location [ ${x}, ${y} ]`)
-    if ( x == 0 && y != 0 || y == 0 && x != 0 )
-      throw new Error(`Invalid Sudoku null-location [ ${x}, ${y} ]`)
+    if ( col  > 9 || col < 0 || row > 9 || row < 0 )
+      throw new Error(`Invalid Sudoku location [ ${col}, ${row} ]`)
+    if ( col == 0 && row != 0 || row == 0 && col != 0 )
+      throw new Error(`Invalid Sudoku null-location [ ${col}, ${row} ]`)
 
-    this.#x = x
-    this.#y = y
+    this.COL = col
+    this.ROW = row
   }
 
-  get x      () { return this.#x }
-  get y      () { return this.#y }
-  get column () { return this.#x }
-  get row    () { return this.#y }
-  get name   () { return CELLNAMES[this.#x] + this.#y }
-  get coord  () { return 'r' + this.#y + 'c' + this.#x }
+  get x      () : number { return this.COL }
+  get y      () : number { return this.ROW }
+  get column () : number { return this.COL }
+  get row    () : number { return this.ROW }
+  get coord  () : string { return '(' + this.COL + ',' + this.ROW + ')' }
 }
 
 // vim: expandtab number tabstop=2 shiftwidth=4

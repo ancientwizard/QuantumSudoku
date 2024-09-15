@@ -1,36 +1,34 @@
-// Sudoku Cell Ident
+// Sudoku Cell Identification
 
-import { CellPoint          } from '@/js/model/CellPoint'
+import type { iCellIdentification } from '@/js/interface/iCellIdentification'
+import      { CellPoint           } from '@/js/model/CellPoint'
 
-// Smells like a layer that provides no value
-// Unless I migrate the naming up from CellPoint;
-// that may have been what I intended!
+enum CELLNAMES { 'X', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I' }
 
 export
-class CellIdent {
+class CellIdent implements iCellIdentification
+{
 
-  static factory ( x: number, y: number )
+  static factory ( x: number, y: number, label: string = 'N/A' ) : iCellIdentification
   {
-    const id = new CellIdent( 'N/A', new CellPoint(x,y))
-    return id
+    return new CellIdent( label, new CellPoint(x,y))
   }
 
-  #ourname: string
-  #point: CellPoint
+  public  label: string
+  private point: CellPoint
 
-  private constructor ( name: string, location: CellPoint )
+  private constructor ( label: string, location: CellPoint )
   {
-    this.#ourname = name
-    this.#point   = location
+    this.label = label
+    this.point = location
   }
 
-  get       x () { return this.#point.x       }
-  get       y () { return this.#point.y       }
-  get  column () { return this.#point.column  }
-  get     row () { return this.#point.row     }
-  get   coord () { return this.#point.coord   }
-  get    name () { return this.#point.name    }
-  get ourname () { return this.#ourname       }
+  get     x () { return this.point.x       }
+  get     y () { return this.point.y       }
+  get   col () { return this.point.column  }
+  get   row () { return this.point.row     }
+  get coord () { return this.point.coord   }
+  get  name () { return CELLNAMES[this.point.column] + this.point.row }
 }
 
 // vim: expandtab number tabstop=2 shiftwidth=4

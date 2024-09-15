@@ -34,7 +34,7 @@ class TestObservable extends Subject implements iObserver
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   update ( subject: Subject, arg: iObservedState ) : void
   {
-    this.hit++
+    this.hit++; // console.log(subject, arg, 'has-hit-me', this)
   }
 }
 

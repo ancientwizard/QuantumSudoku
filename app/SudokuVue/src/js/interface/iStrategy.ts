@@ -8,11 +8,11 @@ export
 interface iStrategy
 {
     public apply ( unit: iUnit  ) : boolean;
-    public setNext ( strategy: iStrategy ) : void;
+    public setNext ( strategy: iStrategy ) : iStrategy;
 
-// See abstract class StrategyBase
-//  protected applyStrategy ( unit: iUnit ) : boolean;
+// See abstract class aStrategyBase???
+//  protected abstract applyStrategy ( unit: iUnit ) : boolean;
 }
 
-// vim: expandtab number tabstop=2
+// vim: expandtab number tabstop=4
 // END

@@ -26,7 +26,8 @@ class CellValue
 
   get value () : string { return this.value_str }
 
-  static get arrayFactory () : Array<CellValue> {
+  static get arrayFactory () : Array<CellValue>
+  {
     return [
           CellValue.ONE,   CellValue.TWO,   CellValue.THREE
         , CellValue.FOUR,  CellValue.FIVE,  CellValue.SIX

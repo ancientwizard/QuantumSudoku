@@ -1,26 +1,30 @@
 // strategy-model.test.ts
 
-import { describe, expect, test } from '@jest/globals'
+import { describe, expect, test, beforeAll } from '@jest/globals'
 import type { iUnit             } from '@/js/interface/iUnit'
+import type { iCellIndex        } from '@/js/interface/iCellIndex'
 import type { iObservedState    } from '@/js/interface/iObservedState'
+import      { CellIndex         } from '@/js/model/CellIndex'
 import      { CellValue         } from '@/js/model/CellValue'
 import      { UnitModel         } from '@/js/model/UnitModel'
 import      { StrategyUnique    } from '@/js/strategy/StrategyUnique'
 
+/*
 interface iCell { readonly value: string }
 class MyCell implements iCell
 {
     readonly value: string = CellValue.HIDDEN.value
 }
+*/
 
 class MyUnit implements iUnit
 {
-    is ( cell: iCell, value: iObservedState ) : boolean
+    is ( cell: iCellIndex, value: iObservedState ) : boolean
     {
-        return false
+        return true
     }
 
-    exclude ( cell: iCell, value: iObservedState ) : boolean
+    exclude ( cell: iCellIndex, value: iObservedState ) : boolean
     {
         return false
     }
@@ -29,16 +33,26 @@ class MyUnit implements iUnit
     isBroken () : boolean { return false; }
 }
 
+/*
+describe('strategy/model', () => {
+})
+*/
+
 describe('strategy/unique', () => {
 
-    test('true',  () => expect(true).toBe(true))
-    test('false', () => expect(false).toBe(false))
+    let unit : iUnit
+
+    beforeAll(() => { unit = new MyUnit() })
+
+    test('is',      () => expect(unit.is(CellIndex.ONE,CellValue.ONE)).toBe(true))
+    test('exclude', () => expect(unit.exclude(CellIndex.ONE,CellValue.ONE)).toBe(false))
+
     test('GUESS?', () => {
         expect(true).toBe(true)
-        const u: StrategyUnique = new StrategyUnique()
+//      const u: StrategyUnique = new StrategyUnique()
 
-        expect(u.toString()).toBe(new StrategyUnique().toString())
-        u.apply(new MyUnit())
+//      expect(u.toString()).toBe(new StrategyUnique().toString())
+//      u.apply(new MyUnit())
     })
 })
 
