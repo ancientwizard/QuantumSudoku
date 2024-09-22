@@ -2,18 +2,20 @@
 
 import { describe, expect, test } from '@jest/globals'
 import type { iUnit             } from '@/js/interface/iUnit'
-import type { iStrategy         } from '@/js/interface/iStrategy'
+//port type { iStrategy         } from '@/js/interface/iStrategy'
 import type { iCellIndex        } from '@/js/interface/iCellIndex'
 import type { iObservedState    } from '@/js/interface/iObservedState'
 import      { aStrategyBase     } from '@/js/abstract/aStrategyBase'
 
 class MyUnit implements iUnit
 {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     is ( cell: iCellIndex, value: iObservedState ) : boolean
     {
         return false
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     exclude ( cell: iCellIndex, value: iObservedState ) : boolean
     {
         return false
@@ -34,7 +36,7 @@ class MyStrategy extends aStrategyBase
 {
     public label : string
 
-    constructor ( label: string = 'N/A/' )
+    constructor ( label = 'N/A/' )
     {
         super()
         this.label = label
@@ -50,9 +52,9 @@ describe('strategy/base', () => {
 
     test('place-holder', () => expect(true).toBe(true))
 
-    function _mk_strategy_set ( chaincount: number = 1 ) : MyStrategy
+    function _mk_strategy_set ( chaincount = 1 ) : MyStrategy
     {
-        let _head : MyStrategy = new MyStrategy('A1')
+        const _head : MyStrategy = new MyStrategy('A1')
         let _tail : MyStrategy = _head
 
         for ( let i = 1 ; i < chaincount ; i ++ )

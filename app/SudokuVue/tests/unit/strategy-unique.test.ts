@@ -1,20 +1,18 @@
-// strategy-model.test.ts
+// strategy-unique.test.ts
 
-import { describe, expect, test, beforeAll, beforeEach } from '@jest/globals'
-import type { iUnit             } from '@/js/interface/iUnit'
-import type { iCellIndex        } from '@/js/interface/iCellIndex'
-import type { iObservedState    } from '@/js/interface/iObservedState'
-import      { CellIndex         } from '@/js/model/CellIndex'
-import      { CellValue         } from '@/js/model/CellValue'
-import      { CellModel         } from '@/js/model/CellModel'
-import      { UnitModel         } from '@/js/model/UnitModel'
-import      { StrategyUnique    } from '@/js/strategy/StrategyUnique'
+import { describe, expect, test, beforeEach } from '@jest/globals'
+import { CellIndex          } from '@/js/model/CellIndex'
+import { CellValue          } from '@/js/model/CellValue'
+import { CellModel          } from '@/js/model/CellModel'
+import { UnitModel          } from '@/js/model/UnitModel'
+import { StrategyLogger     } from '@/js/strategy/StrategyLogger'
+import { StrategyUnique     } from '@/js/strategy/StrategyUnique'
 
 function mk_cells () : Array<CellModel>
 {
-  let cell_set : Array<CellModel> = []
+  const cell_set : Array<CellModel> = []
 
-  for ( var i = 1 ; i <= 9 ; i++ )
+  for ( let i = 1 ; i <= 9 ; i++ )
       cell_set.push(CellModel.factory(1,i,true))
 
   return cell_set
@@ -25,145 +23,110 @@ function mk_unit () : UnitModel
   return new UnitModel(mk_cells())
 }
 
+
 describe('strategy/unique', () => {
 
     let unit : UnitModel
 
-    beforeAll(() => { unit = mk_unit() })
+    beforeEach(() => { unit = mk_unit() })
 
-    test('is',      () => expect(unit.is(CellIndex.ONE,CellValue.ONE)).toBe(true))
-    test('exclude', () => expect(unit.exclude(CellIndex.ONE,CellValue.ONE)).toBe(false))
+    test('unique-cell', () => {
 
-    test('exclude-unique', () => {
+        expect(unit.isSolved()).toBe(false)
+        expect(unit.toStringII()).toBe('? ? ? ? ? ? ? ? ?')
 
-        let members : Array<CellModel> = mk_cells()
+        const strategy = new StrategyUnique(new StrategyLogger())
 
-        // console.log(members)
+        // LEAVE Cell.SIX as the only cell having FIVE as a possible/candidate value
+        //  and solve for it
+        expect(unit.exclude(CellIndex.ONE,      CellValue.FIVE)).toBe(true)
+        expect(unit.exclude(CellIndex.TWO,      CellValue.FIVE)).toBe(true)
+        expect(unit.exclude(CellIndex.THREE,    CellValue.FIVE)).toBe(true)
+        expect(unit.exclude(CellIndex.FOUR,     CellValue.FIVE)).toBe(true)
+        expect(unit.exclude(CellIndex.FIVE,     CellValue.FIVE)).toBe(true)
+        expect(unit.exclude(CellIndex.SEVEN,    CellValue.FIVE)).toBe(true)
+        expect(unit.exclude(CellIndex.EIGHT,    CellValue.FIVE)).toBe(true)
+        expect(unit.exclude(CellIndex.NINE,     CellValue.FIVE)).toBe(true)
 
-        unit = new UnitModel(members)
+        expect(strategy.apply( unit )).toBe(true)
+        expect(unit.as_cell_array[CellIndex.SIX.index].isKnown).toBe(true)
+        expect(unit.toStringII()).toBe('? ? ? ? ? 5 ? ? ?')
 
-        expect(members.length).toBe(9)
-        expect(unit.getCells().length).toBe(9)
-        members.forEach( m => { expect(m.autosolve).toBe(true); expect(m.observers_as_array().length).toBe(8) })
+        // LEAVE Cell's TWO & SEVEN with a unique value (EIGHT,THREE) respectively
+        //  and solve for it
+        expect(unit.exclude(CellIndex.ONE,      CellValue.EIGHT)).toBe(true)
+        expect(unit.exclude(CellIndex.ONE,      CellValue.THREE)).toBe(true)
+        expect(unit.exclude(CellIndex.TWO,      CellValue.THREE)).toBe(true)
+        expect(unit.exclude(CellIndex.THREE,    CellValue.EIGHT)).toBe(true)
+        expect(unit.exclude(CellIndex.THREE,    CellValue.THREE)).toBe(true)
+        expect(unit.exclude(CellIndex.FOUR,     CellValue.EIGHT)).toBe(true)
+        expect(unit.exclude(CellIndex.FOUR,     CellValue.THREE)).toBe(true)
+        expect(unit.exclude(CellIndex.FIVE,     CellValue.EIGHT)).toBe(true)
+        expect(unit.exclude(CellIndex.FIVE,     CellValue.THREE)).toBe(true)
+        expect(unit.exclude(CellIndex.SEVEN,    CellValue.EIGHT)).toBe(true)
+        expect(unit.exclude(CellIndex.EIGHT,    CellValue.EIGHT)).toBe(true)
+        expect(unit.exclude(CellIndex.EIGHT,    CellValue.THREE)).toBe(true)
+        expect(unit.exclude(CellIndex.NINE,     CellValue.EIGHT)).toBe(true)
+        expect(unit.exclude(CellIndex.NINE,     CellValue.THREE)).toBe(true)
 
-        expect(unit.is(CellIndex.ONE,CellValue.FIVE)).toBe(true)
+        expect(strategy.apply( unit )).toBe(true)
+        expect(unit.as_cell_array[CellIndex.TWO.index].isKnown).toBe(true)
+        expect(unit.as_cell_array[CellIndex.SIX.index].isKnown).toBe(true)
+        expect(unit.toStringII()).toBe('? 8 ? ? ? 5 3 ? ?')
 
-    //  console.log(unit.toString());
+        // LEAVE Cell's THREE, FIVE, NINE as unique of (SEVEN,SIX,FOUR) respectively
+        //  and solve for it
+        expect(unit.exclude(CellIndex.ONE,      CellValue.FOUR)).toBe(true)
+        expect(unit.exclude(CellIndex.ONE,      CellValue.SIX)).toBe(true)
+        expect(unit.exclude(CellIndex.ONE,      CellValue.SEVEN)).toBe(true)
+        expect(unit.exclude(CellIndex.FOUR,     CellValue.FOUR)).toBe(true)
+        expect(unit.exclude(CellIndex.FOUR,     CellValue.SIX)).toBe(true)
+        expect(unit.exclude(CellIndex.FOUR,     CellValue.SEVEN)).toBe(true)
+        expect(unit.exclude(CellIndex.EIGHT,    CellValue.FOUR)).toBe(true)
+        expect(unit.exclude(CellIndex.EIGHT,    CellValue.SIX)).toBe(true)
+        expect(unit.exclude(CellIndex.EIGHT,    CellValue.SEVEN)).toBe(true)
+        expect(unit.exclude(CellIndex.THREE,    CellValue.FOUR)).toBe(true)
+        expect(unit.exclude(CellIndex.THREE,    CellValue.SIX)).toBe(true)
+        expect(unit.exclude(CellIndex.FIVE,     CellValue.FOUR)).toBe(true)
+        expect(unit.exclude(CellIndex.FIVE,     CellValue.SEVEN)).toBe(true)
+        expect(unit.exclude(CellIndex.NINE,     CellValue.SIX)).toBe(true)
+        expect(unit.exclude(CellIndex.NINE,     CellValue.SEVEN)).toBe(true)
 
-        expect(unit.is(CellIndex.FOUR,  CellValue.EIGHT)).toBe(true)
-        expect(unit.is(CellIndex.NINE,  CellValue.ONE)).toBe(true)
-        expect(unit.is(CellIndex.EIGHT, CellValue.THREE)).toBe(true)
-        expect(unit.is(CellIndex.SIX,   CellValue.NINE)).toBe(true)
-        expect(unit.is(CellIndex.TWO,   CellValue.SIX)).toBe(true)
-        expect(unit.is(CellIndex.SEVEN, CellValue.FOUR)).toBe(true)
-        expect(unit.is(CellIndex.FIVE,  CellValue.SEVEN)).toBe(true)
+        expect(strategy.apply( unit )).toBe(true)
+        expect(unit.as_cell_array[CellIndex.THREE.index].isKnown).toBe(true)
+        expect(unit.as_cell_array[CellIndex.FIVE.index].isKnown).toBe(true)
+        expect(unit.as_cell_array[CellIndex.NINE.index].isKnown).toBe(true)
+        expect(unit.toStringII()).toBe('? 8 7 ? 6 5 3 ? 4')
 
-   //   console.log(unit.toString());
-   //   console.log(unit.toStringII());
-        expect(unit.toStringII()).toBe('5 6 2 8 7 9 4 3 1')
+        // console.log(unit.toString())
+
+        unit.reset()
+        expect(unit.isSolved()).toBe(false)
+        expect(unit.toStringII()).toBe('? ? ? ? ? ? ? ? ?')
     })
 
-        // tell strategy(s) to output to console
-        //  but its no longer in unit. we'll think about adding to strategy....
-    //  unit.showUndetermined();
+    test('unique-cell[edges]', () => {
 
-    //  c = members[1];
-    //  console.log('# Observers : ' + c.length ); // Odd unexpected length (expected+1)
-    //  console.log('# Observers : ' + c.observers_as_array().length)
-    //  console.log(c.observers_as_array().filter( o => o === c ))
+        expect(unit.isSolved()).toBe(false)
+        expect(unit.toStringII()).toBe('? ? ? ? ? ? ? ? ?')
 
-//		// Naked pair
-//		unit.reset();
-//		unit.is(9, 9);
-//	//	System.out.print(unit.toString());
-//	//	System.out.println(c.toString2());
+        const strategy = new StrategyUnique(new StrategyLogger())
 
-//		for ( int i = 1 ; i < 7 ; i++ )
-//		{
-//			unit.exclude(4, i);
-//			unit.exclude(5, i);
-//		}
+        unit.as_cell_array.forEach( cell => {
+            cell.name != 'A1' && expect(cell.exclude(CellValue.ONE )).toBe(true)
+            cell.name != 'A5' && expect(cell.exclude(CellValue.FIVE)).toBe(true)
+            cell.name != 'A9' && expect(cell.exclude(CellValue.NINE)).toBe(true)
+        })
 
-//	//	System.out.print(unit.toString());
-//		unit.strategy_set_naked_pair();
-//	//	System.out.print(unit.toString());
+        expect(strategy.apply( unit )).toBe(true)
+        expect(unit.as_cell_array[CellIndex.ONE.index ].isKnown).toBe(true)
+        expect(unit.as_cell_array[CellIndex.FIVE.index].isKnown).toBe(true)
+        expect(unit.as_cell_array[CellIndex.NINE.index].isKnown).toBe(true)
 
-//		// Hidden Pair
-//	//	System.out.println("# ---------------------");
-//	//	System.out.println("# strategy_set_hidden_pair()");
-
-//		unit.exclude(3, 3); unit.exclude(3, 4);
-//		unit.exclude(6, 3); unit.exclude(6, 4);
-//		unit.exclude(7, 3); unit.exclude(7, 4);
-//		unit.exclude(8, 3); unit.exclude(8, 4);
-
-//	//	System.out.print(unit.toString());
-//	//	System.out.print("# unit:" + unit.toStringII());
-//		unit.strategy_set_hidden_pair();
-//	//	System.out.print(unit.toString());
-//	//	System.out.print("# unit:" + unit.toStringII());
-
-//		// Unique
-//	//	System.out.println("# ---------------------");
-//	//	System.out.println("# strategy_unique()");
-//		unit.exclude(6, 1);
-//		unit.exclude(7, 1);
-//		unit.exclude(8, 1);
-//	//	System.out.print(unit.toString());
-//	//	System.out.print("# unit:" + unit.toStringII());
-//		unit.strategy_unique();
-//	//	System.out.println("# ---------------------");
-//	//	System.out.print(unit.toString());
-//	//	System.out.print("# unit:" + unit.toStringII());
-
-//		unit.reset();
-//		for ( int x = 1 ; x < 10 ; x+=2 )
-//		{
-//			int cnt = 4;
-//			for ( Cell cell : unit.getCells())
-//			{
-//				cell.exclude(x);
-//				cnt--;
-//				if ( cnt < 1 ) { break; }
-//			}
-//		}
-//		unit.strategy_set_naked_quad();
-//	//	System.out.print(unit.toString());
-
-//		int cnt = 7;
-//		for ( Cell cell : unit.getCells())
-//		{
-//			cnt--;
-//			if ( cnt > 0 ){ continue; }
-//			cell.exclude(1);
-//			cell.exclude(6);
-//			cell.exclude(9);
-//		}
-//	//	System.out.print(unit.toString());
-//		unit.strategy_set_naked_triple();
-//	//	System.out.print(unit.toString());
-
-//		// Hidden Tripple
-//		unit.reset();
-//		for ( int i=1 ; i < 7 ; i++ )
-//		{
-//			unit.exclude(i, 4);
-//			unit.exclude(i, 5);
-//			unit.exclude(i, 6);
-//		}
-//		unit.strategy_set_hidden_triple();
-
-//		// Hidden Quad
-//		for ( int i=1 ; i < 3 ; i++ )
-//		{
-//			unit.exclude(i, 2);
-//			unit.exclude(i, 3);
-//			unit.exclude(i, 7);
-//			unit.exclude(i, 8);
-//		}
-//		unit.strategy_set_hidden_quad();
-
-//		System.out.print(unit.toString());
+        unit.reset()
+        expect(unit.isSolved()).toBe(false)
+        expect(unit.toStringII()).toBe('? ? ? ? ? ? ? ? ?')
+    })
 })
 
 // vim: expandtab number tabstop=4

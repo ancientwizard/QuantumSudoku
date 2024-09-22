@@ -11,8 +11,6 @@ import type { CellModel     } from '@/js/model/CellModel'
 export
 class UnitModel implements iUnit
 {
-    static DEBUG = false;
-
     // The Unit is the second logical layer in our implementation of the
     // Sudoku Solver. The Sudoku puzzle is made up of nine (9) 3x3 grids
     // we'll call a block as well as nine (9) columns and nine (9) rows.
@@ -82,42 +80,38 @@ class UnitModel implements iUnit
 
     // Protected variables (Block etc extends us)
     protected cells: Array<CellModel>
-    protected show_undetermined: boolean
+//  protected show_undetermined: boolean
 
-    constructor ( content: Array<CellModel> )
+    constructor ( member_cells: Array<CellModel> )
     {
-    //  console.log(CellModel.factory(0,0))
-        this.cells = content
-        this.show_undetermined = false
+        this.cells = member_cells
+    //  this.show_undetermined = false
 
-        if ( content.length != 9 )
+        if ( member_cells.length != 9 )
         {
             throw new Error("Content size incorrect");
         }
 
-        UnitModel.setObservers( content );
+        UnitModel.setObservers( member_cells );
     }
 
-	// Configure cell "unit members" with its observers
-	// (used by the constructor)
+    // Configure cell "unit members" with its observers
+    // (used by the constructor)
 
-    private static setObservers ( lst: Array<CellModel> ) : void
+    private static setObservers ( member_cells: Array<CellModel> ) : void
     {
-        lst.forEach( subject => {
-            lst.forEach( observer => {
+        member_cells.forEach( subject => {
+            member_cells.forEach( observer => {
                 subject != observer && subject.includeObserver( observer );
             })
         })
     }
 
 //  public final ArrayList<Cell> getCells() { return cells; }
-    public getCells () : Array<CellModel> { return [...this.cells] }
-
-//  public void showUndetermined() { show_undetermined = true; }
-//  public void hideUndetermined() { show_undetermined = false; }
+    get as_cell_array () : Array<CellModel> { return [...this.cells] }
 
 
-	// Exclude
+    // Exclude
     exclude ( cell: CellIndex, candidate: CellValue ) : boolean
     {
         return this.cells[ cell.index ].exclude( candidate );
@@ -139,74 +133,59 @@ class UnitModel implements iUnit
 
     isBroken () : boolean
     {
-        var broken : boolean = false;
+        const broken  = false;
 
         // I performed this CHECK IN Java; however
         //  this implementation *may* make this unnecessary TBD OR not!
 
-//		ArrayList<ArrayList<Cell>> distribution = new ArrayList<ArrayList<Cell>>(9);
+//ArrayList<ArrayList<Cell>> distribution = new ArrayList<ArrayList<Cell>>(9);
 
-//		for ( int i = 1 ; i < 10 ; i++ ) { distribution.add(new ArrayList<Cell>(1)); }
+//for ( int i = 1 ; i < 10 ; i++ ) { distribution.add(new ArrayList<Cell>(1)); }
 
-//		for ( Cell cell : cells )
-//		{
-//			if ( cell.isUndetermined() ) { continue; }
-//			distribution.get( cell.getValue() - 1 ).add( cell );
-//		}
+//for ( Cell cell : cells )
+//{
+//if ( cell.isUndetermined() ) { continue; }
+//distribution.get( cell.getValue() - 1 ).add( cell );
+//}
 
-//		for ( ArrayList<Cell> val : distribution )
-//		{
-//			if ( val.size() > 1 )
-//			{
-//				broken = true;
-//				for ( Cell cell : val )
-//				{
-//					cell.showError();
-//				}
-//			}
-//		}
+//for ( ArrayList<Cell> val : distribution )
+//{
+//if ( val.size() > 1 )
+//{
+//broken = true;
+//for ( Cell cell : val )
+//{
+//cell.showError();
+//}
+//}
+//}
 
-//		if ( broken )
-//			System.out.println(this.toStringII());
+//if ( broken )
+//System.out.println(this.toStringII());
 
         return broken;
     }
 
 
-//	private ArrayList<String> getCellNames(ArrayList<Cell> list)
-//	{
-//		ArrayList<String> names = new ArrayList<String>(list.size());
+//public void solve()
+//{
+//strategy_unique();
+//strategy_set_naked_pair();
+//strategy_set_hidden_pair();
+//strategy_set_naked_triple();
+//strategy_set_naked_quad();
+////strategy_set_hidden_triple();   // never turn on in Java
+////strategy_set_hidden_quad();     // never turn on in Java
+//}
 
-//		for ( Cell cell : list){ names.add(cell.getName()); }
-//		return names;
-//	}
-
-//	private ArrayList<Cell> getUndeterminedCellList()
-//	{
-//		ArrayList<Cell> set = new ArrayList<Cell>(9); // Nine Possible
-//		for ( Cell cell : cells ) { if (cell.isUndetermined()) { set.add(cell); }}
-//		return set;
-//	}
-
-//	public void solve()
-//	{
-//		strategy_unique();
-//		strategy_set_naked_pair();
-//		strategy_set_hidden_pair();
-//		strategy_set_naked_triple();
-//		strategy_set_naked_quad();
-//	//	strategy_set_hidden_triple();   // never turn on in Java
-//	//	strategy_set_hidden_quad();     // never turn on in Java
-//	}
-
-//	public void reset()
-//	{
-//		for ( Cell cell : cells ) { cell.reset(); }
-//	}
+    public reset() : void
+    {
+        this.cells.forEach( c  => { c.reset() })
+    }
 
     public toString () : string
     {
-        let s : string = ""
+        let s  = ""
 
         this.cells.forEach((c) => { s += c.toString2() + "\n" })
 
@@ -215,97 +194,86 @@ class UnitModel implements iUnit
 
     public toStringII () : string
     {
-//      let s : string = ''
-
-//      s += this.cells.map( m => m.value ).join(' ')
-//		while ( i.hasNext())
-//		{
-//			Cell c = i.next();
-//			s += c.isKnown() ? " " + Integer.toString(c.getValue()) : " ?";
-//		}
-//      s += "\n";
-
-//      return s;
         return this.cells.map( m => m.value ).join(' ')
     }
 
-//	public String toStringIII()
-//	{
-//		String s = "";
+//  public String toStringIII()
+//  {
+//  String s = "";
 
-//		for ( Cell c : cells)
-//		{
-//			s += "|  " + (c.isKnown() ? Integer.toString(c.getValue()) : " " ) + "  ";
-//		}
+//  for ( Cell c : cells)
+//  {
+//  s += "|  " + (c.isKnown() ? Integer.toString(c.getValue()) : " " ) + "  ";
+//  }
 
-//		return s + "|\n";
-//	}
+//  return s + "|\n";
+//  }
 
-//	public String toStringLine()
-//	{
-//		char [][] map = {
-//				{' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '}
-//			,	{' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '}
-//			,	{' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '}
-//		};
+//  public String toStringLine()
+//  {
+//  char [][] map = {
+//  {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '}
+//  ,   {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '}
+//  ,   {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '}
+//  };
 
-//		int x = 1, y = 1;
+//  int x = 1, y = 1;
 
-//		for ( Cell c : cells)
-//		{
-//			if ( c.isKnown() )
-//			{
-//			//	System.out.println("# known - " + c.toString2());
-//				map[y][x-1] = '[';
-//				map[y][x  ] = (""+c.getValue()).charAt(0);
-//				map[y][x+1] = ']';
-//			}
-//			else
-//			{
-//				for ( Integer I : c.getSet() )
-//				{
-//					switch ( I )
-//					{
-//					case 1: map[y-1][x-1] = '1'; break;
-//					case 2: map[y-1][x  ] = '2'; break;
-//					case 3: map[y-1][x+1] = '3'; break;
-//					case 4: map[y  ][x-1] = '4'; break;
-//					case 5: map[y  ][x  ] = '5'; break;
-//					case 6: map[y  ][x+1] = '6'; break;
-//					case 7: map[y+1][x-1] = '7'; break;
-//					case 8: map[y+1][x  ] = '8'; break;
-//					case 9: map[y+1][x+1] = '9';
-//					}
-//				}
-//			}
+//  for ( Cell c : cells)
+//  {
+//  if ( c.isKnown() )
+//  {
+//  //  System.out.println("# known - " + c.toString2());
+//  map[y][x-1] = '[';
+//  map[y][x  ] = (""+c.getValue()).charAt(0);
+//  map[y][x+1] = ']';
+//  }
+//  else
+//  {
+//  for ( Integer I : c.getSet() )
+//  {
+//  switch ( I )
+//  {
+//  case 1: map[y-1][x-1] = '1'; break;
+//  case 2: map[y-1][x  ] = '2'; break;
+//  case 3: map[y-1][x+1] = '3'; break;
+//  case 4: map[y  ][x-1] = '4'; break;
+//  case 5: map[y  ][x  ] = '5'; break;
+//  case 6: map[y  ][x+1] = '6'; break;
+//  case 7: map[y+1][x-1] = '7'; break;
+//  case 8: map[y+1][x  ] = '8'; break;
+//  case 9: map[y+1][x+1] = '9';
+//  }
+//  }
+//  }
 
-//			// Next Cell alignment
-//			x += 3;
-//		}
+//  // Next Cell alignment
+//  x += 3;
+//  }
 
-//		String s = "+-----+-----+-----+-----+-----+-----+-----+-----+-----+\n";
+//  String s = "+-----+-----+-----+-----+-----+-----+-----+-----+-----+\n";
 
-//		for ( y = 0 ; y < 3 ; y++ )
-//		{
-//			for ( x = 0 ; x < 27 ; x++ )
-//			{
-//				if ( x % 3 == 0 )
-//					s += "| ";
-//				s += "" + map[y][x];
-//				if ( x % 3 == 2 )
-//					s += " ";
-//				if ( x == 26 )
-//					s += "|\n";
-//			}
+//  for ( y = 0 ; y < 3 ; y++ )
+//  {
+//  for ( x = 0 ; x < 27 ; x++ )
+//  {
+//  if ( x % 3 == 0 )
+//  s += "| ";
+//  s += "" + map[y][x];
+//  if ( x % 3 == 2 )
+//  s += " ";
+//  if ( x == 26 )
+//  s += "|\n";
+//  }
 
-//			if ( y == 2 )
-//				s += "+-----+-----+-----+-----+-----+-----+-----+-----+-----+\n";
-//		}
+//  if ( y == 2 )
+//  s += "+-----+-----+-----+-----+-----+-----+-----+-----+-----+\n";
+//  }
 
-//		return s;
-//	}
+//  return s;
+//  }
 
-//	public String toStringName() { return this.getCellNames(cells).toString(); }
+//  public String toStringName() { return this.getCellNames(cells).toString(); }
 
 }
 

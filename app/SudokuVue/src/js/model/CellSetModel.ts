@@ -5,7 +5,7 @@
 export
 class CellSetModel
 {
-  bogus () { return true; } : boolean
+  public bogus () : boolean { return true; }
 }
 
 // vim: expandtab tabstop=2 number

@@ -9,7 +9,7 @@ export
 class CellIdent implements iCellIdentification
 {
 
-  static factory ( x: number, y: number, label: string = 'N/A' ) : iCellIdentification
+  static factory ( x: number, y: number, label = 'N/A' ) : iCellIdentification
   {
     return new CellIdent( label, new CellPoint(x,y))
   }

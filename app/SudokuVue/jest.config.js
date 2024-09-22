@@ -8,8 +8,6 @@ module.exports = {
   collectCoverage: true,
   // The directory where Jest should output its coverage files
   coverageDirectory: "coverage",
-  // The directory where Jest should output its coverage files
-  coverageDirectory: "coverage",
   // Indicates which provider should be used to instrument code for coverage
   coverageProvider: "v8",
 
@@ -24,9 +22,9 @@ module.exports = {
   testRegex: '/tests/.*\\.(test|spec)?\\.(ts|tsx)$',
 
   // transform: undefined,
-  transform: {
-    '^.+\\.ts$': 'ts-jest'
-  },
+//transform: {
+//  '^.+\\.ts$': 'ts-jest'
+//},
 
   // An array of file extensions your modules use
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],

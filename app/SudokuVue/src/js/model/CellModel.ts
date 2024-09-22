@@ -23,11 +23,11 @@ class CellModel extends Subject implements iObserver
   private candidates: Array<CellValue>
 
   // Control
-  public autosolve : boolean = false
+  public autosolve  = false
 
-  static factory ( x: number = 0, y: number = 0, solve: boolean = false )
+  static factory ( x = 0, y = 0, solve = false )
   {
-    let cell = new CellModel(CellIdent.factory(x,y))
+    const cell = new CellModel(CellIdent.factory(x,y))
     cell.autosolve = solve
     return cell
   }
@@ -71,7 +71,7 @@ class CellModel extends Subject implements iObserver
 
   exclude ( value: CellValue ) : boolean
   {
-    let changed : boolean = false
+    let changed  = false
 
     CANDIDATE:
     {
@@ -80,7 +80,7 @@ class CellModel extends Subject implements iObserver
 
       // And the value is a member candidate
       // ( I.E. still a value candidate we've not already eliminated )
-      let is_candidate : boolean = this.candidates.filter( mbr_value => mbr_value === value ).length == 1;
+      const is_candidate : boolean = this.candidates.filter( mbr_value => mbr_value === value ).length == 1;
 
       // Remove [exclude] this candidate, leaving others
       if ( is_candidate && this.candidates.length > 1 )
@@ -98,6 +98,8 @@ class CellModel extends Subject implements iObserver
 
     return changed
   }
+
+  includes ( value: CellValue ) : boolean { return this.candidates.includes( value ) }
 
   update ( subject: Subject, arg: CellValue )
   {
@@ -119,6 +121,12 @@ class CellModel extends Subject implements iObserver
     return this.candidates.length
   }
 
+  get as_candidate_array () : Array<CellValue>
+  {
+    return [...this.candidates]
+  }
+
+  // TODO: VICB Retire this method!!!
   toArray () : Array<string>
   {
     const _z: Array<string> = []
@@ -126,11 +134,10 @@ class CellModel extends Subject implements iObserver
     return _z
   }
 
-  // TO BE RETIRED
+  // TODO: TO BE RETIRED
   //   OR better suited on an adaptor as a TEXT formatter???
   public toString2 () : string
   {
-    let first : boolean = true
     let s : string = '# ' + this.name + ': ' +  this.value + ' [ '
 
     s += this.candidates.map( c => c.value ).join()

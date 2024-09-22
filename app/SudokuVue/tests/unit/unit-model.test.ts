@@ -7,17 +7,17 @@ import { CellValue              } from '@/js/model/CellValue'
 import { CellModel              } from '@/js/model/CellModel'
 import { UnitModel              } from '@/js/model/UnitModel'
 
-function mk_cells ( size: number = 0 ) : Array<CellModel>
+function mk_cells ( size = 0 ) : Array<CellModel>
 {
-  let cell_set : Array<CellModel> = []
+  const cell_set : Array<CellModel> = []
 
-  for ( var i = 1 ; i <= size ; i++ )
+  for ( let i = 1 ; i <= size ; i++ )
       cell_set.push(CellModel.factory(size<10?1:0,size<10?i:0,true))
 
   return cell_set
 }
 
-function mk_unit ( size: number = 0 ) : UnitModel
+function mk_unit ( size = 0 ) : UnitModel
 {
   return new UnitModel(mk_cells(size))
 }
@@ -68,11 +68,11 @@ describe('model/unit-model-solved', () => {
   // IS
   test('solved-IS', () => {
     let u : UnitModel = unit()
-    let v : Array<CellValue> = CellValue.arrayFactory
-    let P : string[] = [ '1', '2', '3', '4', '5', '6', '7', '8', '9' ]
+    const v : Array<CellValue> = CellValue.arrayFactory
+    const P : string[] = [ '1', '2', '3', '4', '5', '6', '7', '8', '9' ]
 //  let S : CellValue = CellValue.ONE  // END of set (reverse)
 //  let N : CellValue = CellValue.NINE // END of set (forward)
-    let x : number
+//  let x : number
 
     // Foreward
     CellIndex.arrayFactory.forEach( c => {
@@ -97,13 +97,13 @@ describe('model/unit-model-solved', () => {
   // Exclude
   test('solved-EXCLUDE', () => {
     let u : UnitModel = unit()
-    let v : Array<CellValue> = CellValue.arrayFactory
-    let P : string[] = [ '1', '2', '3', '4', '5', '6', '7', '8', '9' ]
-    let x : number
+    const v : Array<CellValue> = CellValue.arrayFactory
+    const P : string[] = [ '1', '2', '3', '4', '5', '6', '7', '8', '9' ]
+//  let x : number
 
     // Foreward
     CellIndex.arrayFactory.forEach( c => {
-      let t:boolean = false
+      let t = false
       expect(c.name).toBe(P[c.index])
       v.forEach( x => { expect(t=u.exclude(c, x)).toBe(t) })
       expect(u.isSolved()).toBe(c===CellIndex.NINE || c===CellIndex.EIGHT)
@@ -113,7 +113,7 @@ describe('model/unit-model-solved', () => {
     u = unit()
 
     CellIndex.arrayFactory.reverse().forEach( c => {
-      let t:boolean = false
+      let t = false
       expect(c.name).toBe(P[c.index])
       shuffleArray(v).forEach( x => { expect(t=u.exclude(c, x)).toBe(t) })
       expect(u.isSolved()).toBe(c===CellIndex.ONE || c===CellIndex.TWO)

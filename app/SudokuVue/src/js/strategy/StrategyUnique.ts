@@ -1,14 +1,17 @@
 // StrategyUnique.ts
 
 import type { iUnit             } from '@/js/interface/iUnit'
+import type { CellModel         } from '@/js/model/CellModel'
 import      { aStrategyBase     } from '@/js/abstract/aStrategyBase'
+import      { CellValue         } from '@/js/model/CellValue'
 
 export
 class StrategyUnique extends aStrategyBase
 {
+
     public applyStrategy ( unit: iUnit ) : boolean
     {
-        return false
+        return this.strategy_unique( unit )
     }
 
     // A Level 0 Strategy
@@ -16,53 +19,51 @@ class StrategyUnique extends aStrategyBase
     //     in any other UNIT-CELL is solved by eleminating all remaining
     //     candidates are safely removed.
 
-    private strategy_unique () : boolean
+    private strategy_unique ( unit: iUnit ) : boolean
     {
-        const solved = 0;
+        let solved  = 0;
 
-//		UNIQUE:
-//		{
-//			// We only need to work with those Cells that are undetermined (not solved)
-//			//  its a waste of time looking at stuff that is already solved
-//			ArrayList<Cell> setOfUndeterminedCells = getUndeterminedCellList();
+        UNIQUE:
+        {
+            // console.log('APPLY-STRATEGY-UNIQUE')
 
-//			if ( show_undetermined )
-//			{ System.out.println("# Undetermined Cells: " + getCellNames(setOfUndeterminedCells)); }
+            // We only need to work with those Cells that are undetermined (un-solved)
+            //  looking at cells already solved isn't helpful
+            const setOfUndeterminedCells: Array<CellModel> = this.getUndeterminedCellList( unit )
 
-//			// Everything has been solved
-//			if ( setOfUndeterminedCells.size() < 1 ){ break UNIQUE; }
+            this.logger && this.logger.add('# Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
 
-//			// Mark cells with a unique member with is()
-//			int[] counts = {0,0,0,0,0,0,0,0,0};
-//			Cell[] cindx = new Cell[9];
+            // Everything has been solved
+            if ( setOfUndeterminedCells.length < 1 ) { break UNIQUE; }
 
-//			// Collect Counts
-//			for ( Cell c : setOfUndeterminedCells )
-//			{
-//				for ( Integer cellx : c.getSet())
-//				{
-//					int p = cellx.intValue();
-//					counts[p-1]++;     // Candidate was seen
+            // Mark cells with a unique member with is()
+            const counts : number[] = [0,0,0,0,0,0,0,0,0];
+            const cindx  : CellModel[] = [] as Array<CellModel>
 
-//					// The last Cell with this candidate
-//					// Also the one and only if count == 1
-//					cindx[p-1] = c;
-//				}
-//			}
+            // Collect value/cell Counts
+            setOfUndeterminedCells.forEach( cell => {
+                cell.as_candidate_array.forEach( cellval => {
+                    const p : number = cellval.index
+                    counts[p]++;     // Candidate was seen
 
-//			// Unique uses
-//			for ( int i = 0 ; i < 9 ; i++ )
-//			{
-				// We have a candidate with a count of one
-//				if ( counts[i] == 1 )
-//				{
-//					// Solve the Cell with the unique candidate
-//					if ( DEBUG )
-//						System.out.println("# Strategy 0 - Unique (" + cindx[i].getName() + ")");
-//					cindx[i].is( i + 1 );
-//				}
-//			}
-//		}
+                    // The last Cell with this candidate
+                    // It's also the one and only if count == 1
+                    cindx[p] = cell;
+                })
+            })
+
+            // Unique uses
+            for ( let i  = 0 ; i < 9 ; i++ )
+            {
+                // We have a candidate with a count of one
+                if ( counts[i] == 1 )
+                {
+                    // Solve the Cell with the unique candidate
+                    this.logger && this.logger.add('# Strategy 0 - Unique (' + cindx[i].name + ')')
+                    cindx[i].is( CellValue.arrayFactory[ i ] ) && solved++;
+                }
+            }
+        }
 
         return solved > 0;
     }
