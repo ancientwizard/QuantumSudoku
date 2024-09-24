@@ -6,6 +6,7 @@ import type { CellModel         } from '@/js/model/CellModel'
 import type { CellValue         } from '@/js/model/CellValue'
 import      { aStrategyBase     } from '@/js/abstract/aStrategyBase'
 import      { CandidateMatch    } from '@/js/strategy/CandidateMatch'
+import      { containsAll       } from '@/js/util/contains-all'
 
 export
 class StrategyNakedPair extends aStrategyBase
@@ -21,7 +22,8 @@ class StrategyNakedPair extends aStrategyBase
     //       from all other unsolved cells in the Unit.
     private strategy_set_naked_pair ( unit : iUnit ) : boolean
     {
-        let removed  = 0;
+        let removed : number = 0;
+        let updated : Array<string> = [] as Array<string>
 
         NAKED_PAIR:
         {
@@ -47,7 +49,8 @@ class StrategyNakedPair extends aStrategyBase
                 match.forEach( candidate => {
                     const can_cva : Array<CellValue> = candidate.first.as_candidate_array
 
-                    if ( cell_va.every( cv => can_cva.includes(cv) ))
+                //  if ( cell_va.every( cv => can_cva.includes(cv) ))
+                    if ( containsAll(cell_va, can_cva ))
                     {
                         candidate.all.push(cell)
                         matched = true
@@ -84,13 +87,14 @@ class StrategyNakedPair extends aStrategyBase
                             this.logger && this.logger.add('# Strategy 1 - Naked  Pair ' + candidate );
                         }
 
-                        if ( cell.exclude(cv)) { removed++; }
+                        if ( cell.exclude(cv)) { removed++; updated.includes(cell.name) || updated.push(cell.name) }
                     })
-
-                //  console.log('Cleaned cell', cell.toString2())
                 })
             })
         }
+
+        if ( removed > 0 && this.logger )
+            this.logger.add('# Strategy 2 - Naked Pair cleaned ' + removed + ' candidate values from ' + updated.length + ' cells (' + updated.join(',') + ')');
 
         return removed > 0;
     }

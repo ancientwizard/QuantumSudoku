@@ -8,23 +8,23 @@ describe('model/cell-model', () => {
 
   function _c_fac( x: number, y: number ) { return CellModel.factory(x,y); }
 
-  test('(0,0).value', () => expect(_c_fac(0,0).value).toBe('?'))
+  test('(0,0).label', () => expect(_c_fac(0,0).label).toBe('?'))
   test('(0,0).toString2()', () => expect(_c_fac(0,0).toString2()).toBe('# X0: ? [ 1,2,3,4,5,6,7,8,9 ]'))
   test('(1,1).toString2()', () => expect(_c_fac(1,1).toString2()).toBe('# A1: ? [ 1,2,3,4,5,6,7,8,9 ]'))
 
   // IS
   CellValue.arrayFactory.forEach(
-    (v) => test('(0,0).is(' + v.value + ').<props>',
+    (v) => test('(0,0).is(' + v.label + ').<props>',
       () => {
         const _c = _c_fac(0,0)
         expect(_c.toString2()).toBe('# X0: ? [ 1,2,3,4,5,6,7,8,9 ]')
         expect(_c.isKnown).toStrictEqual(false)
         expect(_c.isUnknown).toStrictEqual(true)
         expect(_c.is(v)).toStrictEqual(true)
-        expect(_c.toString2()).toBe('# X0: '+v.value+' [ ]')
+        expect(_c.toString2()).toBe('# X0: '+v.label+' [ ]')
         expect(_c.isKnown).toStrictEqual(true)
         expect(_c.isUnknown).toStrictEqual(false)
-        expect(_c.value).toStrictEqual(v.value)
+        expect(_c.value).toStrictEqual(v.label)
         expect(_c.name).toBe('X0')
         expect(_c.coord).toBe('(0,0)')
         expect(_c.toArray()).toStrictEqual([])
@@ -36,7 +36,7 @@ describe('model/cell-model', () => {
 
   // EXCLUDE
   CellValue.arrayFactory.forEach(
-    (v) => test('(0,0).exclude(' + v.value + ').<props>',
+    (v) => test('(0,0).exclude(' + v.label + ').<props>',
       () => {
         const _c = _c_fac(0,0)
         expect(_c.toArray().length).toBe(9)
@@ -77,7 +77,7 @@ describe('model/cell-model', () => {
 
   // UPDATE - Observermodel
   CellValue.arrayFactory.forEach(
-    (v) => test('(0,0).exclude(' + v.value + ').<props>',
+    (v) => test('(0,0).exclude(' + v.label + ').<props>',
       () => {
         const _c = _c_fac(0,0)
         expect(_c.toArray().length).toBe(9)
@@ -96,7 +96,7 @@ describe('model/cell-model', () => {
 
   // AUTOSOLVE - (is)
   CellValue.arrayFactory.forEach(
-    (v) => test('(0,0).is(' + v.value + ').<props>',
+    (v) => test('(0,0).is(' + v.label + ').<props>',
       () => {
         const _c = _c_fac(0,0)
         expect(_c.autosolve = true).toStrictEqual(true)
@@ -105,7 +105,7 @@ describe('model/cell-model', () => {
         expect(_c.is(v)).toStrictEqual(true)
         expect(_c.isKnown).toStrictEqual(true)
         expect(_c.isUnknown).toStrictEqual(false)
-        expect(_c.value).toStrictEqual(v.value)
+        expect(_c.value).toStrictEqual(v.label)
         expect(_c.name).toBe('X0')
         expect(_c.coord).toBe('(0,0)')
         expect(_c.toArray()).toStrictEqual([])

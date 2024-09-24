@@ -6,22 +6,22 @@ export
 class StrategyLogger implements iLogger
 {
     // Message storage
-    private MESSAGES : Array<string> = [] as Array<string>
+    private LOGS : Array<string> = [] as Array<string>
 
     public add ( message : string ) : string
     {
-        message && this.MESSAGES.push( message )
+        message && this.LOGS.push( message )
         return message
     }
 
     public reset () : void
     {
-        this.MESSAGES = [] as Array<string>
+        this.LOGS = [] as Array<string>
     }
 
     get as_array () : Array<string>
     {
-        return [...this.MESSAGES]
+        return [...this.LOGS]
     }
 }
 

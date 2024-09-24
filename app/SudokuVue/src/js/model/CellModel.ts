@@ -49,7 +49,8 @@ class CellModel extends Subject implements iObserver
 
   get name  () : string { return this.id.name }
   get coord () : string { return this.id.coord }
-  get value () : string { return this.cvalue.value }
+  get label () : string { return this.cvalue.label }
+  get value () : string { return this.cvalue.label }
 
   is ( value: CellValue ) : boolean
   {
@@ -130,7 +131,7 @@ class CellModel extends Subject implements iObserver
   toArray () : Array<string>
   {
     const _z: Array<string> = []
-    this.candidates.forEach( item => _z.push( item.value ))
+    this.candidates.forEach( item => _z.push( item.label ))
     return _z
   }
 
@@ -138,9 +139,9 @@ class CellModel extends Subject implements iObserver
   //   OR better suited on an adaptor as a TEXT formatter???
   public toString2 () : string
   {
-    let s : string = '# ' + this.name + ': ' +  this.value + ' [ '
+    let s : string = '# ' + this.name + ': ' +  this.label + ' [ '
 
-    s += this.candidates.map( c => c.value ).join()
+    s += this.candidates.map( c => c.label ).join()
     s += this.candidates.length ? ' ]' : ']'
 
     return s;

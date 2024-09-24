@@ -4,7 +4,7 @@
 export
 interface iObservedState
 {
-    readonly value : string
+    readonly label : string
 }
 
 // vim: expandtab number tabstop=4

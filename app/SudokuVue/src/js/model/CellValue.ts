@@ -26,8 +26,8 @@ class CellValue
     this.value_str = label
   }
 
-  get value () : string { return this.value_str }
-  get v_int () : number { return this.value_int }
+  get label () : string { return this.value_str }
+  get value () : number { return this.value_int }
   get index () : number { return this.value_idx }
 
   static get arrayFactory () : Array<CellValue>

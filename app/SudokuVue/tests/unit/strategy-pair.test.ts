@@ -77,7 +77,7 @@ describe('strategy/pair', () => {
         expect(unit.as_cell_array[CellIndex.TWO.index].toString2()).toBe('# A2: ? [ 1,2,4,5 ]')
         expect(unit.as_cell_array[CellIndex.SIX.index].toString2()).toBe('# A6: ? [ 1,2,4,5 ]')
 
-        strategy.logger && expect(strategy.logger.as_array.length).toBe(10)
+        strategy.logger && expect(strategy.logger.as_array.length).toBe(12)
 
         // console.log( strategy.logger )
         // console.log(unit.toString())
@@ -85,6 +85,8 @@ describe('strategy/pair', () => {
         unit.reset();
         expect(unit.isSolved()).toBe(false)
         expect(unit.toStringII()).toBe('? ? ? ? ? ? ? ? ?')
+
+        strategy.logger && strategy.logger.reset()
     })
 
 
@@ -135,6 +137,8 @@ describe('strategy/pair', () => {
         unit.reset();
         expect(unit.isSolved()).toBe(false)
         expect(unit.toStringII()).toBe('? ? ? ? ? ? ? ? ?')
+
+        strategy.logger && strategy.logger.reset()
     })
 
 
@@ -191,6 +195,8 @@ describe('strategy/pair', () => {
         unit.reset();
         expect(unit.isSolved()).toBe(false)
         expect(unit.toStringII()).toBe('? ? ? ? ? ? ? ? ?')
+
+        strategy.logger && strategy.logger.reset()
     })
 })
 

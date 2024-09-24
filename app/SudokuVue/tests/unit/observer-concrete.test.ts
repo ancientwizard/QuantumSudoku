@@ -41,7 +41,7 @@ class TestObservable extends Subject implements iObserver
 class MyState implements iObservedState
 {
     static TAPPED = new MyState('I-TAPPED-YOU-VIA-NOTIFY')
-    private constructor ( readonly value : string ) {}
+    private constructor ( readonly label : string ) {}
 }
 
 describe( 'concrete/observer', () => {

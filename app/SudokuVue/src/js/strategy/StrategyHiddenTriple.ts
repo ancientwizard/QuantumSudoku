@@ -1,15 +1,18 @@
 
-// Strategy UNIT Naken Pair
+// Strategy UNIT Hidden Triple
 
-import type { iUnit             } from '@/js/interface/iUnit'
-import      { aStrategyBase     } from '@/js/abstract/aStrategyBase'
+import type { iUnit                 } from '@/js/interface/iUnit'
+import type { CellModel             } from '@/js/model/CellModel'
+import      { aStrategyBase         } from '@/js/abstract/aStrategyBase'
+import      { containsAll           } from '@/js/util/contains-all'
+import      { StrategyExtractHidden } from '@/js/strategy/StrategyExtractHidden'
 
 export
 class StrategyHiddenTriple extends aStrategyBase
 {
     protected applyStrategy ( unit: iUnit ) : boolean
     {
-        return false
+        return this.strategy_set_hidden_triple( unit )
     }
 
 
@@ -19,115 +22,47 @@ class StrategyHiddenTriple extends aStrategyBase
     //     the three unique candidate set "will" solve the three cells.
     strategy_set_hidden_triple ( unit : iUnit) : boolean
     {
-        const removed  = 0;
+        let removed : number = 0;
+        let updated : Array<string> = [] as Array<string>
 
-//		HIDDEN:
-//		{
-//			// We only need to work with those Cells that are undetermined (not solved)
-//			//  its a waste of time looking at stuff that is already solved
-//			ArrayList<Cell> setOfUndeterminedCells = getUndeterminedCellList();
+        HIDDEN:
+        {
+            // We only need to work with those Cells that are undetermined (not solved)
+            //  its a waste of time looking at stuff that is already solved
+            let setOfUndeterminedCells : Array<CellModel> = this.getUndeterminedCellList( unit )
 
-//			if ( this.logger )
-//			{ this.logger.add("# Undetermined Cells: " + getCellNames(setOfUndeterminedCells)); }
+            this.logger && this.logger.add('# Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
 
-//			// No point in looking for triple's when there are less than four Cells
-//			// to compare!
-//			if ( setOfUndeterminedCells.size() < 4 ){ break HIDDEN; }
+            // No point in looking for triple's when there are less than four Cells
+            // to compare!
+            if ( setOfUndeterminedCells.length < 4 ) break HIDDEN
 
-//			// Map each candidate to the Cells that have it
-//			ArrayList<ArrayList<Cell>> mapOfVals2Cells = new ArrayList<ArrayList<Cell>>(9);
+            let strategy : StrategyExtractHidden = new StrategyExtractHidden( this.logger )
+            let self : StrategyHiddenTriple = this;
 
-//			for ( int i = 0 ; i < 9 ; i++ )
-//			{ mapOfVals2Cells.add(new ArrayList<Cell>(9)); }
+            strategy.detectHiddenTriples(
+                // A descrete set of Hidden Triple candidates; we've cut out the obvious garbage
+                strategy.filterByCandidateHiddenTriples( strategy.mapUnsolvedCellValuesToCells( setOfUndeterminedCells )),
 
-//			for ( Cell cell_undetermined : setOfUndeterminedCells )
-//			{
-//				for ( Integer candidate : cell_undetermined.getSet())
-//				{
-//					// Candidate of this cell
-//					mapOfVals2Cells.get(candidate-1).add(cell_undetermined);
-//				}
-//			}
+                // In this context I dont really need A, B & C as they are the same
+                //  as long as we trust the code sending the arrays to us is always correct
+                ( p, A, B, C ) => {
 
-//			// We're looking for Hidden Triple's, they are seen as three candidates
-//			//   having the same set set of three Cells; the three candidates can't
-//			//   be found any where else so we can make these Cells A "Naked"
-//			//   triple by removing any other candidates safely because the candidate
-//			//   triple solved the three cell set.
+                    this.logger?.add(`# Strategy 2 - Hidden Triple Cells: (${A.map(c => c.name).join(',')}) Hidden: [${p.join(',')}]`)
 
-//			Iterator<ArrayList<Cell>> Ai = mapOfVals2Cells.iterator();
-//			int Apos = 0;
+                    A.forEach( cell =>
+                      cell.as_candidate_array.forEach( cv => {
+                        if ( p.includes( cv.value )) return
+                        // Exclude unwanted candidate values from the hidden triple cell set
+                        if ( cell.exclude(cv)) { removed++; updated.includes(cell.name) || updated.push(cell.name) }
+                      })
+                   )
+                }
+            )
+        }
 
-//			while ( Ai.hasNext())
-//			{
-//				ArrayList<Cell> A = Ai.next(); Apos++;
-//				//	System.out.println("# " + Apos + ":" + getCellNames(A));
-
-//				Iterator<ArrayList<Cell>> Bi = mapOfVals2Cells.iterator();
-//				int Bpos = 0;
-
-//				// A bit of magic to avoid comparing the same candidate sets
-//				// Skip the combo's we've seen before moving Bi just past Ai
-//				for ( int skip = 0 ; skip < Apos && Bi.hasNext() ; skip++ )
-//				{ Bi.next(); Bpos++; }
-
-//				// We're now pointing at the first Cell past Ai or this is the end
-//				//  test each Bi with the current Ai if we're not at the end
-//				while ( Bi.hasNext())
-//				{
-//					ArrayList<Cell> B = Bi.next(); Bpos++;
-
-//					Iterator<ArrayList<Cell>> Ci = mapOfVals2Cells.iterator();
-//					int Cpos = 0;
-
-//					// A bit of magic to avoid comparing the same candidate sets
-//					for ( int skip = 0 ; skip < Bpos && Ci.hasNext() ; skip++ )
-//					{ Ci.next(); Cpos++ ; }
-
-//					while ( Ci.hasNext())
-//					{
-//						ArrayList<Cell> C = Ci.next(); Cpos++;
-
-//						// Candidate A is found in three cells &&
-//						// Candidate B is found in three cells &&
-//						// Candidate C is found in three cells &&
-//						// and its the same three cells
-//						if ( A.size() == 3 && B.size() == 3 && C.size() == 3 &&
-//								A.containsAll(B) && A.containsAll(C))
-//						{
-//							// Nothing to clean up?
-//							if ( A.get(0).getSize() == 3 &&
-//								 B.get(1).getSize() == 3 &&
-//								 C.get(2).getSize() == 3 )
-//							{ continue; }
-
-//							ArrayList<Integer> p = new ArrayList<Integer>(3);
-//							p.add(Apos); p.add(Bpos); p.add(Cpos);
-
-//							if ( this.logger )
-//								this.logger.add("# Strategy 2 - Hidden Triple (" +
-//									A.get(0).getName() + "," +
-//									A.get(1).getName() + "," +
-//									A.get(2).getName() +
-//									") " + p );
-
-//							// Clean up unwanted candidates from the hidden triple
-//							for ( Cell cell : A )
-//							{
-//								for ( Integer N : cell.getSet() )
-//								{
-//									if ( N == Apos || N == Bpos || N == Cpos ){ continue; }
-//									if ( cell.exclude(N)) { removed++; }
-//								}
-//							}
-//						}
-//					}
-//				}
-//			}
-//		}
-
-//		if ( removed > 0 && this.logger )
-//			this.logger.add("# Strategy 2 - Hidden Triple cleaned " + removed + " candidates");
+        if ( removed > 0 )
+            this.logger?.add(`# Strategy 2 - Hidden Triple excluded ${removed} candidate values from ${updated.length} cells (${updated.join(',')})`)
 
         return removed > 0;
     }
