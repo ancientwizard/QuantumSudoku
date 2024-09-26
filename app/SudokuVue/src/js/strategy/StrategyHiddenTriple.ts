@@ -28,21 +28,22 @@ class StrategyHiddenTriple extends aStrategyBase
         HIDDEN:
         {
             // We only need to work with those Cells that are undetermined (not solved)
-            //  its a waste of time looking at stuff that is already solved
             let setOfUndeterminedCells : Array<CellModel> = this.getUndeterminedCellList( unit )
 
-            this.logger && this.logger.add('# Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
+            this.logger?.add('# Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
 
             // No point in looking for triple's when there are less than four Cells
             // to compare!
             if ( setOfUndeterminedCells.length < 4 ) break HIDDEN
 
             let strategy : StrategyExtractHidden = new StrategyExtractHidden( this.logger )
-            let self : StrategyHiddenTriple = this;
+            let hidden_triple_candidates = strategy.filterByCandidateHiddenTriples( strategy.mapUnsolvedCellValuesToCells( setOfUndeterminedCells ))
+
+            hidden_triple_candidates.forEach( T => this.logger?.add( '# candidate ' + T ))
 
             strategy.detectHiddenTriples(
                 // A descrete set of Hidden Triple candidates; we've cut out the obvious garbage
-                strategy.filterByCandidateHiddenTriples( strategy.mapUnsolvedCellValuesToCells( setOfUndeterminedCells )),
+                hidden_triple_candidates,
 
                 // In this context I dont really need A, B & C as they are the same
                 //  as long as we trust the code sending the arrays to us is always correct

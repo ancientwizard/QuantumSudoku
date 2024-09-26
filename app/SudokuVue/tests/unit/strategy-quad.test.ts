@@ -36,62 +36,68 @@ describe('strategy/quad', () => {
         expect(unit.isSolved()).toBe(false)
         expect(unit.toStringII()).toBe('? ? ? ? ? ? ? ? ?')
 
-/*
-        const strategy = new StrategyNakedTriple(new StrategyLogger())
+        const strategy = new StrategyNakedQuad(new StrategyLogger())
 
-        // Naked Triple (FIRST) (A4,A5,A6)
-        expect(unit.is(CellIndex.ONE, CellValue.ONE)).toBe(true)
-        expect(unit.toStringII()).toBe('1 ? ? ? ? ? ? ? ?')
-        expect(unit.as_cell_array[CellIndex.ONE.index].isKnown).toBe(true)
+//      expect(unit.is(CellIndex.ONE, CellValue.ONE)).toBe(true)
+//      expect(unit.toStringII()).toBe('1 ? ? ? ? ? ? ? ?')
+//      expect(unit.as_cell_array[CellIndex.ONE.index].isKnown).toBe(true)
 
+        // Naked Quad (FIRST) (A2,A3,A8,A9) as (4,5,7,9)
         CellValue.arrayFactory.forEach( cv => {
-            if ( cv === CellValue.FIVE  ) return // Naked triple value
-            if ( cv === CellValue.SEVEN ) return // Naked triple value
-            if ( cv === CellValue.EIGHT ) return // Naked triple value
-            if ( cv === CellValue.ONE   ) return // USED!!!
-            expect(unit.exclude(CellIndex.FOUR, cv)).toBe(true)
-            expect(unit.exclude(CellIndex.FIVE, cv)).toBe(true)
-            expect(unit.exclude(CellIndex.SIX,  cv)).toBe(true)
+            if ( cv === CellValue.FOUR  ) return // Naked Quad value
+            if ( cv === CellValue.FIVE  ) return // Naked Quad value
+            if ( cv === CellValue.SEVEN ) return // Naked Quad value
+            if ( cv === CellValue.NINE  ) return // Naked Quad value
+            expect(unit.exclude(CellIndex.TWO,  cv)).toBe(true)
+            expect(unit.exclude(CellIndex.THREE,cv)).toBe(true)
+            expect(unit.exclude(CellIndex.EIGHT,cv)).toBe(true)
+            expect(unit.exclude(CellIndex.NINE, cv)).toBe(true)
         })
 
-        expect(unit.as_cell_array[CellIndex.FOUR.index].toString2()).toBe('# A4: ? [ 5,7,8 ]')
-        expect(unit.as_cell_array[CellIndex.FIVE.index].toString2()).toBe('# A5: ? [ 5,7,8 ]')
-        expect(unit.as_cell_array[CellIndex. SIX.index].toString2()).toBe('# A6: ? [ 5,7,8 ]')
+        expect(unit.as_cell_array[CellIndex.  ONE.index].toString2()).toBe('# A1: ? [ 1,2,3,4,5,6,7,8,9 ]')
+        expect(unit.as_cell_array[CellIndex.  TWO.index].toString2()).toBe('# A2: ? [ 4,5,7,9 ]')
+        expect(unit.as_cell_array[CellIndex.THREE.index].toString2()).toBe('# A3: ? [ 4,5,7,9 ]')
+        expect(unit.as_cell_array[CellIndex.EIGHT.index].toString2()).toBe('# A8: ? [ 4,5,7,9 ]')
+        expect(unit.as_cell_array[CellIndex. NINE.index].toString2()).toBe('# A9: ? [ 4,5,7,9 ]')
 
   		expect(strategy.apply( unit )).toBe(true)
         strategy.logger && expect(strategy.logger.as_array.length).toBe(3)
-        expect(unit.as_cell_array[CellIndex.TWO.index  ].toString2()).toBe('# A2: ? [ 2,3,4,6,9 ]')
-        expect(unit.as_cell_array[CellIndex.THREE.index].toString2()).toBe('# A3: ? [ 2,3,4,6,9 ]')
-        expect(unit.as_cell_array[CellIndex.NINE.index ].toString2()).toBe('# A9: ? [ 2,3,4,6,9 ]')
+        expect(unit.as_cell_array[CellIndex.  ONE.index].toString2()).toBe('# A1: ? [ 1,2,3,6,8 ]')
+        expect(unit.as_cell_array[CellIndex. FOUR.index].toString2()).toBe('# A4: ? [ 1,2,3,6,8 ]')
+        expect(unit.as_cell_array[CellIndex. FIVE.index].toString2()).toBe('# A5: ? [ 1,2,3,6,8 ]')
+        expect(unit.as_cell_array[CellIndex.  SIX.index].toString2()).toBe('# A6: ? [ 1,2,3,6,8 ]')
+        expect(unit.as_cell_array[CellIndex.SEVEN.index].toString2()).toBe('# A7: ? [ 1,2,3,6,8 ]')
+        expect(unit.as_cell_array[CellIndex.  TWO.index].toString2()).toBe('# A2: ? [ 4,5,7,9 ]')
 
-        // Naked Triple (SECOND) (A3,A8,A9)
+        // Naked Quad (SECOND) (A4,A5,A6,A7) as (1,2,3,6)
         CellValue.arrayFactory.forEach( cv => {
-            if ( cv === CellValue.FIVE  ) return // Naked triple value (#1)
-            if ( cv === CellValue.SEVEN ) return // Naked triple value (#1)
-            if ( cv === CellValue.EIGHT ) return // Naked triple value (#1)
-            if ( cv === CellValue.ONE   ) return // USED!!!
-            if ( cv === CellValue.THREE ) return // Naked triple value (#2)
-            if ( cv === CellValue.FOUR  ) return // Naked triple value (#2)
-            if ( cv === CellValue.SIX   ) return // Naked triple value (#3)
-            expect(unit.exclude(CellIndex.THREE, cv)).toBe(true)
-            expect(unit.exclude(CellIndex.EIGHT, cv)).toBe(true)
-            expect(unit.exclude(CellIndex.NINE,  cv)).toBe(true)
+            // yes could be written as [ LIST ].includes(cv) && return
+            if ( cv === CellValue.FOUR  ) return // Naked Quad value (#1)
+            if ( cv === CellValue.FIVE  ) return // Naked Quad value (#1)
+            if ( cv === CellValue.SEVEN ) return // Naked Quad value (#1)
+            if ( cv === CellValue.NINE  ) return // Naked Quad value (#1)
+            if ( cv === CellValue.ONE   ) return // Naked Quad value (#2)
+            if ( cv === CellValue.TWO   ) return // Naked Quad value (#2)
+            if ( cv === CellValue.THREE ) return // Naked Quad value (#2)
+            if ( cv === CellValue.SIX   ) return // Naked Quad value (#2)
+            expect(unit.exclude(CellIndex.FOUR,  cv)).toBe(true)
+            expect(unit.exclude(CellIndex.FIVE,  cv)).toBe(true)
+            expect(unit.exclude(CellIndex.SIX,   cv)).toBe(true)
+            expect(unit.exclude(CellIndex.SEVEN, cv)).toBe(true)
         })
 
-        expect(unit.as_cell_array[CellIndex.THREE.index ].toString2()).toBe('# A3: ? [ 3,4,6 ]')
-        expect(unit.as_cell_array[CellIndex.EIGHT.index ].toString2()).toBe('# A8: ? [ 3,4,6 ]')
-        expect(unit.as_cell_array[CellIndex.NINE.index  ].toString2()).toBe('# A9: ? [ 3,4,6 ]')
-        expect(unit.as_cell_array[CellIndex.TWO.index   ].toString2()).toBe('# A2: ? [ 2,3,4,6,9 ]')
-        expect(unit.as_cell_array[CellIndex.SEVEN.index ].toString2()).toBe('# A7: ? [ 2,3,4,6,9 ]')
+        expect(unit.as_cell_array[CellIndex.  ONE.index].toString2()).toBe('# A1: ? [ 1,2,3,6,8 ]')
+        expect(unit.as_cell_array[CellIndex. FOUR.index].toString2()).toBe('# A4: ? [ 1,2,3,6 ]')
 
   		expect(strategy.apply( unit )).toBe(true)
-        expect(unit.as_cell_array[CellIndex.TWO.index   ].toString2()).toBe('# A2: ? [ 2,9 ]')
-        expect(unit.as_cell_array[CellIndex.SEVEN.index ].toString2()).toBe('# A7: ? [ 2,9 ]')
+
+        expect(unit.as_cell_array[CellIndex.  ONE.index].toString2()).toBe('# A1: 8 [ ]')
+        expect(unit.as_cell_array[CellIndex.  ONE.index].isKnown).toBe(true)
 
         strategy.logger && expect( strategy.logger.as_array.length ).toBe(6)
+
         // console.log( strategy.logger )
         // console.log(unit.toString())
-*/
 
         unit.reset();
         expect(unit.isSolved()).toBe(false)
@@ -103,89 +109,40 @@ describe('strategy/quad', () => {
         expect(unit.isSolved()).toBe(false)
         expect(unit.toStringII()).toBe('? ? ? ? ? ? ? ? ?')
 
-/*
-        const strategy = new StrategyHiddenTriple(new StrategyLogger())
+        const strategy = new StrategyHiddenQuad(new StrategyLogger())
 
-        expect(unit.is(CellIndex.FOUR, CellValue.FOUR)).toBe(true)
+        expect(unit.is(CellIndex.TWO, CellValue.TWO)).toBe(true)
+        expect(unit.as_cell_array[CellIndex.TWO.index].toString2()).toBe('# A2: 2 [ ]')
 
-        // Hidden Triple in (A7,A8,A9) as (3,2,1)
-        let others = [ CellIndex.ONE, CellIndex.TWO, CellIndex.THREE, CellIndex.FIVE, CellIndex.SIX ]
+        // Hidden QUAD in (A4,A5,A8,A9) as (1,3,4,5)
+        let others = [ CellIndex.ONE, CellIndex.THREE, CellIndex.SIX, CellIndex.SEVEN ]
         others.forEach( ci => {
-            expect(unit.exclude(ci, CellValue.ONE)).toBe(true)
-            expect(unit.exclude(ci, CellValue.TWO)).toBe(true)
-            expect(unit.exclude(ci, CellValue.THREE)).toBe(true)
+            expect(unit.exclude(ci, CellValue.ONE   )).toBe(true)
+            expect(unit.exclude(ci, CellValue.THREE )).toBe(true)
+            expect(unit.exclude(ci, CellValue.FOUR  )).toBe(true)
+            expect(unit.exclude(ci, CellValue.FIVE  )).toBe(true)
         })
 
-        expect(unit.as_cell_array[CellIndex.SIX.index ].toString2()).toBe('# A6: ? [ 5,6,7,8,9 ]')
-        expect(unit.as_cell_array[CellIndex.NINE.index].toString2()).toBe('# A9: ? [ 1,2,3,5,6,7,8,9 ]')
+        expect(unit.as_cell_array[CellIndex.ONE.index ].toString2()).toBe('# A1: ? [ 6,7,8,9 ]')
+        expect(unit.as_cell_array[CellIndex.NINE.index].toString2()).toBe('# A9: ? [ 1,3,4,5,6,7,8,9 ]')
 
         expect(strategy.apply( unit )).toBe(true)
 
-        expect(unit.as_cell_array[CellIndex.SIX.index  ].toString2()).toBe('# A6: ? [ 5,6,7,8,9 ]')
-        expect(unit.as_cell_array[CellIndex.SEVEN.index].toString2()).toBe('# A7: ? [ 1,2,3 ]')
-        expect(unit.as_cell_array[CellIndex.EIGHT.index].toString2()).toBe('# A8: ? [ 1,2,3 ]')
-        expect(unit.as_cell_array[CellIndex.NINE.index ].toString2()).toBe('# A9: ? [ 1,2,3 ]')
+        expect(unit.as_cell_array[CellIndex. FOUR.index].toString2()).toBe('# A4: ? [ 1,3,4,5 ]')
+        expect(unit.as_cell_array[CellIndex. FIVE.index].toString2()).toBe('# A5: ? [ 1,3,4,5 ]')
+        expect(unit.as_cell_array[CellIndex.EIGHT.index].toString2()).toBe('# A8: ? [ 1,3,4,5 ]')
+        expect(unit.as_cell_array[CellIndex. NINE.index].toString2()).toBe('# A9: ? [ 1,3,4,5 ]')
 
-        strategy.logger && expect( strategy.logger.as_array.length ).toBe(3)
+        strategy.logger && expect( strategy.logger.as_array.length ).toBe(7)
+
         // console.log( strategy.logger )
         // console.log(unit.toString())
-*/
 
         unit.reset();
         expect(unit.isSolved()).toBe(false)
         expect(unit.toStringII()).toBe('? ? ? ? ? ? ? ? ?')
     })
 })
-
-// VICB HERE
-// Make this test about triple and quad in ONE
-//		for ( int x = 1 ; x < 10 ; x+=2 )
-//		{
-//			int cnt = 4;
-//			for ( Cell cell : unit.as_cell_array)
-//			{
-//				cell.exclude(x);
-//				cnt--;
-//				if ( cnt < 1 ) { break; }
-//			}
-//		}
-//		unit.strategy_set_naked_quad();
-//	//	System.out.print(unit.toString());
-
-//		int cnt = 7;
-//		for ( Cell cell : unit.as_cell_array)
-//		{
-//			cnt--;
-//			if ( cnt > 0 ){ continue; }
-//			cell.exclude(1);
-//			cell.exclude(6);
-//			cell.exclude(9);
-//		}
-//	//	System.out.print(unit.toString());
-//		unit.strategy_set_naked_triple();
-//	//	System.out.print(unit.toString());
-
-//		// Hidden Triple
-//		unit.reset();
-//		for ( int i=1 ; i < 7 ; i++ )
-//		{
-//			unit.exclude(i, 4);
-//			unit.exclude(i, 5);
-//			unit.exclude(i, 6);
-//		}
-//		unit.strategy_set_hidden_triple();
-
-//		// Hidden Quad
-//		for ( int i=1 ; i < 3 ; i++ )
-//		{
-//			unit.exclude(i, 2);
-//			unit.exclude(i, 3);
-//			unit.exclude(i, 7);
-//			unit.exclude(i, 8);
-//		}
-//		unit.strategy_set_hidden_quad();
-
-//		System.out.print(unit.toString());
 
 // vim: expandtab number tabstop=4
 // END

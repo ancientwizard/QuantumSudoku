@@ -80,12 +80,10 @@ class UnitModel implements iUnit
 
     // Protected variables (Block etc extends us)
     protected cells: Array<CellModel>
-//  protected show_undetermined: boolean
 
     constructor ( member_cells: Array<CellModel> )
     {
         this.cells = member_cells
-    //  this.show_undetermined = false
 
         if ( member_cells.length != 9 )
         {
@@ -107,7 +105,6 @@ class UnitModel implements iUnit
         })
     }
 
-//  public final ArrayList<Cell> getCells() { return cells; }
     get as_cell_array () : Array<CellModel> { return [...this.cells] }
 
 
@@ -125,8 +122,7 @@ class UnitModel implements iUnit
 
     isSolved () : boolean
     {
-        // console.log( this.cells.find( cell => cell.isUnknown ))
-        // When all Unit cell members KNOWN then this unit is-solved
+        // When all Unit cell members are KNOWN then this unit is-solved
         //  The first UNKNOWN is our clue
         return this.cells.find( cell => cell.isUnknown ) === undefined
     }

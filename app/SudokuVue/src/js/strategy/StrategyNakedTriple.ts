@@ -4,8 +4,8 @@
 import type { iUnit             } from '@/js/interface/iUnit'
 import type { CellModel         } from '@/js/model/CellModel'
 import type { CellValue         } from '@/js/model/CellValue'
-import      { CandidateMatch    } from '@/js/strategy/CandidateMatch'
 import      { aStrategyBase     } from '@/js/abstract/aStrategyBase'
+import      { CandidateMatch    } from '@/js/strategy/CandidateMatch'
 import      { containsAll       } from '@/js/util/contains-all'
 
 export
@@ -33,7 +33,7 @@ class StrategyNakedTriple extends aStrategyBase
             // We only need to work with those Cells that are undetermined (not solved)
             let setOfUndeterminedCells : Array<CellModel> = this.getUndeterminedCellList( unit )
 
-            this.logger && this.logger.add('# Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
+            this.logger?.add('# Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
 
             // No point in looking for tripple solutions when there are less than five Cells
             // to compare! Basically if three Cells match the fifth will always be unique
@@ -78,7 +78,7 @@ class StrategyNakedTriple extends aStrategyBase
                             if ( ! first_naked_displayed && cell.includes(cv))
                             {
                                 first_naked_displayed = true;
-                                this.logger && this.logger.add("# Strategy 2 - Naked Triple " + candidate );
+                                this.logger?.add('# Strategy 2 - Naked Triple ' + candidate );
                             }
 
                             if ( cell.exclude(cv)) { removed++; updated.includes(cell.name) || updated.push(cell.name) }
@@ -88,8 +88,8 @@ class StrategyNakedTriple extends aStrategyBase
             })
         }
 
-        if ( removed > 0 && this.logger )
-            this.logger.add('# Strategy 2 - Naked Triple cleaned ' + removed + ' candidate values from ' + updated.length + ' cells (' + updated.join(',') + ')');
+        if ( removed > 0 )
+            this.logger?.add(`# Strategy 2 - Naked Triple cleaned ${removed} candidate values from ${updated.length} cells (${updated.join(',')})`);
 
         return removed > 0;
     }

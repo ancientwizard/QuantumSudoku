@@ -125,7 +125,7 @@ describe('strategy/triple', () => {
         expect(unit.as_cell_array[CellIndex.EIGHT.index].toString2()).toBe('# A8: ? [ 1,2,3 ]')
         expect(unit.as_cell_array[CellIndex.NINE.index ].toString2()).toBe('# A9: ? [ 1,2,3 ]')
 
-        strategy.logger && expect( strategy.logger.as_array.length ).toBe(3)
+        strategy.logger && expect( strategy.logger.as_array.length ).toBe(6)
         // console.log( strategy.logger )
         // console.log(unit.toString())
 
