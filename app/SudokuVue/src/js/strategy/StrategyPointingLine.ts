@@ -18,6 +18,7 @@
 //  Z = intersection
 //
 
+// Strategy Pointing Line
 /*
 	public boolean strategy_pointing_line( Unit line, IntersectMap iB, IntersectMap iL )
 	{

@@ -1,13 +1,10 @@
 // strategy-base.test.ts
 
 import { describe, expect, test, beforeAll } from '@jest/globals'
-//port type { iUnit             } from '@/js/interface/iUnit'
-//port type { iCellIndex        } from '@/js/interface/iCellIndex'
-//port type { iObservedState    } from '@/js/interface/iObservedState'
-import      { CellIndex         } from '@/js/model/CellIndex'
-import      { CellValue         } from '@/js/model/CellValue'
-import      { CellModel         } from '@/js/model/CellModel'
-import      { UnitModel         } from '@/js/model/UnitModel'
+import { CellIndex        } from '@/js/model/CellIndex'
+import { CellValue        } from '@/js/model/CellValue'
+import { CellModel        } from '@/js/model/CellModel'
+import { UnitModel        } from '@/js/model/UnitModel'
 
 function mk_cells () : Array<CellModel>
 {

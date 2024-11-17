@@ -12,7 +12,8 @@ describe('model/board-model', () => {
     expect(BoardMode.DIAGONAL).toBe(2)
     expect(BoardMode.SOLVE).toBe(3)
 
-    console.log(new BoardModel(BoardModel.MODE.EDIT))
+    new BoardModel(BoardModel.MODE.EDIT)
+//    console.log(new BoardModel(BoardModel.MODE.EDIT))
   })
 
   test('dummy', () => { expect(true).toBe(true) })

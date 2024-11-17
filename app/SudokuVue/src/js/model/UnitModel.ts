@@ -190,7 +190,7 @@ class UnitModel implements iUnit
 
     public toStringII () : string
     {
-        return this.cells.map( m => m.value ).join(' ')
+        return this.cells.map( m => m.label ).join(' ')
     }
 
 //  public String toStringIII()

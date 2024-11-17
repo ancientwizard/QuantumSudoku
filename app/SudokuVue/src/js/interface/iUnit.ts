@@ -1,7 +1,7 @@
 // Sudoku Unit of Cell's interface
 //  "ANY" of "Grid(3x3)" | "Row" | "Column"
 
-import type { iCellIndex        } from '@/js/interface/iCellIdentification'
+import type { iCellIndex        } from '@/js/interface/iCellIndex'
 import type { iObservedState    } from '@/js/interface/iObservedState'
 
 export

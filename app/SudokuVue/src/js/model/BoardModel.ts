@@ -52,8 +52,8 @@ class BoardModel
             }
         }
 
-        console.log(cells)
-        console.log(names)
+        // console.log(cells)
+        // console.log(names)
     }
 
 }

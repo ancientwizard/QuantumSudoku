@@ -50,7 +50,7 @@ class CellModel extends Subject implements iObserver
   get name  () : string { return this.id.name }
   get coord () : string { return this.id.coord }
   get label () : string { return this.cvalue.label }
-  get value () : string { return this.cvalue.label }
+  get value () : number { return this.cvalue.value }
 
   is ( value: CellValue ) : boolean
   {
@@ -135,8 +135,7 @@ class CellModel extends Subject implements iObserver
     return _z
   }
 
-  // TODO: TO BE RETIRED
-  //   OR better suited on an adaptor as a TEXT formatter???
+  // TODO: RETIRE or better suited on an adaptor as a TEXT formatter???
   public toString2 () : string
   {
     let s : string = '# ' + this.name + ': ' +  this.label + ' [ '
