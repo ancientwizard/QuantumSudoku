@@ -1,14 +1,16 @@
 {
   "extends": "@vue/tsconfig/tsconfig.web.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
+  "include": ["env.d.ts", "src/**/*", "tests/**/*"],
   "compilerOptions": {
     "target": "ES6",
     "module": "CommonJS",
+    "preserveValueImports": false,
+    "allowJs": true,
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": "./",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["src/*"]
     }
   },
 
@@ -19,6 +21,5 @@
   ]
 }
 
-//  "ignoreDeprecations": "5.0",
 // vim: expandtab tabstop=2 number
 // END
