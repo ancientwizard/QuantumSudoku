@@ -48,8 +48,21 @@ describe('model/unit-model-basic', () => {
   test('unit-solved',   () => expect(unit().isSolved()).toBe(false))
   test('unit-unsolved', () => expect(unit().isBroken()).toBe(false))
 
-  test('unit-tostring', () =>
-    expect("\n"+unit().toString()).toStrictEqual(`
+  test('unit-reset+tostring', () => {
+    const u : UnitModel = unit()
+
+    // 9 cells in a unit, each cell has 8 observers (no observing self HA-HA)
+    u.as_cell_array.forEach( c => { expect(c.observers_as_array().length).toBe(8) })
+
+    expect(u.is(CellIndex.ONE, CellValue.ONE)).toBe(true)
+    expect(u.isSolved()).toBe(false)
+    expect(u.isBroken()).toBe(false)
+    expect(u.toStringII()).toBe('1 ? ? ? ? ? ? ? ?')
+
+    u.reset()
+    expect(u.toStringII()).toBe('? ? ? ? ? ? ? ? ?')
+
+    expect("\n" + u.toString()).toStrictEqual(`
 # A1: ? [ 1,2,3,4,5,6,7,8,9 ]
 # A2: ? [ 1,2,3,4,5,6,7,8,9 ]
 # A3: ? [ 1,2,3,4,5,6,7,8,9 ]
@@ -59,7 +72,7 @@ describe('model/unit-model-basic', () => {
 # A7: ? [ 1,2,3,4,5,6,7,8,9 ]
 # A8: ? [ 1,2,3,4,5,6,7,8,9 ]
 # A9: ? [ 1,2,3,4,5,6,7,8,9 ]
-`))
+`)})
 })
 
 

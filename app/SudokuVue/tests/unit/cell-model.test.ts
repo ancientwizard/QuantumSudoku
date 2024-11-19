@@ -12,7 +12,9 @@ describe('model/cell-model', () => {
   test('(0,0).toString2()', () => expect(_c_fac(0,0).toString2()).toBe('# X0: ? [ 1,2,3,4,5,6,7,8,9 ]'))
   test('(1,1).toString2()', () => expect(_c_fac(1,1).toString2()).toBe('# A1: ? [ 1,2,3,4,5,6,7,8,9 ]'))
 
-  // IS
+  test('(0,0).as_candidate_array()', () => expect(_c_fac(0,0).as_candidate_array.length).toBe(9))
+
+    // IS
   CellValue.arrayFactory.forEach(
     (v) => test('(0,0).is(' + v.label + ').<props>',
       () => {
