@@ -7,22 +7,22 @@ import { CellValue              } from '@/js/model/CellValue'
 import { CellModel              } from '@/js/model/CellModel'
 import { UnitModel              } from '@/js/model/UnitModel'
 
-function mk_cells ( size = 0 ) : Array<CellModel>
+function mk_cells ( size = 0, autosolve = true ) : Array<CellModel>
 {
   const cell_set : Array<CellModel> = []
 
   for ( let i = 1 ; i <= size ; i++ )
-      cell_set.push(CellModel.factory(size<10?1:0,size<10?i:0,true))
+      cell_set.push(CellModel.factory(size<10?1:0,size<10?i:0,autosolve))
 
   return cell_set
 }
 
-function mk_unit ( size = 0 ) : UnitModel
+function mk_unit ( size = 0, autosolve = true ) : UnitModel
 {
-  return new UnitModel(mk_cells(size))
+  return new UnitModel(mk_cells(size, autosolve ))
 }
 
-function unit () : UnitModel { return mk_unit(9) }
+function unit (autosolve = true) : UnitModel { return mk_unit( 9, autosolve ) }
 
 describe('model/cell-index-basic', () => {
   class MyBadIndex extends CellIndex
@@ -75,6 +75,34 @@ describe('model/unit-model-basic', () => {
 `)})
 })
 
+describe('model/unit-model-broken', () => {
+  
+    test('unit-broken', () => {
+      let u : UnitModel = unit()
+
+      expect(u.isBroken()).toBe(false)
+
+      // Exclude same cell value from more than one cell
+      //   an invalid Sudoku state
+      CellIndex.arrayFactory.forEach( ci => {
+        expect(u.isBroken()).toBe(false)
+        u.exclude(ci, CellValue.ONE)
+      })
+
+      expect(u.isBroken()).toBe(true)
+
+      // Set more than one unit cell member to the same value
+      //  an invalid Sudoku state
+      u = unit(false) // No autosolve, allow cells to have same value (an invalid Sudoku)
+      expect(u.isBroken()).toBe(false)
+      CellIndex.arrayFactory.forEach( ci => {
+        expect(u.is(ci, CellValue.ONE)).toBe(true)
+        expect(u.isBroken()).toBe(ci.index>0)
+      })
+
+      // console.log(u.toStringII())
+    })
+})
 
 describe('model/unit-model-solved', () => {
 

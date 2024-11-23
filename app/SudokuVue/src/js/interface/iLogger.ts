@@ -3,8 +3,8 @@
 export
 interface iLogger
 {
-    public add ( message: string ) : string
-    public reset () : void
+    add ( message: string ) : string
+    reset () : void
     readonly as_array : Array<string>
 }
 

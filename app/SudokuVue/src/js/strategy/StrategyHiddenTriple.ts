@@ -4,7 +4,7 @@
 import type { iUnit                 } from '@/js/interface/iUnit'
 import type { CellModel             } from '@/js/model/CellModel'
 import      { aStrategyBase         } from '@/js/abstract/aStrategyBase'
-import      { containsAll           } from '@/js/util/contains-all'
+//import      { containsAll           } from '@/js/util/contains-all'
 import      { StrategyExtractHidden } from '@/js/strategy/StrategyExtractHidden'
 
 export
@@ -22,13 +22,13 @@ class StrategyHiddenTriple extends aStrategyBase
     //     the three unique candidate set "will" solve the three cells.
     strategy_set_hidden_triple ( unit : iUnit) : boolean
     {
-        let removed : number = 0;
-        let updated : Array<string> = [] as Array<string>
+        let   removed = 0;
+        const updated : Array<string> = [] as Array<string>
 
         HIDDEN:
         {
             // We only need to work with those Cells that are undetermined (not solved)
-            let setOfUndeterminedCells : Array<CellModel> = this.getUndeterminedCellList( unit )
+            const setOfUndeterminedCells : Array<CellModel> = this.getUndeterminedCellList( unit )
 
             this.logger?.add('# Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
 
@@ -36,8 +36,8 @@ class StrategyHiddenTriple extends aStrategyBase
             // to compare!
             if ( setOfUndeterminedCells.length < 4 ) break HIDDEN
 
-            let strategy : StrategyExtractHidden = new StrategyExtractHidden( this.logger )
-            let hidden_triple_candidates = strategy.filterByCandidateHiddenTriples( strategy.mapUnsolvedCellValuesToCells( setOfUndeterminedCells ))
+            const strategy : StrategyExtractHidden = new StrategyExtractHidden( this.logger )
+            const hidden_triple_candidates = strategy.filterByCandidateHiddenTriples( strategy.mapUnsolvedCellValuesToCells( setOfUndeterminedCells ))
 
             hidden_triple_candidates.forEach( T => this.logger?.add( '# candidate ' + T ))
 

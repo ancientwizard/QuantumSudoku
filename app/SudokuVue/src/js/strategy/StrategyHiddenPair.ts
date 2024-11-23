@@ -22,8 +22,8 @@ class StrategyHiddenPair extends aStrategyBase
 	//   candidates are not in any other Cells so no further action is required
     private strategy_set_hidden_pair ( unit : iUnit ) : boolean
     {
-        let removed : number = 0;
-        let updated : Array<string> = [] as Array<string>
+        let     removed = 0;
+        const   updated : Array<string> = [] as Array<string>
 
         HIDDEN:
         {

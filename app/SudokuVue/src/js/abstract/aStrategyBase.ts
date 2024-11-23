@@ -1,3 +1,4 @@
+
 // aStrategyBase.ts
 
 import type { iStrategy         } from '@/js/interface/iStrategy'

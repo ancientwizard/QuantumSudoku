@@ -32,7 +32,7 @@ class StrategyExtractHidden
 
     public mapUnsolvedCellValuesToCells ( set_of_undetermined_cells : Array<CellModel> )
     {
-        let mapOfVals2Cells : Array<Value2Cell> = [] as Array<Value2Cell>
+        const mapOfVals2Cells : Array<Value2Cell> = [] as Array<Value2Cell>
 
         while ( mapOfVals2Cells.length < 9 ) mapOfVals2Cells.push(new Value2Cell())
 
@@ -64,12 +64,12 @@ class StrategyExtractHidden
         //   by removing all other candidate values safely. The removed values *must* be
         //   used by remaining unsolved cells.
 
-        let Apos : number = 0
+        let Apos = 0
 
         mapOfVals2Cells.forEach( A => {
             Apos++;
 
-            let Bpos : number = 0
+            let Bpos = 0
 
             mapOfVals2Cells.forEach( B => {
                 Bpos++;
@@ -79,7 +79,7 @@ class StrategyExtractHidden
                 //  - already compared triple set's inspected once
                 if ( Bpos <= Apos ) return
 
-                let Cpos : number = 0
+                let Cpos = 0
 
                 mapOfVals2Cells.forEach( C => {
                     Cpos++
@@ -97,7 +97,7 @@ class StrategyExtractHidden
                         // Nothing to clean up? Their already "Naked"
                         if ( A.cells[0].length == 3 && B.cells[1].length == 3 && C.cells[2].length == 3 ) return
 
-                        let p : Array<number> = [ A.value.value, B.value.value, C.value.value ] as Array<number>
+                        const p : Array<number> = [ A.value.value, B.value.value, C.value.value ] as Array<number>
 
                         callback( p, A.cells, B.cells, C.cells )
                     }
@@ -113,12 +113,12 @@ class StrategyExtractHidden
         //   having the same set set of four Cells; The values cant be found in any
         //   other cells in the set(unit)
 
-        let Apos : number = 0
+        let Apos = 0
 
         mapOfVals2Cells.forEach( A => {
             Apos++;
 
-            let Bpos : number = 0
+            let Bpos = 0
 
             mapOfVals2Cells.forEach( B => {
                 Bpos++;
@@ -128,14 +128,14 @@ class StrategyExtractHidden
                 //  - already compared triple set's inspected once
                 if ( Bpos <= Apos ) return
 
-                let Cpos : number = 0
+                let Cpos = 0
 
                 mapOfVals2Cells.forEach( C => {
                     Cpos++
 
                     if ( Cpos <= Bpos ) return
 
-                    let Dpos : number = 0
+                    let Dpos = 0
 
                     mapOfVals2Cells.forEach( D => {
                         Dpos++
@@ -154,7 +154,7 @@ class StrategyExtractHidden
                             // Nothing to clean up? Their already "Naked"
                             if ( A.cells[0].length == 4 && B.cells[1].length == 4 && C.cells[2].length == 4 && D.cells[3].length == 4 ) return
 
-                            let p : Array<number> = [ A.value.value, B.value.value, C.value.value, D.value.value ] as Array<number>
+                            const p : Array<number> = [ A.value.value, B.value.value, C.value.value, D.value.value ] as Array<number>
 
                             callback( p, A.cells, B.cells, C.cells, C.cells )
                         }

@@ -51,6 +51,7 @@ class CellModel extends Subject implements iObserver
   get coord () : string { return this.id.coord }
   get label () : string { return this.cvalue.label }
   get value () : number { return this.cvalue.value }
+  get cv    () : CellValue { return this.cvalue }
 
   is ( value: CellValue ) : boolean
   {
@@ -94,7 +95,7 @@ class CellModel extends Subject implements iObserver
       // Solution Strategy:
       //   Naked Single detection
       if ( this.autosolve && is_candidate && this.candidates.length == 1 )
-        changed = this.is( this.candidates[0] ) || changed
+        changed = this.is( this.candidates[0] )
     }
 
     return changed

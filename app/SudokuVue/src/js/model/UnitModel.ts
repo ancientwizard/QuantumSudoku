@@ -129,35 +129,57 @@ class UnitModel implements iUnit
 
     isBroken () : boolean
     {
-        const broken  = false;
+        let broken = false
 
-        // I performed this CHECK IN Java; however
-        //  this implementation *may* make this unnecessary TBD OR not!
+        //  1. Return true  if known cell duplicates are found
+        //  2. Return true  if one or more values are excluded from all cells
+        //  3. otherwise return false
 
-//ArrayList<ArrayList<Cell>> distribution = new ArrayList<ArrayList<Cell>>(9);
+        // 1. Cells having the same known value. ->is(X)
+        //  This should not be possible in a valid Sudoku puzzle
+        const distribution : Array<Array<CellModel>> = new Array(9).fill(0).map( () => new Array(0) )
 
-//for ( int i = 1 ; i < 10 ; i++ ) { distribution.add(new ArrayList<Cell>(1)); }
+        this.cells.forEach( cell => {
+            if ( cell.isUnknown ) return
+            distribution[ cell.value - 1 ].push( cell )
+        })
 
-//for ( Cell cell : cells )
-//{
-//if ( cell.isUndetermined() ) { continue; }
-//distribution.get( cell.getValue() - 1 ).add( cell );
-//}
+        distribution.forEach( val => {
+            if ( val.length > 1 ) {
+                broken = true
+                // val.forEach( cell => { cell.showError() })
+            }
+        })
 
-//for ( ArrayList<Cell> val : distribution )
-//{
-//if ( val.size() > 1 )
-//{
-//broken = true;
-//for ( Cell cell : val )
-//{
-//cell.showError();
-//}
-//}
-//}
+        //  2. Return true  if one or more values are excluded from all cells
+        if ( ! broken )
+        {
+            // Check for excluded Cell-values from all cells
+            //  (A cell-value must be seen in at least one cell
+            //   in the unit OR a cells known value)
+            const all_seen_values : Array<CellValue> = []
 
-//if ( broken )
-//System.out.println(this.toStringII());
+            this.cells.forEach( cell => {
+                // There are candidates in the cell
+                cell.as_candidate_array.forEach( candidate_value => {
+                    if ( all_seen_values.indexOf( candidate_value ) === -1 )
+                    {
+                        all_seen_values.push( candidate_value )
+                    }
+                })
+
+                // There is a known value in the cell
+                if ( cell.isKnown )
+                {
+                    if ( all_seen_values.indexOf( cell.cv ) === -1 )
+                    {
+                        all_seen_values.push( cell.cv )
+                    }
+                }
+            })
+
+            broken = all_seen_values.length != 9
+        }
 
         return broken;
     }
@@ -269,7 +291,7 @@ class UnitModel implements iUnit
 //  return s;
 //  }
 
-//  public String toStringName() { return this.getCellNames(cells).toString(); }
+    // public toStringName () : String { return this.getCellNames(cells).toString(); }
 
 }
 
