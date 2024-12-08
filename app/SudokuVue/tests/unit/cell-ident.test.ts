@@ -6,6 +6,8 @@ import      { CellIdent                     } from '@/js/model/CellIdent'
 
 function _p( x: number, y: number) : iCellIdentification { return CellIdent.factory(x,y); }
 
+enum COLNAMES { 'X', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I' }
+
 describe('model/cell-ident (defaults)', () => {
 
   let point : iCellIdentification
@@ -18,6 +20,7 @@ describe('model/cell-ident (defaults)', () => {
   test('A Point column',  () => expect(point.col).toBe(0))
   test('A Point row',     () => expect(point.row).toBe(0))
   test('A Point name',    () => expect(point.name).toBe('X0'))
+  test('A Point cname',   () => expect(point.cname).toBe('X'))
   test('A Point coord',   () => expect(point.coord).toBe('(0,0)'))
   test('A Point label',   () => expect(point.label).toBe('N/A'))
   test('A custom label',  () => expect(point.label='T2').toBe('T2'))
@@ -34,6 +37,8 @@ describe('model/cell-ident (X,Y)', () => {
     test('R', () => expect(_p(x,y).row).toBe(y))
     test('P', () => expect(_p(x,y).coord).toBe('('+x+','+y+')'))
     test('L', () => expect(_p(x,y).label).toBe('N/A'))
+    test('N', () => expect(_p(x,y).name).toBe(COLNAMES[x]+y))
+    test('J', () => expect(_p(x,y).cname).toBe(COLNAMES[x]))
   }
 })
 

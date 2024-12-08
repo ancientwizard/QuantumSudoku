@@ -49,6 +49,8 @@ class CellModel extends Subject implements iObserver
 
   get name  () : string { return this.id.name }
   get coord () : string { return this.id.coord }
+  get cname () : string { return this.id.cname }
+  get clabel() : string { return this.id.label }
   get label () : string { return this.cvalue.label }
   get value () : number { return this.cvalue.value }
   get cv    () : CellValue { return this.cvalue }
@@ -128,8 +130,7 @@ class CellModel extends Subject implements iObserver
     return [...this.candidates]
   }
 
-  // TODO: VICB Retire this method!!!
-  toArray () : Array<string>
+  get as_label_array () : Array<string>
   {
     const _z: Array<string> = []
     this.candidates.forEach( item => _z.push( item.label ))

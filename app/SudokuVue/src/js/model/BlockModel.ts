@@ -1,6 +1,6 @@
 
 //
-// Sudoku Block Model
+// Sudoku Block Model (3x3 grid [box])
 //
 
 import      { UnitModel     } from '@/js/model/UnitModel'

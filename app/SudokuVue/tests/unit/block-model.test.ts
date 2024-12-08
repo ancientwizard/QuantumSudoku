@@ -2,9 +2,28 @@
 // block-model.test.ts
 
 import { describe, expect, test } from '@jest/globals'
+import { CellModel              } from '@/js/model/CellModel'
 import { BlockModel             } from '@/js/model/BlockModel'
 
-describe('model/block-model', () => {
+function mk_cells ( autosolve = true ) : Array<CellModel>
+{
+  const cell_set : Array<CellModel> = []
+
+  for ( let y = 1 ; y <= 3 ; y++ )
+    for ( let x = 1 ; x <= 3 ; x++ )
+      cell_set.push(CellModel.factory(x,y,autosolve))
+
+  return cell_set
+}
+
+function mk_block ( autosolve = true ) : BlockModel
+{
+  return new BlockModel(mk_cells( autosolve ))
+}
+
+function block (autosolve = true) : BlockModel { return mk_block( autosolve ) }
+
+describe('model/block-model/grid-mapping', () => {
 
   test('row/col mapping', () => {
     expect(BlockModel.iC1.length).toBe(3); expect(BlockModel.iR1.length).toBe(3)
@@ -35,10 +54,25 @@ describe('model/block-model', () => {
     expect(BlockModel.iR3[1].index).toBe(7); expect(BlockModel.iR3[1].value).toBe(8)
     expect(BlockModel.iR3[2].index).toBe(8); expect(BlockModel.iR3[2].value).toBe(9)
   })
-
-  test('dummy', () => { expect(true).toBe(true) })
-
 })
+
+describe('model/block-model/constructor', () => {
+  
+    test('constructor', () => {
+      const block = new BlockModel(mk_cells())
+      expect(block).toBeInstanceOf(BlockModel)
+      // console.log(block.toString())
+      // console.log(block.toStringII())
+      // console.log(block.toStringIII()) // Block String???
+      block.as_cell_array.forEach((cell, index) => {
+        expect(cell.value).toBe(0)
+        expect(cell.length).toBe(9)
+        expect(cell.as_label_array.length).toBe(9)
+        expect(cell.autosolve).toBe(true)
+        // console.log(cell.cname)
+      })
+    })
+  })
 
 // vim: expandtab number tabstop=2
 // END

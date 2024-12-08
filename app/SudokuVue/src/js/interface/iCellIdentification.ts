@@ -16,6 +16,7 @@ interface iCellIdentification
 
     readonly  coord: string;
     readonly   name: string;
+    readonly  cname: string;
 }
 
 // vim: expandtab number tabstop=4

@@ -5,7 +5,7 @@ import { CellPoint                          } from '@/js/model/CellPoint'
 
 function _p( x: number, y: number ) : CellPoint { return new CellPoint(x,y); }
 
-describe('model/cell-point(outerlimits)', () => {
+describe('model/cell-point(outerlimit-exceptions)', () => {
 
   test('ROW < 0', () => expect(() => { new CellPoint(-1,0) }).toThrow('Invalid Sudoku location'))
   test('ROW < 0', () => expect(() => { new CellPoint(0,-1) }).toThrow('Invalid Sudoku location'))

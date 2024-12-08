@@ -35,10 +35,40 @@ describe('model/cell-index-basic', () => {
   test('invalid-index-hi',  () => expect(()=>{MyBadIndex.greater_than_8()}).toThrow('Invalid Sudoku INDEX [ 9 ]'))
 })
 
-describe('model/unit-model-basic', () => {
+describe('mk_cells function', () => {
+  test('creates the correct number of cells', () => {
+    const cells = mk_cells(5);
+    expect(cells.length).toBe(5);
+  });
 
-//console.log(mk_cells(3))
-//let unit = new UnitModel([CellModel.factory()])
+  test('creates cells with correct properties', () => {
+    const cells = mk_cells(5, false);
+    cells.forEach((cell, index) => {
+      expect(cell.value).toBe(0);
+      expect(cell.autosolve).toBe(false);
+    });
+  });
+});
+
+describe('mk_unit function', () => {
+  test('creates a UnitModel with the correct number of cells', () => {
+    const unit = mk_unit(9);
+    expect(unit.as_cell_array.length).toBe(9);
+  });
+
+  test('creates a UnitModel with cells having correct properties', () => {
+    const unit = mk_unit(9, false);
+    unit.as_cell_array.forEach((cell, index) => {
+      expect(cell.value).toBe(0);
+      expect(cell.length).toBe(9);
+      // console.log(cell.as_label_array)
+      expect(cell.as_label_array.length).toBe(9);
+      expect(cell.autosolve).toBe(false);
+    });
+  });
+});
+
+describe('model/unit-model-basic', () => {
 
   test('empty membership', () => expect(() => mk_unit()).toThrow('Content size incorrect'))
   test('small membership', () => expect(() => mk_unit(8)).toThrow('Content size incorrect'))

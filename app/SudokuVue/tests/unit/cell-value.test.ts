@@ -42,5 +42,20 @@ describe('model/cell-index', () => {
   test('NINE.index',    () => expect(CellValue.NINE.index).toBe(8))
 })
 
+describe('model/cell-array', () => {
+  test('arrayFactory', () => {
+    const v = CellValue.arrayFactory
+    expect(v[0]).toBe(CellValue.ONE)
+    expect(v[1]).toBe(CellValue.TWO)
+    expect(v[2]).toBe(CellValue.THREE)
+    expect(v[3]).toBe(CellValue.FOUR)
+    expect(v[4]).toBe(CellValue.FIVE)
+    expect(v[5]).toBe(CellValue.SIX)
+    expect(v[6]).toBe(CellValue.SEVEN)
+    expect(v[7]).toBe(CellValue.EIGHT)
+    expect(v[8]).toBe(CellValue.NINE)
+  })
+})
+
 // vim: expandtab number tabstop=2
 // END

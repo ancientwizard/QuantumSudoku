@@ -1,52 +1,24 @@
 
-// Sudoku Line Model
-// Rules:
-//  1) 
+//
+// Sudoku Cell Line Model (a UnitModel)
 //
 
-//port { CellValue } from '@/js/model/CellValue'
-import { CellModel } from '@/js/model/CellModel'
-
+import { UnitModel } from '@/js/model/UnitModel'
 export
-class LineModel {
+class LineModel extends UnitModel
+{
+  // What make this a Line?
+  //   as a row or column; its name
+  //   though in Java I didn't have row, column, block names
+  //   The cell names are the helper for naming the Line
+  //   A through I for columns and 1 through 9 for rows
+  //   or other way round; I need to make up my mind and be consistent!!!
+  //
+  // So do I really need a LineModel? If it is just a UnitModel and adds no value!
+  //
+  // Verdict: I don't need a LineModel!
 
-  private cell_set: array
-
-  constructor ()
-  {
-    this.cell_set = [
-        new CellModel()
-      , new CellModel()
-      , new CellModel()
-      , new CellModel()
-      , new CellModel()
-      , new CellModel()
-      , new CellModel()
-      , new CellModel()
-      , new CellModel()
-    ]
-  }
-
-  set ( index: integer, value: CellValue ) : boolean
-  {
-    this.cell_set.at( index ).is( value )
-    return this.toArray()
-  }
-
-  reset () : array
-  {
-    this.cell_set.forEach( c => c.reset() )
-
-    return this.toArray()
-  }
-
-  toArray () : array
-  {
-    const _z = []
-    this.cell_set.forEach( c => _z.push( c.isKnown() ? c.value() : c.toArray() ))
-    return _z
-  }
 }
 
-// vim: expandtab number tabstop=2
+// vim: expandtab number tabstop=2 shiftwidth=2
 // END

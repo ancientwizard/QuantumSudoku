@@ -1,12 +1,13 @@
 
 //
-// Sudoku Unit Model
+// Sudoku Cell Unit Model
 //
 
 import type { iUnit         } from '@/js/interface/iUnit'
 import type { CellValue     } from '@/js/model/CellValue'
 import type { CellIndex     } from '@/js/model/CellIndex'
 import type { CellModel     } from '@/js/model/CellModel'
+import { stringify } from 'querystring'
 
 export
 class UnitModel implements iUnit
@@ -215,17 +216,16 @@ class UnitModel implements iUnit
         return this.cells.map( m => m.label ).join(' ')
     }
 
-//  public String toStringIII()
-//  {
-//  String s = "";
+    // public toStringIII() : string
+    // {
+    //     let s : string = ""
 
-//  for ( Cell c : cells)
-//  {
-//  s += "|  " + (c.isKnown() ? Integer.toString(c.getValue()) : " " ) + "  ";
-//  }
+    //     this.cells.forEach( (c, index) => {
+    //             s += "|  " + ( c.isKnown ? c.label : " " ) + "  "
+    //         })
 
-//  return s + "|\n";
-//  }
+    //     return s + "|\n";
+    // }
 
 //  public String toStringLine()
 //  {

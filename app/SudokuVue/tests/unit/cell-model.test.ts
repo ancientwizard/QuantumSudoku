@@ -29,7 +29,7 @@ describe('model/cell-model', () => {
         expect(_c.value).toStrictEqual(v.value)
         expect(_c.name).toBe('X0')
         expect(_c.coord).toBe('(0,0)')
-        expect(_c.toArray()).toStrictEqual([])
+        expect(_c.as_label_array).toStrictEqual([])
         expect(()=>{_c.reset()}).not.toThrow()
         expect(_c.isKnown).toStrictEqual(false)
         expect(_c.isUnknown).toStrictEqual(true)
@@ -41,10 +41,10 @@ describe('model/cell-model', () => {
     (v) => test('(0,0).exclude(' + v.label + ').<props>',
       () => {
         const _c = _c_fac(0,0)
-        expect(_c.toArray().length).toBe(9)
+        expect(_c.as_label_array.length).toBe(9)
         expect(_c.length).toBe(9)
         expect(_c.exclude(v)).toStrictEqual(true)
-        expect(_c.toArray().length).toBe(8)
+        expect(_c.as_label_array.length).toBe(8)
         expect(_c.length).toBe(8)
         expect(_c.isKnown).toStrictEqual(false)
         expect(_c.isUnknown).toStrictEqual(true)
@@ -61,10 +61,10 @@ describe('model/cell-model', () => {
 
       CellValue.arrayFactory.reverse().forEach(
         (v) => {
-          expect(_c.toArray().length).toBe(_l)
+          expect(_c.as_label_array.length).toBe(_l)
           expect(_c.length).toBe(_l)
           expect(_c.exclude(v)).toStrictEqual(_l!=1)
-          expect(_c.toArray().length).toBe(_l>1 ? _l-1 : _l)
+          expect(_c.as_label_array.length).toBe(_l>1 ? _l-1 : _l)
           expect(_c.length).toBe(_l>1 ? _l-1 : _l)
           expect(_c.isKnown).toStrictEqual(false)
           expect(_c.isUnknown).toStrictEqual(true)
@@ -73,7 +73,7 @@ describe('model/cell-model', () => {
           --_l
           if ( _c.length <= 1 ) return
           _a.pop()
-          expect(_a.slice().reverse().toString()).toBe(_c.toArray().reverse().toString())
+          expect(_a.slice().reverse().toString()).toBe(_c.as_label_array.reverse().toString())
         })
     })
 
@@ -82,12 +82,12 @@ describe('model/cell-model', () => {
     (v) => test('(0,0).exclude(' + v.label + ').<props>',
       () => {
         const _c = _c_fac(0,0)
-        expect(_c.toArray().length).toBe(9)
+        expect(_c.as_label_array.length).toBe(9)
         expect(_c.length).toBe(9)
         // Just another way to exclude; part of the observer model
         //    "A" neighbor became "v" and its telling me I can't be "v"
         expect(_c.update(_c,v)).toBeUndefined()
-        expect(_c.toArray().length).toBe(8)
+        expect(_c.as_label_array.length).toBe(8)
         expect(_c.length).toBe(8)
         expect(_c.isKnown).toStrictEqual(false)
         expect(_c.isUnknown).toStrictEqual(true)
@@ -111,7 +111,7 @@ describe('model/cell-model', () => {
         expect(_c.label).toStrictEqual(v.label)
         expect(_c.name).toBe('X0')
         expect(_c.coord).toBe('(0,0)')
-        expect(_c.toArray()).toStrictEqual([])
+        expect(_c.as_label_array).toStrictEqual([])
         expect(()=>{_c.reset()}).not.toThrow()
         expect(_c.isKnown).toStrictEqual(false)
         expect(_c.isUnknown).toStrictEqual(true)
@@ -132,20 +132,20 @@ describe('model/cell-model', () => {
           expect(_c.autosolve).toStrictEqual(true)
           expect(_c.name).toBe('X0')
           expect(_c.coord).toBe('(0,0)')
-          expect(_c.toArray().reverse().toString()).toBe(_a.length>1?_a.slice().reverse().toString():'')
-          expect(_c.toArray().length).toBe(_l>1?_l:0)
+          expect(_c.as_label_array.reverse().toString()).toBe(_a.length>1?_a.slice().reverse().toString():'')
+          expect(_c.as_label_array.length).toBe(_l>1?_l:0)
           expect(_c.length).toBe(_l>1?_l:0)
        // console.log(_c.exclude(v))
           expect(_c.exclude(v)).toStrictEqual(_l>1)
-          expect(_c.toArray().length).toBe(_l>2?_l-1:0)
+          expect(_c.as_label_array.length).toBe(_l>2?_l-1:0)
           expect(_c.length).toBe(_l>2?_l-1:0)
           expect(_c.isKnown).toStrictEqual(_l<=2)
           expect(_c.isUnknown).toStrictEqual(_l>2)
           _a.pop()
           --_l
 //console.log('L=['+_l+']','S=['+_a.slice().reverse().toString()+']')
-//console.log(v,'C=['+_c.toArray().reverse().toString()+']','A=['+_a.slice().reverse().toString()+']')
-          expect(_c.toArray().reverse().toString()).toBe(_a.length>1?_a.slice().reverse().toString():'')
+//console.log(v,'C=['+_c.as_label_array.reverse().toString()+']','A=['+_a.slice().reverse().toString()+']')
+          expect(_c.as_label_array.reverse().toString()).toBe(_a.length>1?_a.slice().reverse().toString():'')
         })
     })
 
