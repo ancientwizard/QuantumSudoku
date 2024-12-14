@@ -1,5 +1,14 @@
 
+// strategy-block-line.test.ts
 // Block & Line Strategy unit testing
+
+import { describe, expect, test } from '@jest/globals'
+
+describe('Block & Line Strategy', () => {
+	  test('Block & Line Strategy', () => {
+	expect(1).toBe(1)
+  })
+})
 
 /*
 	public static void main(String args[])
@@ -89,5 +98,5 @@
 	}
 */
 
-// vim: expandtab number tabstop=4
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2
 // END

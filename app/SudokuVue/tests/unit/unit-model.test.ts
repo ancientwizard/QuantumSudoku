@@ -87,10 +87,10 @@ describe('model/unit-model-basic', () => {
     expect(u.is(CellIndex.ONE, CellValue.ONE)).toBe(true)
     expect(u.isSolved()).toBe(false)
     expect(u.isBroken()).toBe(false)
-    expect(u.toStringII()).toBe('1 ? ? ? ? ? ? ? ?')
+    expect(u.toStringValue()).toBe('1 ? ? ? ? ? ? ? ?')
 
     u.reset()
-    expect(u.toStringII()).toBe('? ? ? ? ? ? ? ? ?')
+    expect(u.toStringValue()).toBe('? ? ? ? ? ? ? ? ?')
 
     expect("\n" + u.toString()).toStrictEqual(`
 # A1: ? [ 1,2,3,4,5,6,7,8,9 ]
@@ -130,7 +130,7 @@ describe('model/unit-model-broken', () => {
         expect(u.isBroken()).toBe(ci.index>0)
       })
 
-      // console.log(u.toStringII())
+      // console.log(u.toStringValue())
     })
 })
 
@@ -141,14 +141,14 @@ describe('model/unit-model-solved', () => {
     let u : UnitModel = unit()
     const v : Array<CellValue> = CellValue.arrayFactory
     const P : string[] = [ '1', '2', '3', '4', '5', '6', '7', '8', '9' ]
-//  let S : CellValue = CellValue.ONE  // END of set (reverse)
-//  let N : CellValue = CellValue.NINE // END of set (forward)
-//  let x : number
+
+    // console.log(u.toStringNames())
+    expect(u.toStringNames()).toBe('A1,A2,A3,A4,A5,A6,A7,A8,A9')
 
     // Foreward
     CellIndex.arrayFactory.forEach( c => {
       expect(c.name).toBe(P[c.index])
-//    console.log(c,u.is(c, v[c.index]))
+  //  console.log(c,u.is(c, v[c.index]))
       expect(u.is(c, v[c.index])).toBe(c.index<8)
       expect(u.isSolved()).toBe(v[c.index]===CellValue.NINE || v[c.index]===CellValue.EIGHT)
     })
@@ -170,7 +170,6 @@ describe('model/unit-model-solved', () => {
     let u : UnitModel = unit()
     const v : Array<CellValue> = CellValue.arrayFactory
     const P : string[] = [ '1', '2', '3', '4', '5', '6', '7', '8', '9' ]
-//  let x : number
 
     // Foreward
     CellIndex.arrayFactory.forEach( c => {
@@ -193,5 +192,5 @@ describe('model/unit-model-solved', () => {
 })
 
 
-// vim: expandtab number tabstop=2
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2
 // END

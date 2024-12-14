@@ -47,13 +47,13 @@ class CellModel extends Subject implements iObserver
     return this
   }
 
-  get name  () : string { return this.id.name }
-  get coord () : string { return this.id.coord }
-  get cname () : string { return this.id.cname }
-  get clabel() : string { return this.id.label }
-  get label () : string { return this.cvalue.label }
-  get value () : number { return this.cvalue.value }
-  get cv    () : CellValue { return this.cvalue }
+  get name    () : string     { return this.id.name  }
+  get coord   () : string     { return this.id.coord }
+  get cname   () : string     { return this.id.cname }
+  get clabel  () : string     { return this.id.label }
+  // get cv_label() : string     { return this.cvalue.label }
+  get value   () : number     { return this.cvalue.value }
+  get cv      () : CellValue  { return this.cvalue }
 
   is ( value: CellValue ) : boolean
   {
@@ -140,7 +140,7 @@ class CellModel extends Subject implements iObserver
   // TODO: RETIRE or better suited on an adaptor as a TEXT formatter???
   public toString2 () : string
   {
-    let s : string = '# ' + this.name + ': ' +  this.label + ' [ '
+    let s : string = '# ' + this.name + ': ' +  this.cv.label + ' [ '
 
     s += this.candidates.map( c => c.label ).join()
     s += this.candidates.length ? ' ]' : ']'

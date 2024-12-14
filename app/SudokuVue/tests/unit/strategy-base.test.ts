@@ -41,43 +41,43 @@ describe('strategy/base', () => {
         expect(members.length).toBe(9)
         expect(unit.as_cell_array.length).toBe(9)
         members.forEach( m => { expect(m.autosolve).toBe(true); expect(m.observers_as_array().length).toBe(8) })
-        expect(unit.toStringII()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValue()).toBe('? ? ? ? ? ? ? ? ?')
 
         expect(unit.is(CellIndex.ONE,   CellValue.FIVE)).toBe(true)
         expect(unit.is(CellIndex.FIVE,  CellValue.FIVE)).toBe(false)
-        expect(unit.toStringII()).toBe('5 ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValue()).toBe('5 ? ? ? ? ? ? ? ?')
 
      // console.log(unit.toString());
 
         expect(unit.is(CellIndex.FOUR,  CellValue.EIGHT)).toBe(true)
         expect(unit.is(CellIndex.FIVE,  CellValue.EIGHT)).toBe(false)
-        expect(unit.toStringII()).toBe('5 ? ? 8 ? ? ? ? ?')
+        expect(unit.toStringValue()).toBe('5 ? ? 8 ? ? ? ? ?')
 
         expect(unit.is(CellIndex.NINE,  CellValue.ONE)).toBe(true)
         expect(unit.is(CellIndex.FIVE,  CellValue.ONE)).toBe(false)
-        expect(unit.toStringII()).toBe('5 ? ? 8 ? ? ? ? 1')
+        expect(unit.toStringValue()).toBe('5 ? ? 8 ? ? ? ? 1')
 
         expect(unit.is(CellIndex.EIGHT, CellValue.THREE)).toBe(true)
         expect(unit.is(CellIndex.SIX,   CellValue.THREE)).toBe(false)
-        expect(unit.toStringII()).toBe('5 ? ? 8 ? ? ? 3 1')
+        expect(unit.toStringValue()).toBe('5 ? ? 8 ? ? ? 3 1')
 
         expect(unit.is(CellIndex.SIX,   CellValue.NINE)).toBe(true)
         expect(unit.is(CellIndex.ONE,   CellValue.NINE)).toBe(false)
-        expect(unit.toStringII()).toBe('5 ? ? 8 ? 9 ? 3 1')
+        expect(unit.toStringValue()).toBe('5 ? ? 8 ? 9 ? 3 1')
 
         expect(unit.is(CellIndex.TWO,   CellValue.SIX)).toBe(true)
         expect(unit.is(CellIndex.SEVEN, CellValue.SIX)).toBe(false)
-        expect(unit.toStringII()).toBe('5 6 ? 8 ? 9 ? 3 1')
+        expect(unit.toStringValue()).toBe('5 6 ? 8 ? 9 ? 3 1')
 
         expect(unit.is(CellIndex.SEVEN, CellValue.FOUR)).toBe(true)
         expect(unit.is(CellIndex.EIGHT, CellValue.FOUR)).toBe(false)
-        expect(unit.toStringII()).toBe('5 6 ? 8 ? 9 4 3 1')
+        expect(unit.toStringValue()).toBe('5 6 ? 8 ? 9 4 3 1')
 
         // Cell 5 == Value 7 triggers Cell 3 == Value 2
         expect(unit.is(CellIndex.FIVE,  CellValue.SEVEN)).toBe(true)
         expect(unit.as_cell_array[2].value).toBe(CellValue.TWO.value)
         expect(unit.isSolved()).toBe(true)
-        expect(unit.toStringII()).toBe('5 6 2 8 7 9 4 3 1')
+        expect(unit.toStringValue()).toBe('5 6 2 8 7 9 4 3 1')
 
     //  console.log(unit.toString());
     //  console.log(unit.toStringII());
@@ -85,5 +85,5 @@ describe('strategy/base', () => {
 })
 
 
-// vim: expandtab number tabstop=4
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2
 // END

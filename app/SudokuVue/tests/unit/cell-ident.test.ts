@@ -52,5 +52,5 @@ describe('model/cell-ident (NAMES)', () => {
     test('Name', () => expect(_p(names.indexOf(name)+1,1).name).toBe(name+'1')))
 })
 
-// vim: expandtab number tabstop=2
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2
 // END

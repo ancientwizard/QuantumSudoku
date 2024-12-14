@@ -44,5 +44,5 @@ describe('model/cell-point (X,Y)', () => {
   }
 })
 
-// vim: expandtab number tabstop=2
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2
 // END

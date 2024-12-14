@@ -34,13 +34,13 @@ describe('strategy/triple', () => {
     test('naked-triple', () => {
 
         expect(unit.isSolved()).toBe(false)
-        expect(unit.toStringII()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValue()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyNakedTriple(new StrategyLogger())
 
         // Naked Triple (FIRST) (A4,A5,A6)
         expect(unit.is(CellIndex.ONE, CellValue.ONE)).toBe(true)
-        expect(unit.toStringII()).toBe('1 ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValue()).toBe('1 ? ? ? ? ? ? ? ?')
         expect(unit.as_cell_array[CellIndex.ONE.index].isKnown).toBe(true)
 
         CellValue.arrayFactory.forEach( cv => {
@@ -95,20 +95,21 @@ describe('strategy/triple', () => {
 
         unit.reset();
         expect(unit.isSolved()).toBe(false)
-        expect(unit.toStringII()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValue()).toBe('? ? ? ? ? ? ? ? ?')
     })
 
     test('hidden-triple', () => {
 
         expect(unit.isSolved()).toBe(false)
-        expect(unit.toStringII()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValue()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyHiddenTriple(new StrategyLogger())
 
         expect(unit.is(CellIndex.FOUR, CellValue.FOUR)).toBe(true)
 
         // Hidden Triple in (A7,A8,A9) as (3,2,1)
-        let others = [ CellIndex.ONE, CellIndex.TWO, CellIndex.THREE, CellIndex.FIVE, CellIndex.SIX ]
+        const others = [ CellIndex.ONE, CellIndex.TWO, CellIndex.THREE, CellIndex.FIVE, CellIndex.SIX ]
+
         others.forEach( ci => {
             expect(unit.exclude(ci, CellValue.ONE)).toBe(true)
             expect(unit.exclude(ci, CellValue.TWO)).toBe(true)
@@ -131,10 +132,10 @@ describe('strategy/triple', () => {
 
         unit.reset();
         expect(unit.isSolved()).toBe(false)
-        expect(unit.toStringII()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValue()).toBe('? ? ? ? ? ? ? ? ?')
     })
 })
 
 
-// vim: expandtab number tabstop=4
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2
 // END

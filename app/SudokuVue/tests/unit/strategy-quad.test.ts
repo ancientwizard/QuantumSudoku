@@ -34,12 +34,12 @@ describe('strategy/quad', () => {
     test('naked-quad', () => {
 
         expect(unit.isSolved()).toBe(false)
-        expect(unit.toStringII()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValue()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyNakedQuad(new StrategyLogger())
 
 //      expect(unit.is(CellIndex.ONE, CellValue.ONE)).toBe(true)
-//      expect(unit.toStringII()).toBe('1 ? ? ? ? ? ? ? ?')
+//      expect(unit.toStringValue()).toBe('1 ? ? ? ? ? ? ? ?')
 //      expect(unit.as_cell_array[CellIndex.ONE.index].isKnown).toBe(true)
 
         // Naked Quad (FIRST) (A2,A3,A8,A9) as (4,5,7,9)
@@ -101,13 +101,13 @@ describe('strategy/quad', () => {
 
         unit.reset();
         expect(unit.isSolved()).toBe(false)
-        expect(unit.toStringII()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValue()).toBe('? ? ? ? ? ? ? ? ?')
     })
 
     test('hidden-quad', () => {
 
         expect(unit.isSolved()).toBe(false)
-        expect(unit.toStringII()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValue()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyHiddenQuad(new StrategyLogger())
 
@@ -115,7 +115,8 @@ describe('strategy/quad', () => {
         expect(unit.as_cell_array[CellIndex.TWO.index].toString2()).toBe('# A2: 2 [ ]')
 
         // Hidden QUAD in (A4,A5,A8,A9) as (1,3,4,5)
-        let others = [ CellIndex.ONE, CellIndex.THREE, CellIndex.SIX, CellIndex.SEVEN ]
+        const others = [ CellIndex.ONE, CellIndex.THREE, CellIndex.SIX, CellIndex.SEVEN ]
+
         others.forEach( ci => {
             expect(unit.exclude(ci, CellValue.ONE   )).toBe(true)
             expect(unit.exclude(ci, CellValue.THREE )).toBe(true)
@@ -140,9 +141,9 @@ describe('strategy/quad', () => {
 
         unit.reset();
         expect(unit.isSolved()).toBe(false)
-        expect(unit.toStringII()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValue()).toBe('? ? ? ? ? ? ? ? ?')
     })
 })
 
-// vim: expandtab number tabstop=4
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2
 // END

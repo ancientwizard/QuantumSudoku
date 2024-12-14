@@ -8,7 +8,7 @@ describe('model/cell-model', () => {
 
   function _c_fac( x: number, y: number ) { return CellModel.factory(x,y); }
 
-  test('(0,0).label', () => expect(_c_fac(0,0).label).toBe('?'))
+  test('(0,0).label', () => expect(_c_fac(0,0).cv.label).toBe('?'))
   test('(0,0).toString2()', () => expect(_c_fac(0,0).toString2()).toBe('# X0: ? [ 1,2,3,4,5,6,7,8,9 ]'))
   test('(1,1).toString2()', () => expect(_c_fac(1,1).toString2()).toBe('# A1: ? [ 1,2,3,4,5,6,7,8,9 ]'))
 
@@ -108,7 +108,7 @@ describe('model/cell-model', () => {
         expect(_c.isKnown).toStrictEqual(true)
         expect(_c.isUnknown).toStrictEqual(false)
         expect(_c.value).toStrictEqual(v.value)
-        expect(_c.label).toStrictEqual(v.label)
+        expect(_c.cv.label).toStrictEqual(v.label)
         expect(_c.name).toBe('X0')
         expect(_c.coord).toBe('(0,0)')
         expect(_c.as_label_array).toStrictEqual([])
@@ -152,5 +152,5 @@ describe('model/cell-model', () => {
 //  console.log(_a.toString())
 })
 
-// vim: expandtab number tabstop=2
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2
 // END

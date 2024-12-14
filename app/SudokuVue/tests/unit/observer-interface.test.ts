@@ -97,5 +97,5 @@ describe( 'interface/observer', () => {
 
 })
 
-// vim: expandtab number tabstop=4
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2
 // END

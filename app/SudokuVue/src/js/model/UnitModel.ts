@@ -7,7 +7,7 @@ import type { iUnit         } from '@/js/interface/iUnit'
 import type { CellValue     } from '@/js/model/CellValue'
 import type { CellIndex     } from '@/js/model/CellIndex'
 import type { CellModel     } from '@/js/model/CellModel'
-import { stringify } from 'querystring'
+
 
 export
 class UnitModel implements iUnit
@@ -211,9 +211,9 @@ class UnitModel implements iUnit
         return s
     }
 
-    public toStringII () : string
+    public toStringValue () : string
     {
-        return this.cells.map( m => m.label ).join(' ')
+        return this.cells.map( m => m.cv.label ).join(' ')
     }
 
     // public toStringIII() : string
@@ -291,7 +291,14 @@ class UnitModel implements iUnit
 //  return s;
 //  }
 
-    // public toStringName () : String { return this.getCellNames(cells).toString(); }
+    // public getCellNames
+
+    public toStringNames () : string
+    {
+        const names : Array<string> = []
+        this.cells.forEach( c => names.push( c.name ))
+        return names.toString()
+    }
 
 }
 
