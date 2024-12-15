@@ -3,29 +3,31 @@
 
 import { describe, expect, test } from '@jest/globals'
 import { BoardMode, BoardModel  } from '@/js/model/BoardModel'
-import { CellIndex } from '@/js/model/CellIndex'
-import { CellValue } from '@/js/model/CellValue'
+import { BoardStringAdapter     } from '@/js/adapter/BoardStringAdapter'
+import { CellIndex              } from '@/js/model/CellIndex'
+import { CellValue              } from '@/js/model/CellValue'
 
-describe('model/board-model', () => {
+describe('model/sudoku-board', () => {
 
-  test('board/basics+modes', () => {
+  test('board/modes', () => {
     expect(BoardMode.EDIT).toBe(0)
     expect(BoardMode.PLAY).toBe(1)
     expect(BoardMode.DIAGONAL).toBe(2)
     expect(BoardMode.SOLVE).toBe(3)
-
-    // new BoardModel(BoardModel.MODE.EDIT)
-    // console.log(new BoardModel(BoardModel.MODE.EDIT))
   })
 
   test('board/to-string-defaults', () => {
-    expect(new BoardModel(BoardMode.EDIT).toStringNames()).toBe(board_string_names())
-    expect(new BoardModel(BoardMode.EDIT).toStringValues()).toBe(board_string_values())
-    expect(new BoardModel(BoardMode.EDIT).toStringCoords()).toBe(board_string_coords())
-    expect(new BoardModel(BoardMode.EDIT).toString()).toBe(board_string())
+
+    // TODO: convert all string building into adapters
+    [ BoardMode.EDIT, BoardMode.PLAY, BoardMode.DIAGONAL, BoardMode.SOLVE ].forEach( mode => {
+      expect(new BoardModel(mode).toStringNames()).toBe(board_string_names())
+      expect(new BoardModel(mode).toStringValues()).toBe(board_string_values())
+      expect(new BoardModel(mode).toStringCoords()).toBe(board_string_coords())
+      expect(new BoardModel(mode).toString()).toBe(board_string())
+    })
   })
 
-  test('board/model/set', () => {
+  test('board/set()', () => {
     const board = new BoardModel(BoardMode.SOLVE)
 
     expect(board.set(CellIndex.ONE, CellIndex.ONE, CellValue.ONE)).toBe(true)
@@ -41,17 +43,33 @@ describe('model/board-model', () => {
     expect(board.set(CellIndex.EIGHT,CellIndex.EIGHT,CellValue.EIGHT)).toBe(true)
     expect(board.set(CellIndex.NINE,CellIndex.NINE,CellValue.NINE)).toBe(true)
 
-    console.log(board.toString())
+    expect(BoardStringAdapter.toString(board)).toBe(board_string_state())
 
-    CellIndex.arrayFactory.forEach( ci => {
-      console.log(board.getBlock(ci).toStringBlock())
-    })
+    // console.log(board.toString())
+    // console.log(BoardAdapterString.toString(board))
   })
+
+  describe('board/string/adapters', () => {
+    test('string/adapters', () => {
+      expect(1).toBe(1)
+      // BoardStringAdapter.toString(board)
+      // BoardStringAdapter.toStringFull(board)
+      // BoardStringAdapter.toStringNames(board)
+      // BoardStringAdapter.toStringValues(board)
+      // BoardStringAdapter.toStringCoords(board)
+      // BoardStringAdapter.toStringState(board)
 
   // console.log(new BoardModel(BoardMode.EDIT).toStringValues())
   // console.log(new BoardModel(BoardMode.EDIT).toStringNames())
   // console.log(new BoardModel(BoardMode.EDIT).toStringCoords())
   // console.log(new BoardModel(BoardMode.EDIT).toString())
+    })
+
+    test('board/adapter/VueJS', () => {
+      expect(1).toBe(1)
+      // BoardVueAdapter.toString(board)
+    })
+  })
 
 })
 
@@ -129,6 +147,49 @@ function board_string () : string
   +-----+-----+-----+-----+-----+-----+-----+-----+-----+
 9 |  ?  |  ?  |  ?  |  ?  |  ?  |  ?  |  ?  |  ?  |  ?  |
   +-----+-----+-----+-----+-----+-----+-----+-----+-----+
+`
+}
+
+function board_string_state()
+{
+  return `   A     B     C     D     E     F     G     H     I
++-----+-----+-----+-----+-----+-----+-----+-----+-----+
+|     |     |     |  23 |  23 |  23 |  23 |  23 |  23 |
+| [1] | 456 | 456 |  56 | 4 6 | 45  | 456 | 456 | 456 | 1
+|     | 7 9 | 7 9 | 7 9 | 7 9 | 7 9 |   9 | 7 9 | 7 8 |
++-----+-----+-----+-----+-----+-----+-----+-----+-----+
+|     |     |     | 1 3 | 1 3 | 1 3 | 1 3 | 1 3 | 1 3 |
+| 456 | [2] | 456 |  56 | 4 6 | 45  | 456 | 456 | 456 | 2
+| 7 9 |     | 7 9 | 7 9 | 7 9 | 7 9 |   9 | 7 9 | 7 8 |
++-----+-----+-----+-----+-----+-----+-----+-----+-----+
+|     |     |     | 12  | 12  | 12  | 12  | 12  | 12  |
+| 456 | 456 | [3] |  56 | 4 6 | 45  | 456 | 456 | 456 | 3
+| 7 9 | 7 9 |     | 7 9 | 7 9 | 7 9 |   9 | 7 9 | 7 8 |
++-----+-----+-----+-----+-----+-----+-----+-----+-----+
+|  23 | 1 3 | 12  |     | 123 | 123 | 123 | 123 | 123 |
+|  56 |  56 |  56 | [4] |     |     |  56 |  56 |  56 | 4
+| 7 9 | 7 9 | 7 9 |     | 7 9 | 7 9 |   9 | 7 9 | 7 8 |
++-----+-----+-----+-----+-----+-----+-----+-----+-----+
+|  23 | 1 3 | 12  | 123 |     | 123 | 123 | 123 | 123 |
+| 4 6 | 4 6 | 4 6 |     | [5] |     | 4 6 | 4 6 | 4 6 | 5
+| 7 9 | 7 9 | 7 9 | 7 9 |     | 7 9 |   9 | 7 9 | 7 8 |
++-----+-----+-----+-----+-----+-----+-----+-----+-----+
+|  23 | 1 3 | 12  | 123 | 123 |     | 123 | 123 | 123 |
+| 45  | 45  | 45  |     |     | [6] | 45  | 45  | 45  | 6
+| 7 9 | 7 9 | 7 9 | 7 9 | 7 9 |     |   9 | 7 9 | 7 8 |
++-----+-----+-----+-----+-----+-----+-----+-----+-----+
+|  23 | 1 3 | 12  | 123 | 123 | 123 |     | 123 | 123 |
+| 456 | 456 | 456 |  56 | 4 6 | 45  | [7] | 456 | 456 | 7
+|   9 |   9 |   9 |   9 |   9 |   9 |     |     |     |
++-----+-----+-----+-----+-----+-----+-----+-----+-----+
+|  23 | 1 3 | 12  | 123 | 123 | 123 | 123 |     | 123 |
+| 456 | 456 | 456 |  56 | 4 6 | 45  | 456 | [8] | 456 | 8
+| 7 9 | 7 9 | 7 9 | 7 9 | 7 9 | 7 9 |     |     |     |
++-----+-----+-----+-----+-----+-----+-----+-----+-----+
+|  23 | 1 3 | 12  | 123 | 123 | 123 | 123 | 123 |     |
+| 456 | 456 | 456 |  56 | 4 6 | 45  | 456 | 456 | [9] | 9
+| 7 8 | 7 8 | 7 8 | 7 8 | 7 8 | 7 8 |     |     |     |
++-----+-----+-----+-----+-----+-----+-----+-----+-----+
 `
 }
 

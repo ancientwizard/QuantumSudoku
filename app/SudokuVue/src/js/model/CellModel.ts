@@ -50,6 +50,7 @@ class CellModel extends Subject implements iObserver
   get name    () : string     { return this.id.name  }
   get coord   () : string     { return this.id.coord }
   get row     () : number     { return this.id.row   }
+  get col     () : number     { return this.id.col   }
   get cname   () : string     { return this.id.cname }
   get clabel  () : string     { return this.id.label }
   // get cv_label() : string     { return this.cvalue.label }
@@ -138,7 +139,7 @@ class CellModel extends Subject implements iObserver
     return _z
   }
 
-  // TODO: RETIRE or better suited on an adaptor as a TEXT formatter???
+  // TODO: RETIRE or better suited on an adapter as a TEXT formatter???
   public toString2 () : string
   {
     let s : string = '# ' + this.name + ': ' +  this.cv.label + ' [ '

@@ -6,7 +6,7 @@
 import { UnitModel      } from '@/js/model/UnitModel'
 import { BlockModel     } from '@/js/model/BlockModel'
 import { CellModel      } from '@/js/model/CellModel'
-import type { CellIdent } from './CellIdent'
+//import type { CellIdent } from './CellIdent'
 import type { CellIndex } from './CellIndex'
 import type { CellValue } from './CellValue'
 
@@ -40,10 +40,32 @@ class BoardModel {
         return this.rowunits[y.index].is(x, value)
     }
 
-    public getBlock ( x: CellIndex ): BlockModel
+    // public getBlock ( grid_index: CellIndex ): BlockModel
+    // {
+    //     return this.grdunits[grid_index.index]
+    // }
+
+    public columnNamesAsArray(): Array<string>
     {
-        return this.grdunits[x.index]
+        return this.rowunits[0].as_cell_array.map( cell => cell.cname )
     }
+
+    public forEachRow(callback: (row: UnitModel, index: number) => void): void
+    {
+        this.rowunits.forEach(( row, index ) => {
+            callback( row, index );
+        });
+    }
+
+    // public getRow ( row_index: CellIndex ): UnitModel
+    // {
+    //     return this.rowunits[row_index.index]
+    // }
+
+    // public getColumn ( col_index: CellIndex ): UnitModel
+    // {
+    //     return this.colunits[col_index.index]
+    // }
 
     private initializeCellsAndNames(cells: Array<Array<CellModel>> ): void
     {
@@ -149,22 +171,6 @@ class BoardModel {
     {
         let s = ''
         this.rowunits.forEach( row => s += row.toStringValues() + '\n' )
-        return s
-    }
-
-    public toStringBoard(): string
-    {
-        // To be like BlockModel.toStringBlock()
-        // But this following clode is not even close Mr. AI! HA!
-
-        let s = '  '
-
-        s += this.rowunits[0].as_cell_array.map( cell => `   ${cell.cname}` ).join('  ')
-        s += '\n  +-----+-----+-----+-----+-----+-----+-----+-----+-----+\n'
-
-        this.rowunits.forEach( row => { //why offer that broken code?
-        } )
-
         return s
     }
 }
