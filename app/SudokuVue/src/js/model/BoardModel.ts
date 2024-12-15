@@ -3,59 +3,170 @@
 // Sudoku Board Model
 //
 
-import type { UnitModel     } from '@/js/model/UnitModel'
-import type { BlockModel    } from '@/js/model/BlockModel'
-import      { CellModel     } from '@/js/model/CellModel'
+import { UnitModel      } from '@/js/model/UnitModel'
+import { BlockModel     } from '@/js/model/BlockModel'
+import { CellModel      } from '@/js/model/CellModel'
+import type { CellIdent } from './CellIdent'
+import type { CellIndex } from './CellIndex'
+import type { CellValue } from './CellValue'
 
 export enum BoardMode { EDIT, PLAY, DIAGONAL, SOLVE }
 
 export
-class BoardModel
-{
-    public static readonly MODE = BoardMode
-
-/* NAMES are now build into the cells based on (X[col],Y[row])
-    public static readonly cellnames: Array<Array<String>> = [
-        ['A1','A2','A3',  'A4','A5','A6',  'A7','A8','A9' ],
-        ['B1','B2','B3',  'B4','B5','B6',  'B7','B8','B9' ],
-        ['C1','C2','C3',  'C4','C5','C6',  'C7','C8','C9' ],
-
-        ['D1','D2','D3',  'D4','D5','D6',  'D7','D8','D9' ],
-        ['E1','E2','E3',  'E4','E5','E6',  'E7','E8','E9' ],
-        ['F1','F2','F3',  'F4','F5','F6',  'F7','F8','F9' ],
-
-        ['G1','G2','G3',  'G4','G5','G6',  'G7','G8','G9' ],
-        ['H1','H2','H3',  'H4','H5','H6',  'H7','H8','H9' ],
-        ['I1','I2','I3',  'I4','I5','I6',  'I7','I8','I9' ]
-    ]
-*/
-
+class BoardModel {
     // Composition
-    private grdblocks: Array<BlockModel> = []
-    private rowblocks: Array<UnitModel>  = []
-    private colblocks: Array<UnitModel>  = []
-    private angblocks: Array<UnitModel>  = []
+    private grdunits: Array<BlockModel> = []    // 3x3 grid units
+    private rowunits: Array<UnitModel>  = []    //   9 row units
+    private colunits: Array<UnitModel>  = []    //   9 column units
+    private angunits: Array<UnitModel>  = []    //   2 diagonal units
+    private MODE: BoardMode
 
-    constructor ( mode: BoardMode )
+    constructor(mode: BoardMode)
     {
-        var cells: Array<Array<CellModel>> = []
-        var names: Array<Array<String>> = []
+        this.MODE = mode
 
-        for ( var y: number = 1 ; y <= 9 ; y++ )
-        {
-            cells[y-1] = []
-            names[y-1] = []
+        const cells: Array<Array<CellModel>> = []
 
-            for ( var x: number = 1 ; x <= 9 ; x++ )
-            {
-                names[y-1][x-1] = (cells[y-1][x-1] = CellModel.factory(x,y)).name
-            }
-        }
+        this.initializeCellsAndNames(cells)
+        this.buildRowUnits(cells)
+        this.buildColumnUnits(cells)
+        this.buildBlockUnits(cells)
 
-        // console.log(cells)
-        // console.log(names)
+        if ( this.MODE == BoardMode.DIAGONAL ) this.buildDiagonalUnits(cells)
     }
 
+    public set ( x: CellIndex, y: CellIndex, value: CellValue ): boolean
+    {
+        return this.rowunits[y.index].is(x, value)
+    }
+
+    public getBlock ( x: CellIndex ): BlockModel
+    {
+        return this.grdunits[x.index]
+    }
+
+    private initializeCellsAndNames(cells: Array<Array<CellModel>> ): void
+    {
+        for (let y = 1; y <= 9; y++)
+        {
+            cells[y - 1] = [];
+            for ( let x = 1 ; x <= 9 ; x++ )
+            {
+                cells[y - 1][x - 1] = CellModel.factory(x, y, this.MODE == BoardMode.SOLVE )
+            }
+        }
+    }
+
+    private buildRowUnits(cells: Array<Array<CellModel>>): void
+    {
+        for ( let y = 1 ; y <= 9 ; y++ )
+            this.rowunits[y - 1] = new UnitModel(cells[y - 1])
+    }
+
+    private buildColumnUnits(cells: Array<Array<CellModel>>): void
+    {
+        for ( let x = 1 ; x <= 9 ; x++ )
+        {
+            const columnCells: Array<CellModel> = []
+            for ( let y = 1 ; y <= 9 ; y++ )
+                columnCells.push(cells[y - 1][x - 1])
+
+            this.colunits[x - 1] = new UnitModel(columnCells)
+        }
+    }
+
+    private buildBlockUnits(cells: Array<Array<CellModel>>): void
+    {
+        for ( let blockY = 0 ; blockY < 3 ; blockY++ )
+            for ( let blockX = 0 ; blockX < 3 ; blockX++ )
+            {
+                const blockCells: Array<CellModel> = []
+
+                for ( let y = 0 ; y < 3 ; y++ )
+                    for (let x = 0 ; x < 3 ; x++ )
+                        blockCells.push(cells[blockY * 3 + y][blockX * 3 + x])
+
+                this.grdunits.push(new BlockModel(blockCells));
+            }
+    }
+
+    private buildDiagonalUnits(cells: Array<Array<CellModel>>): void
+    {
+        const diagonal1: Array<CellModel> = []
+        const diagonal2: Array<CellModel> = []
+
+        for (let i = 0; i < 9; i++) {
+            diagonal1.push(cells[i][i])
+            diagonal2.push(cells[i][8 - i])
+        }
+
+        this.angunits.push(new UnitModel(diagonal1))
+        this.angunits.push(new UnitModel(diagonal2))
+    }
+
+    public toString(): string
+    {
+        let s = '  '
+
+        s += this.rowunits[0].as_cell_array.map( cell => `   ${cell.cname}` ).join('  ')
+        s += '\n  +-----+-----+-----+-----+-----+-----+-----+-----+-----+\n'
+
+        this.rowunits.forEach( row => {
+            let first = true
+            row.as_cell_array.forEach( cell => {
+                s += (first ? cell.row + ' ' : '  ') + '|  ' + cell.cv.label
+                first = false
+            } )
+            s += '  |\n  +-----+-----+-----+-----+-----+-----+-----+-----+-----+\n'
+        } )
+
+        return s
+    }
+
+    public toStringCoords(): string
+    {
+        let s = '+-----+-----+-----+-----+-----+-----+-----+-----+-----+\n'
+        this.rowunits.forEach( row => {
+            row.as_cell_array.forEach( cell => s += '|' + cell.coord  )
+            s += '|\n+-----+-----+-----+-----+-----+-----+-----+-----+-----+\n'
+        } )
+
+        return s
+    }
+
+    public toStringNames(): string
+    {
+        let s = ''
+        for ( let y = 1 ; y <= 9 ; y++ )
+        {
+            s += this.rowunits[y - 1].toStringNames()
+            s += '\n'
+        }
+        return s
+    }
+
+    public toStringValues(): string
+    {
+        let s = ''
+        this.rowunits.forEach( row => s += row.toStringValues() + '\n' )
+        return s
+    }
+
+    public toStringBoard(): string
+    {
+        // To be like BlockModel.toStringBlock()
+        // But this following clode is not even close Mr. AI! HA!
+
+        let s = '  '
+
+        s += this.rowunits[0].as_cell_array.map( cell => `   ${cell.cname}` ).join('  ')
+        s += '\n  +-----+-----+-----+-----+-----+-----+-----+-----+-----+\n'
+
+        this.rowunits.forEach( row => { //why offer that broken code?
+        } )
+
+        return s
+    }
 }
 
 // vim: expandtab number tabstop=4

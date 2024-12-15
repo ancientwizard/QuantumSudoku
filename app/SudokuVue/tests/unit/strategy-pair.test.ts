@@ -34,13 +34,13 @@ describe('strategy/pair', () => {
     test('naked-pair', () => {
 
         expect(unit.isSolved()).toBe(false)
-        expect(unit.toStringValue()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyNakedPair(new StrategyLogger())
 
         // Naked pair (FIRST)
         expect(unit.is(CellIndex.NINE, CellValue.NINE)).toBe(true)
-        expect(unit.toStringValue()).toBe('? ? ? ? ? ? ? ? 9')
+        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? 9')
         expect(unit.as_cell_array[CellIndex.NINE.index].isKnown).toBe(true)
 
         CellValue.arrayFactory.forEach( cv => {
@@ -84,7 +84,7 @@ describe('strategy/pair', () => {
 
         unit.reset();
         expect(unit.isSolved()).toBe(false)
-        expect(unit.toStringValue()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         strategy.logger && strategy.logger.reset()
     })
@@ -93,7 +93,7 @@ describe('strategy/pair', () => {
     test('hidden-pair(A)', () => {
 
         expect(unit.isSolved()).toBe(false)
-        expect(unit.toStringValue()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         expect(unit.is(CellIndex.ONE,   CellValue.SEVEN)).toBe(true)
         expect(unit.is(CellIndex.FOUR,  CellValue.EIGHT)).toBe(true)
@@ -136,7 +136,7 @@ describe('strategy/pair', () => {
 
         unit.reset();
         expect(unit.isSolved()).toBe(false)
-        expect(unit.toStringValue()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         strategy.logger && strategy.logger.reset()
     })
@@ -145,7 +145,7 @@ describe('strategy/pair', () => {
     test('hidden-pair(B)', () => {
 
         expect(unit.isSolved()).toBe(false)
-        expect(unit.toStringValue()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         expect(unit.is(CellIndex.ONE,   CellValue.SEVEN)).toBe(true)
         expect(unit.is(CellIndex.FOUR,  CellValue.EIGHT)).toBe(true)
@@ -194,7 +194,7 @@ describe('strategy/pair', () => {
 
         unit.reset();
         expect(unit.isSolved()).toBe(false)
-        expect(unit.toStringValue()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         strategy.logger && strategy.logger.reset()
     })

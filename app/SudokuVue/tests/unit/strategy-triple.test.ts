@@ -34,13 +34,13 @@ describe('strategy/triple', () => {
     test('naked-triple', () => {
 
         expect(unit.isSolved()).toBe(false)
-        expect(unit.toStringValue()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyNakedTriple(new StrategyLogger())
 
         // Naked Triple (FIRST) (A4,A5,A6)
         expect(unit.is(CellIndex.ONE, CellValue.ONE)).toBe(true)
-        expect(unit.toStringValue()).toBe('1 ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValues()).toBe('1 ? ? ? ? ? ? ? ?')
         expect(unit.as_cell_array[CellIndex.ONE.index].isKnown).toBe(true)
 
         CellValue.arrayFactory.forEach( cv => {
@@ -95,13 +95,13 @@ describe('strategy/triple', () => {
 
         unit.reset();
         expect(unit.isSolved()).toBe(false)
-        expect(unit.toStringValue()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
     })
 
     test('hidden-triple', () => {
 
         expect(unit.isSolved()).toBe(false)
-        expect(unit.toStringValue()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyHiddenTriple(new StrategyLogger())
 
@@ -132,7 +132,7 @@ describe('strategy/triple', () => {
 
         unit.reset();
         expect(unit.isSolved()).toBe(false)
-        expect(unit.toStringValue()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
     })
 })
 

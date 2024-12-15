@@ -49,6 +49,7 @@ class CellModel extends Subject implements iObserver
 
   get name    () : string     { return this.id.name  }
   get coord   () : string     { return this.id.coord }
+  get row     () : number     { return this.id.row   }
   get cname   () : string     { return this.id.cname }
   get clabel  () : string     { return this.id.label }
   // get cv_label() : string     { return this.cvalue.label }

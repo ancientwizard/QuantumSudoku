@@ -87,10 +87,10 @@ describe('model/unit-model-basic', () => {
     expect(u.is(CellIndex.ONE, CellValue.ONE)).toBe(true)
     expect(u.isSolved()).toBe(false)
     expect(u.isBroken()).toBe(false)
-    expect(u.toStringValue()).toBe('1 ? ? ? ? ? ? ? ?')
+    expect(u.toStringValues()).toBe('1 ? ? ? ? ? ? ? ?')
 
     u.reset()
-    expect(u.toStringValue()).toBe('? ? ? ? ? ? ? ? ?')
+    expect(u.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
     expect("\n" + u.toString()).toStrictEqual(`
 # A1: ? [ 1,2,3,4,5,6,7,8,9 ]
@@ -130,7 +130,7 @@ describe('model/unit-model-broken', () => {
         expect(u.isBroken()).toBe(ci.index>0)
       })
 
-      // console.log(u.toStringValue())
+      // console.log(u.toStringValues())
     })
 })
 

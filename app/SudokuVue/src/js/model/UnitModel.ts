@@ -211,7 +211,7 @@ class UnitModel implements iUnit
         return s
     }
 
-    public toStringValue () : string
+    public toStringValues () : string
     {
         return this.cells.map( m => m.cv.label ).join(' ')
     }

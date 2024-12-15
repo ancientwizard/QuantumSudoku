@@ -77,7 +77,7 @@ describe('model/block-model/string-checks', () => {
 
   test('toString',      () => expect(block.toString()).toBe(to_string()))
   test('toStringBlock', () => expect(block.toStringBlock()).toBe(to_string_block()))
-  test('toStringValue', () => expect(block.toStringValue()).toBe('? ? ? ? ? ? ? ? ?'))
+  test('toStringValues',() => expect(block.toStringValues()).toBe('? ? ? ? ? ? ? ? ?'))
   test('toStringNames', () => expect(block.toStringNames()).toBe(to_string_names()))
   test('toStringCoords',() => expect(block.toStringCoords()).toBe(to_string_coords()))
 })
@@ -93,7 +93,7 @@ describe('model/block-model/string-checks-159', () => {
 
     expect(block.toString()).toBe(to_string_159())
     expect(block.toStringBlock()).toBe(to_string_block_159())
-    expect(block.toStringValue()).toBe('1 ? ? ? 5 ? ? ? 9')
+    expect(block.toStringValues()).toBe('1 ? ? ? 5 ? ? ? 9')
     expect(block.toStringCoords()).toBe(to_string_coords())
     expect(block.toStringNames()).toBe(to_string_names())
 

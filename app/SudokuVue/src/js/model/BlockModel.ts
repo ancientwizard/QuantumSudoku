@@ -152,7 +152,8 @@ class BlockModel extends UnitModel
         return s
     }
 
-    public toStringCoords(): string {
+    public toStringCoords(): string
+    {
         const map : string[][] = [
             ['  ', '  ', '  '],
             ['  ', '  ', '  '],
