@@ -3,6 +3,9 @@
 
 import { describe, expect, test     } from '@jest/globals'
 import { BasicMap                   } from '@/js/model/BasicMap'
+// import { EightyOneBits              } from '@/js/util/EightyOneBits'
+import { execPath } from 'process'
+
 
 describe('model/sudoku/basic-map', () => {
 
@@ -116,24 +119,6 @@ describe('model/sudoku/basic-map', () => {
 
 // Remember the following was written in Java, so please convert to TypeScript before offering up code
 
-//         // Solve and print
-//         System.out.println(" ---- Sudoku Board work ----");
-//         Board board = new Board(Board.BoardMode.NORMAL);
-//         board.setStart( map );
-
-//         System.out.print( board.toString2() );
-//         System.out.println( "Solved: " + board.isSolved());
-//         board.solve();
-
-//         System.out.print( board.toString2() );
-//         System.out.println( "Solved: " + board.isSolved());
-
-//         map = new BasicMap( board.to_arymap() );
-//         System.out.println( map.toStringMap() );
-//         System.out.println( "NOTE: ** When solved a map encodes the same using both formats (NO-NULLS)" );
-//         System.out.println( map.encodeMapStringRL() );
-//         System.out.println( map.encodeMapString() );
-
 // Solve and print
 // console.log(" ---- Sudoku Board work ----");
 // const board = new Board(Board.BoardMode.NORMAL);
@@ -155,8 +140,11 @@ describe('model/sudoku/basic-map', () => {
 // console.log("\n*** Hash (max) of each pattern **");
 // const map = puzzle_71();
 
-// console.log(puzzle_71().max_of(7));
+for ( let x = 1; x <= 9; x++ )
+    console.log(puzzle_71().toStringMap()+'\n'+puzzle_71().of(x).toStringMap()+'\n'+puzzle_71().max_of(x)+'\n'+puzzle_71().min_of(x));
+
 // console.log(puzzle_71().min_of(7));
+console.log(puzzle_71().toString());
 
 // try {
 //     const md5 = crypto.createHash('md5');

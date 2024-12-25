@@ -2,6 +2,18 @@
 // An implementation to represent a basic 9x9 Sudoku map. The map is represented
 // as inetegers and can be encoded and decoded from a string.
 
+import { EightyOneBits } from '@/js/util/EightyOneBits';
+
+
+function bigintMax(arr: bigint[]): bigint {
+    if (arr.length === 0) throw new Error("Array is empty");
+    return arr.reduce((max, val) => (val > max ? val : max), arr[0]);
+}
+
+function bigintMin(arr: bigint[]): bigint {
+    if (arr.length === 0) throw new Error("Array is empty");
+    return arr.reduce((min, val) => (val < min ? val : min), arr[0]);
+}
 export class BasicMap
 {
     private map: (number|null)[][] = [];
@@ -128,18 +140,18 @@ export class BasicMap
         let mapstr = "MAP:RL:A:";
         let count = 0;
 
-        for (let y = 0; y < 9; y++)
+        for ( let y = 0 ; y < 9 ; y++ )
         {
-            for (let x = 0; x < 9; x++)
+            for ( let x = 0 ; x < 9 ; x++ )
             {
                 const c = this.map[y][x];
-                if (c === null || c === 0)
+                if ( c === null || c === 0 )
                 {
                     count++;
                     continue;
                 }
 
-                if (count > 0)
+                if ( count > 0 )
                 {
                     mapstr += count > 4 ? `R${count}X` : "0000".substring(4 - count);
                     count = 0;
@@ -149,7 +161,7 @@ export class BasicMap
             }
         }
 
-        if (count > 0)
+        if ( count > 0 )
         {
             mapstr += count > 4 ? `R${count}X` : "0000".substring(4 - count);
         }
@@ -190,42 +202,40 @@ export class BasicMap
         if (m < 1 || m > 9) throw new Error("IllegalArgumentException");
 
         const pattern = new BasicMap();
-        for (let y = 0; y < 9; y++)
+        for ( let y = 0 ; y < 9 ; y++ )
         {
-            for (let x = 0; x < 9; x++)
+            for ( let x = 0 ; x < 9 ; x++ )
             {
-                if (this.map[y][x] === m)
-                {
+                if ( this.map[y][x] === m )
                     pattern.map[y][x] = 1;
-                }
             }
         }
         return pattern;
     }
 
-    public max_of(m: number): number
+    public max_of(m: number): bigint
     {
-        return Math.max(...this.set_of(m));
+        return bigintMax(this.set_of(m));
     }
 
-    public min_of(m: number): number
+    public min_of(m: number): bigint
     {
-        return Math.min(...this.set_of(m));
+        return bigintMin(this.set_of(m));
     }
 
-    private set_of(m: number): number[]
+    private set_of(m: number): bigint[]
     {
-        const set: number[] = [];
+        const set: bigint[] = [];
 
         let wmap = this.of(m);
-        set.push(wmap.toBigInteger());        wmap = wmap.rotate();
-        set.push(wmap.toBigInteger());        wmap = wmap.rotate();
-        set.push(wmap.toBigInteger());        wmap = wmap.rotate();
-        set.push(wmap.toBigInteger());        wmap = wmap.rotate().flip();
-        set.push(wmap.toBigInteger());        wmap = wmap.rotate();
-        set.push(wmap.toBigInteger());        wmap = wmap.rotate();
-        set.push(wmap.toBigInteger());        wmap = wmap.rotate();
-        set.push(wmap.toBigInteger());
+        set.push(wmap.toBigInteger().toBigInt());        wmap = wmap.rotate();
+        set.push(wmap.toBigInteger().toBigInt());        wmap = wmap.rotate();
+        set.push(wmap.toBigInteger().toBigInt());        wmap = wmap.rotate();
+        set.push(wmap.toBigInteger().toBigInt());        wmap = wmap.rotate().flip();
+        set.push(wmap.toBigInteger().toBigInt());        wmap = wmap.rotate();
+        set.push(wmap.toBigInteger().toBigInt());        wmap = wmap.rotate();
+        set.push(wmap.toBigInteger().toBigInt());        wmap = wmap.rotate();
+        set.push(wmap.toBigInteger().toBigInt());
 
         return set;
     }
@@ -253,11 +263,11 @@ export class BasicMap
         let description = this.source + ', ';
         let formatted_page = '';
 
-        try {
-            formatted_page = `#${("000" + parseInt(this.page)).slice(-3)}`;
-        } catch (e) {
+        // try {
+        //     formatted_page = `#${("000" + parseInt(this.page)).slice(-3)}`;
+        // } catch (e) {
             formatted_page = this.page;
-        }
+        // }
 
         description += formatted_page;
         return description;
@@ -268,36 +278,80 @@ export class BasicMap
         return this.map.toString()
     }
 
-    private toBigInteger(): number
+    private toBigInteger(): EightyOneBits
     {
-        let bi = 0;
+        const bi = new EightyOneBits();
         let bit_idx = 80;
 
-        for (let y = 0; y < 9; y++)
+        for ( let y = 0 ; y < 9; y++ )
         {
-            for (let x = 0; x < 9; x++, bit_idx--)
+            for ( let x = 0 ; x < 9 ; x++, bit_idx-- )
             {
                 if (this.map[y][x] !== null)
                 {
-                    bi |= 1 << bit_idx;
+                    // bi |= 1 << bit_idx;
+                    bi.setBit(bit_idx);
                 }
             }
         }
         return bi;
     }
 
+    // SOURCE
+    public set_source( _source : string ) : void
+    {
+        this.source = '' + _source
+        return
+    }
 
+    public get_source() : string { return this.source }
+
+    // PAGE
+    public set_page( _page : string ) : void
+    {
+        this.page = '' +  _page
+        return
+    }
+
+    public get_page() : string { return this.page }
+
+    // CREDITS
+    public set_credits( _credits : string ) : void
+    {
+        this.credits = '' + _credits
+        return
+    }
+
+    public get_credits() : string { return this.credits }
+
+    // EMAIL
+    public set_email( _emailaddress : string ) : void
+    {
+        this.emailaddress = '' + _emailaddress
+        return
+    }
+
+    public get_email() : string { return this.emailaddress }
+
+    // COMMENT
+    public set_comment( _comment : string ) : void
+    {
+        this.comment = '' + _comment
+        return
+    }
+
+    public get_comment() : string { return this.comment }
+
+    // UUID
+    public set_uuid( _uuid : string ) : void
+    {
+        this.uuid = '' + _uuid
+        return
+    }
+
+    public get_uuid() : string { return this.uuid }
 }
 
-// import java.math.BigInteger;
-// import java.nio.charset.Charset;
-// import java.security.MessageDigest;
-// import java.security.NoSuchAlgorithmException;
-// import java.util.ArrayList;
-// import java.util.Base64;
-// import java.util.Base64.Encoder;
-// import java.util.Collections;
-// import java.util.Iterator;
 
 // public class BasicMap implements Comparable<BasicMap>
 // {
@@ -305,7 +359,6 @@ export class BasicMap
 //     {
 //         private static final long serialVersionUID = 1L;
 //     }
-
 
 //     public BasicMap( ArrayList<ArrayList<Integer>> ary_map )
 //     {
@@ -317,166 +370,10 @@ export class BasicMap
 //         this._load( _map.map );
 //     }
 
-//     public BasicMap decodeMapString( String encoded_map )
-//     {
-//         DECODE:
-//         {
-//             if ( encoded_map != null )
-//             {
-//                 // Reset blank map (default == empty)
-//                 this._init();
-
-//                 // Known encodings
-//                 if ( encoded_map.startsWith( "MAP:NR:A:" ))
-//                 {
-//                     this._decode_map_normal( encoded_map );
-//                     break DECODE;
-//                 }
-
-//                 if ( encoded_map.startsWith( "MAP:RL:A:" ))
-//                 {
-//                     this._decode_map_rlengt( encoded_map );
-//                     break DECODE;
-//                 }
-//             }
-
-//             throw new InvalidMapDefinition();
-//         }
-
-//         return this;
-//     }
 
 //     public int compareTo( BasicMap o )
 //     {
 //         return this.toString().compareTo(o.toString());
-//     }
-
-//     public String encodeMapString()
-//     {
-//         String mapstr = "MAP:NR:A:";
-
-//         for ( int y = 0 ; y < 9 ; y++ )
-//             for ( int x = 0 ; x < 9 ; x++ )
-//             {
-//                 Integer c = map.get( y ).get( x );
-
-//                 mapstr += c == null ? "0" : c;
-//             }
-
-//         return mapstr;
-//     }
-
-//     public String encodeMapStringRL()
-//     {
-//         String mapstr = "MAP:RL:A:";
-//         int     count = 0;
-
-//         for ( int y = 0 ; y < 9 ; y++ )
-//             for ( int x = 0 ; x < 9 ; x++ )
-//             {
-//                 Integer c = map.get( y ).get( x );
-
-//                 if ( c == null || c.equals( "0" ))
-//                 {
-//                     count++;
-//                     continue;
-//                 }
-
-//                 if ( count > 0 )
-//                 {
-//                     mapstr += count > 4
-//                         ? String.format( "R%dX", count )
-//                         : new String("0000").substring( 4 - count );
-//                     count = 0;
-//                 }
-
-//                 mapstr += c;
-//             }
-
-//         // Special case void map
-//         if ( count > 0 )
-//         {
-//             mapstr += count > 4
-//                 ? String.format( "R%dX", count )
-//                 : new String("0000").substring( 4 - count );
-//         }
-
-//         return mapstr;
-//     }
-
-//     public BasicMap flip()
-//     {
-//         BasicMap flipped = new BasicMap();
-//         for ( int y = 0 ; y < 9 ; y++ )
-//             for ( int x = 0 ; x < 9 ; x++ )
-//                 flipped.map.get( y ).set( 8 - x, map.get( y ).get( x ) );
-//         return flipped;
-//     }
-
-//     public BasicMap rotate()
-//     {
-//         BasicMap clockwise= new BasicMap();
-
-//         for ( int y = 0 ; y < 9 ; y++ )
-//             for ( int x = 0 ; x < 9 ; x++ )
-//                 clockwise.map.get( y ).set( x, map.get( 8 - x ).get( y ) );
-
-//         return clockwise;
-//     }
-
-//     // Returns a partial map of the current map containing only those
-//     //  map locations having a value of "m" but placing one (1) in those
-//     //  positions. This pattern can be used to place a value on a
-//     //  set of positions. The "m" is replaced with 1 because "m"'s value is
-//     //  insignificant but it's positions is not!
-//     public BasicMap of( int m )
-//     {
-//         if ( m < 1 || m > 9 )
-//             throw new IllegalArgumentException();
-
-//         Integer        v = null;
-//         BasicMap pattern = new BasicMap();
-
-//         for ( int y = 0 ; y < 9 ; y++ )
-//             for ( int x = 0 ; x < 9 ; x++ )
-//             {
-//                 v = map.get( y ).get( x );
-//             //	if ( v != null )
-//             //	System.out.println(" (" + x + "," + y + ") = " + v );
-//                 if ( v != null && v == m )
-//                     pattern.map.get( y ).set( x, new Integer(1) );
-//             }
-
-//         return pattern;
-//     }
-
-//     public BigInteger max_of( int m )
-//     {
-//         return Collections.max(this.set_of( m ));
-//     }
-
-//     public BigInteger min_of( int m )
-//     {
-//         return Collections.min(this.set_of( m ));
-//     }
-
-//     protected ArrayList<BigInteger> set_of( int m )
-//     {
-//         // Obtain the eight (8) views of index "m" and return the max
-//         ArrayList<BigInteger> set = new ArrayList<BigInteger>(8);
-
-//         BasicMap wmap = this.of( m );
-
-//         set.add( wmap.toBigInteger()); wmap = wmap.rotate();
-//         set.add( wmap.toBigInteger()); wmap = wmap.rotate();
-//         set.add( wmap.toBigInteger()); wmap = wmap.rotate();
-//         set.add( wmap.toBigInteger()); wmap = wmap.rotate().flip();
-//         set.add( wmap.toBigInteger()); wmap = wmap.rotate();
-//         set.add( wmap.toBigInteger()); wmap = wmap.rotate();
-//         set.add( wmap.toBigInteger()); wmap = wmap.rotate();
-//         set.add( wmap.toBigInteger());
-
-//         return set;
 //     }
 
 //     public String toHashID()
@@ -577,60 +474,6 @@ export class BasicMap
 
 //         return map.get( --y ).get( --x );
 //     }
-
-//     // SOURCE
-//     public void set_source( String _source )
-//     {
-//         source = new String( _source );
-//         return;
-//     }
-
-//     public String get_source() { return source; }
-
-//     // PAGE
-//     public void set_page( String _page )
-//     {
-//         page = new String( _page );
-//         return;
-//     }
-
-//     public String get_page() { return page; }
-
-//     // CREDITS
-//     public void   set_credits( String _credits )
-//     {
-//         credits = new String( _credits );
-//         return;
-//     }
-
-//     public String get_credits() { return credits; }
-
-//     // EMAIL
-//     public void set_email( String _emailaddress )
-//     {
-//         emailaddress = new String( _emailaddress );
-//         return;
-//     }
-
-//     public String get_email() { return emailaddress; }
-
-//     // COMMENT
-//     public void set_comment( String _comment )
-//     {
-//         comment = new String( _comment );
-//         return;
-//     }
-
-//     public String get_comment() { return comment; }
-
-//     // UUID
-//     public void set_uuid( String _uuid )
-//     {
-//         uuid = new String( _uuid );
-//         return;
-//     }
-
-//     public String get_uuid() { return uuid; }
 
 
 //     // STRINGS
