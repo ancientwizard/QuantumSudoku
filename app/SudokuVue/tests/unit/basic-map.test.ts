@@ -16,7 +16,7 @@ describe('model/sudoku/basic-map', () => {
         expect([5n,1n,2n,0n,3n].sort((a,b) => { return a == b ? 0 : b > a ?  1 : -1 })).toEqual([5n,3n,2n,1n,0n])
         expect([5n,1n,2n,0n,3n].sort((a,b) => { return a == b ? 0 : a > b ?  1 : -1 }).reverse()).toEqual([5n,3n,2n,1n,0n])
         expect([5n,1n,2n,0n,3n].sort((a,b) => { return a == b ? 0 : b > a ?  1 : -1 }).reverse()).toEqual([0n,1n,2n,3n,5n])
-        // expect([1n,0n,2n,2n,3n].sort((a,b) => { return a == b ? 0 : b > a ?  1 : -1 })).toEqual([3n,2n,2n,1n,0n])
+        expect([1n,0n,2n,2n,3n].sort((a,b) => { return a == b ? 0 : b > a ?  1 : -1 })).toEqual([3n,2n,2n,1n,0n])
     })
 
     test('basic-map/empty', () => {
