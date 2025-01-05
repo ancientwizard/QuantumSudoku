@@ -2,16 +2,18 @@
 // An implementation to represent a basic 9x9 Sudoku map. The map is represented
 // as inetegers and can be encoded and decoded from a string.
 
-import { EightyOneBits } from '@/js/util/EightyOneBits';
+import { EightyOneBits  } from '@/js/util/EightyOneBits';
+import { createHash     } from 'crypto';
 
-
+export
 function bigintMax(arr: bigint[]): bigint {
-    if (arr.length === 0) throw new Error("Array is empty");
+    if (arr.length === 0) throw new Error('Array is empty');
     return arr.reduce((max, val) => (val > max ? val : max), arr[0]);
 }
 
+export
 function bigintMin(arr: bigint[]): bigint {
-    if (arr.length === 0) throw new Error("Array is empty");
+    if (arr.length === 0) throw new Error('Array is empty');
     return arr.reduce((min, val) => (val < min ? val : min), arr[0]);
 }
 export class BasicMap
@@ -228,49 +230,39 @@ export class BasicMap
         const set: bigint[] = [];
 
         let wmap = this.of(m);
-        set.push(wmap.toBigInteger().toBigInt());        wmap = wmap.rotate();
-        set.push(wmap.toBigInteger().toBigInt());        wmap = wmap.rotate();
-        set.push(wmap.toBigInteger().toBigInt());        wmap = wmap.rotate();
-        set.push(wmap.toBigInteger().toBigInt());        wmap = wmap.rotate().flip();
-        set.push(wmap.toBigInteger().toBigInt());        wmap = wmap.rotate();
-        set.push(wmap.toBigInteger().toBigInt());        wmap = wmap.rotate();
-        set.push(wmap.toBigInteger().toBigInt());        wmap = wmap.rotate();
-        set.push(wmap.toBigInteger().toBigInt());
+        set.push(wmap.toBigInteger().toBigInt());   wmap = wmap.rotate()
+        set.push(wmap.toBigInteger().toBigInt());   wmap = wmap.rotate()
+        set.push(wmap.toBigInteger().toBigInt());   wmap = wmap.rotate()
+        set.push(wmap.toBigInteger().toBigInt());   wmap = wmap.rotate().flip()
+        set.push(wmap.toBigInteger().toBigInt());   wmap = wmap.rotate()
+        set.push(wmap.toBigInteger().toBigInt());   wmap = wmap.rotate()
+        set.push(wmap.toBigInteger().toBigInt());   wmap = wmap.rotate()
+        set.push(wmap.toBigInteger().toBigInt())
 
         return set;
     }
 
     public toStringMap(): string
     {
-        let str = "+-------+-------+-------+\n";
+        let str = '+-------+-------+-------+\n';
         for (let y = 0; y < 9; y++)
         {
-            str += "|";
+            str += '|';
             for (let x = 0; x < 9; x++)
             {
-                str += this.map[y][x] === null ? " -" : ` ${this.map[y][x]}`;
-                if (x === 2 || x === 5) str += " |";
+                str += this.map[y][x] === null ? ' -' : ` ${this.map[y][x]}`;
+                if (x === 2 || x === 5) str += ' |';
             }
-            str += " |\n";
-            if (y === 2 || y === 5) str += "+-------+-------+-------+\n";
+            str += ' |\n';
+            if (y === 2 || y === 5) str += '+-------+-------+-------+\n';
         }
-        str += "+-------+-------+-------+\n";
+        str += '+-------+-------+-------+\n';
         return str;
     }
 
     public toString(): string
     {
-        let description = this.source + ', ';
-        let formatted_page = '';
-
-        // try {
-        //     formatted_page = `#${("000" + parseInt(this.page)).slice(-3)}`;
-        // } catch (e) {
-            formatted_page = this.page;
-        // }
-
-        description += formatted_page;
-        return description;
+        return this.page ? this.source + ', ' + this.page : this.source
     }
 
     public toStringAry(): string
@@ -295,6 +287,88 @@ export class BasicMap
             }
         }
         return bi;
+    }
+
+    public toHashID(): string
+    {
+        // The HASH-ID created by this method computes a string that
+        //  is capable of identifying a map regardless of it orientation,
+        //  starting position or numbered assignments. The HASH describes the
+        //  solved map in such a way that any two maps may be seen as being
+        //  the same even when the eye cannot see this quality.
+
+        // The following describes how rules Sudoku maps are judges as the same.
+
+        // A SUDOKU Map:
+        //  Lets describe the condition of a properly defined Sudoku
+        //  puzzle. (rules not defined here). The primary features are:
+        //  1) The solution (there must be only one!)
+        //  2) The starting point
+        //  3) The sets (rows, columns & blocks) that make up the Sudoku puzzle all
+        //      contain nine cells (elements) composed of the unique set of
+        //      integers 1-9.
+        //
+        // The map hash explains how a map is represented compared to other maps.
+        //  In theory (and some practice) two maps considered logically the same will
+        //  produce the identical hash. Therefore more than one map producing the same
+        //  hash are the same map. The hash will indicate when two puzzles are exactly
+        //  the same even though the maps map appear to display differently based on
+        //  the defined solution and starting points. Lets see how this works.
+        //
+        // Consider: All Sudoku puzzles have an *ENDING* and a *BEGINNING*. While the
+        //	ending plays a minor role in the puzzles beginning the BEGINNING has the
+        //  significant influence over the puzzle difficulty to solve. This also means
+        //  that the same puzzle can have many beginnings all having the same outcome
+        //  but all providing a different difficulty experience. This hashing is only
+        //  the final solution not its starting point. An analysis of the logical
+        //  strategies required to solve the puzzle is the solution used to make
+        //  that determination.
+        //
+        // *** Sudoku map comparison Rules for SAMENESS ***
+        //
+        // RULE #1: Every map with the same solution no matter how it is oriented,
+        //  (rotated, flipped or both) are the same map. The "Natural Layout" of
+        //  a puzzle is determined and the key to creating an identical HASH for
+        //  seemingly differently looking puzzles. (Natural Layout is defined later)
+        //
+        // RULE #2: Every map is the same based on rule #1 regardless of starting
+        //  point. As you already know the starting point is a puzzle with some of
+        //  its cells unknown.
+        //
+        // RULE #3: Every map is made up of the integer set 1-9 having no value
+        //  except their relative position to one another; therefore puzzles are
+        //  the same by simply swapping all the twos with sevens; or any other
+        //	combination of swapping so long as the relative positioning is unchanged!
+        //
+        // RULE #3: Every map has a "NATURAL LAYOUT"; simply put is a way of orienting
+        //  the map so that all maps like it will produce the same "NATURAL LAYOUT"
+        //
+        // NATURAL LAYOUT: Is determined by converting the relative positioning of
+        //  each of of the integers (but not their values, because a 9 is no greater
+        //  than a 5 is) of all eight of the possible orientations based on flipping
+        //  and rotating the puzzle. We then ???? the lowest integer value for the eight
+        //  possible orientations, HASH them using MD5 and then encoding using Base64;
+        //  thus producing a reasonably short string that when equal to other map hashes
+        //  are considered identical when concerning their relative positioning
+        //
+
+        const bigInts: bigint[] = []
+        let hashid = 'HASHID'
+
+        for ( let m = 1 ; m <= 9 ; m++ )
+            bigInts.push(this.min_of(m))
+
+        // desending order
+        bigInts.sort((a, b) => { return a == b ? 0 : a < b ? 1 : -1 })
+
+        const md5 = createHash('md5');
+        for (const value of bigInts) {
+            md5.update(value.toString());
+        }
+
+        hashid += "-" + md5.digest('base64').replace(/=[/]+$/, '');
+
+        return hashid;
     }
 
     // SOURCE
@@ -350,6 +424,7 @@ export class BasicMap
     }
 
     public get_uuid() : string { return this.uuid }
+
 }
 
 
@@ -376,96 +451,6 @@ export class BasicMap
 //         return this.toString().compareTo(o.toString());
 //     }
 
-//     public String toHashID()
-//     {
-//         // The HASH-ID created by this method computes a string that
-//         //  is capable of identifying a map regardless of it orientation,
-//         //  starting position or numbered assignments. The HASH describes the
-//         //  solved map in such a way that any two maps may be seen as being
-//         //  the same even when the eye cannot see this quality.
-
-//         // The following describes how rules Sudoku maps are judges as the same.
-
-//         // A SUDOKU Map:
-//         //  Lets describe the condition of a properly defined Sudoku
-//         //  puzzle. (rules not defined here). The primary features are:
-//         //  1) The solution (there must be only one!)
-//         //  2) The starting point
-//         //  3) The groups that make up the Sudoku puzzle all contain nine cells (elements)
-//         //		composed of the unique set of number 1-9.
-//         //
-//         // The map hash explains how a map is represented compared to other maps.
-//         //  In theory (and some practice) two maps considered logically the same will
-//         //  produce the identical hash. Therefore more than one map producing the same
-//         //  hash are the same map. The hash will indicate when two puzzles are exactly
-//         //  the same even though the maps map appear to display differently based on
-//         //  the defined solution and starting points. Lets see how this works.
-//         //
-//         // Consider: All Sudoku puzzles have an *ENDING* and a *BEGINNING*. While the
-//         //	ending plays a minor role in the puzzles beginning the BEGINNING has the
-//         //  significant influence over the puzzle difficulty to solve. This also means
-//         //  that the same puzzle can have many beginnings all having the same outcome
-//         //  but all providing a different level of experience. This hashing is only
-//         //  the final solution not its starting point. An analysis of the logical
-//         //  strategies required to solve the puzzle is the solution used to make
-//         //  that determination.
-//         //
-//         // *** Sudoku map comparison Rules for SAMENESS ***
-//         //
-//         // RULE #1: Every map with the same solution no matter how it is oriented,
-//         //  (rotated, flipped or both) are the same map. The "Natural Layout" of
-//         //  a puzzle is determined and the key to creating an identical HASH for
-//         //  seemingly differently looking puzzles. (Natural Layout is defined later)
-//         //
-//         // RULE #2: Every map is the same based on rule #1 regardless of starting
-//         //  point. As you already know the starting point is a puzzle with some of
-//         //  its cells unknown.
-//         //
-//         // RULE #3: Every map is made up of the integer set 1-9 having no value
-//         //  except their relative position to one another; therefore puzzles are
-//         //  the same by simply swapping all the twos with sevens; or any other
-//         //	combination of swapping so long as the relative positioning is unchanged!
-//         //
-//         // RULE #3: Every map has a "NATURAL LAYOUT"; simply put is a way of orienting
-//         //  the map so that all maps like it will produce the same "NATURAL LAYOUT"
-//         //
-//         // NATURAL LAYOUT: Is determined by converting the relative positioning of
-//         //  each of of the integers (but not their values, because a 9 is no greater
-//         //  than a 5 is Sudoku) of all eight of the possible orientations based on flipping
-//         //  and rotating the puzzle. We then that the lowest integer value for the eight
-//         //  possible orientations, HASH them using MD5 and then encoding using Base64;
-//         //  thus producing a reasonably short string that when equal to other map hashes
-//         //  are considered identical when concerning their relative positioning
-//         //
-
-//         ArrayList<BigInteger> set = new ArrayList<BigInteger>(9);
-//         String hashid = "HASHID";
-
-//         try
-//         {
-//             for ( int m = 1 ; m <= 9 ; m++ )
-//                 set.add( min_of(m) );
-
-//             Collections.sort( set );
-//             Collections.reverse( set );
-
-//             MessageDigest md5 = MessageDigest.getInstance( "MD5" );
-//             Iterator<BigInteger> i = set.iterator();
-
-//             while ( i.hasNext())
-//             {
-//                 md5.update( i.next().toByteArray());
-//             }
-
-//             hashid += "-" + Base64.getEncoder().withoutPadding().encodeToString(md5.digest());
-//         }
-//         catch ( NoSuchAlgorithmException a )
-//         {
-//             System.out.println( a );
-//         }
-
-//         return hashid;
-//     }
 
 //     public Integer get( int x, int y )
 //     {
@@ -521,19 +506,6 @@ export class BasicMap
 //         str += "+-------+-------+-------+\n";
 
 //         return str;
-//     }
-
-//     private BigInteger toBigInteger()
-//     {
-//         BigInteger bi = BigInteger.ZERO;
-//         int bit_idx = 80;
-
-//         for ( int y = 0 ; y < 9 ; y++ )
-//             for ( int x = 0 ; x < 9 ; x++, bit_idx-- )
-//                 if ( map.get( y ).get( x ) != null )
-//                     bi = bi.setBit( bit_idx );
-
-//         return bi;
 //     }
 
 //     private void _decode_map_normal( String e_normal )

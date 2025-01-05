@@ -1,13 +1,23 @@
 
 // basic-map.test.ts
 
-import { describe, expect, test     } from '@jest/globals'
-import { BasicMap                   } from '@/js/model/BasicMap'
-// import { EightyOneBits              } from '@/js/util/EightyOneBits'
-import { execPath } from 'process'
+import { describe, expect, test         } from '@jest/globals'
+import { BasicMap, bigintMax, bigintMin } from '@/js/model/BasicMap'
 
 
 describe('model/sudoku/basic-map', () => {
+
+    test('bigint/max+nim', () => {
+        expect(()=>{bigintMax([])}).toThrow()
+        expect(()=>{bigintMin([])}).toThrow()
+        expect(bigintMax([1n,2n,3n])).toBe(3n)
+        expect(bigintMin([2n,1n,3n])).toBe(1n)
+        expect([5n,1n,2n,0n,3n].sort((a,b) => { return a == b ? 0 : a > b ?  1 : -1 })).toEqual([0n,1n,2n,3n,5n])
+        expect([5n,1n,2n,0n,3n].sort((a,b) => { return a == b ? 0 : b > a ?  1 : -1 })).toEqual([5n,3n,2n,1n,0n])
+        expect([5n,1n,2n,0n,3n].sort((a,b) => { return a == b ? 0 : a > b ?  1 : -1 }).reverse()).toEqual([5n,3n,2n,1n,0n])
+        expect([5n,1n,2n,0n,3n].sort((a,b) => { return a == b ? 0 : b > a ?  1 : -1 }).reverse()).toEqual([0n,1n,2n,3n,5n])
+        // expect([1n,0n,2n,2n,3n].sort((a,b) => { return a == b ? 0 : b > a ?  1 : -1 })).toEqual([3n,2n,2n,1n,0n])
+    })
 
     test('basic-map/empty', () => {
         const map : BasicMap = new BasicMap();
@@ -44,34 +54,62 @@ describe('model/sudoku/basic-map', () => {
     })
 
     test('basic-map/exceptions', () => {
-        expect(() => { new BasicMap().decodeMapString('MAP:XX') }).toThrow()
-        expect(() => { new BasicMap().decodeMapString('MAP:NP:B:') }).toThrow()
-        expect(() => { new BasicMap().decodeMapString('MAP:NP:A:') }).toThrow()
-        expect(() => { new BasicMap().decodeMapString('MAP:RL:A:R80X') }).toThrow()
-        expect(() => { new BasicMap().decodeMapString('MAP:RL:A:2R80X1') }).toThrow()
-        expect(() => { new BasicMap().decodeMapString('MAP:RL:A:123') }).toThrow()
-        expect(() => { new BasicMap().decodeMapString('MAP:NR:A:123') }).toThrow()
-        expect(() => { new BasicMap().decodeMapString('MAP:RL:A:000K') }).toThrow()
-        expect(() => { new BasicMap().decodeMapString('MAP:NR:A:' + Array.from({length:80}, () => {return '0'}).join('')) }).toThrow()
-        expect(() => { new BasicMap().decodeMapString('MAP:NR:A:' + Array.from({length:82}, () => {return '0'}).join('')) }).toThrow()
+        const ex = 'InvalidMapDefinition'
+        expect(() => { new BasicMap().decodeMapString('MAP:XX') }).toThrow(ex)
+        expect(() => { new BasicMap().decodeMapString('MAP:NP:B:') }).toThrow(ex)
+        expect(() => { new BasicMap().decodeMapString('MAP:NP:A:') }).toThrow(ex)
+        expect(() => { new BasicMap().decodeMapString('MAP:RL:A:R80X') }).toThrow(ex)
+        expect(() => { new BasicMap().decodeMapString('MAP:RL:A:2R80X1') }).toThrow(ex)
+        expect(() => { new BasicMap().decodeMapString('MAP:RL:A:123') }).toThrow(ex)
+        expect(() => { new BasicMap().decodeMapString('MAP:NR:A:123') }).toThrow(ex)
+        expect(() => { new BasicMap().decodeMapString('MAP:RL:A:000K') }).toThrow(ex)
+        expect(() => { new BasicMap().decodeMapString('MAP:NR:A:' + Array.from({length:80}, () => {return '0'}).join('')) }).toThrow(ex)
+        expect(() => { new BasicMap().decodeMapString('MAP:NR:A:' + Array.from({length:82}, () => {return '0'}).join('')) }).toThrow(ex)
+        expect(() => { new BasicMap( puzzle_page_40_puzzle_71()).of(0) }).toThrow('IllegalArgumentException')
     })
 
-    test('basic-map/rotate', () => {
+    test('basic-map/identification', () => {
+        const map : BasicMap = new BasicMap(puzzle_page_40_puzzle_71());
+        map.set_comment('PUZ#71'); expect(map.get_comment()).toBe('PUZ#71')
+        map.set_credits('SH'); expect(map.get_credits()).toBe('SH')
+        map.set_email('bob@hope.org'); expect(map.get_email()).toBe('bob@hope.org')
+        map.set_page('40'); expect(map.get_page()).toBe('40')
+        map.set_source('The HUGE Book ...'); expect(map.get_source()).toBe('The HUGE Book ...')
+        map.set_uuid('12345678-1234-1234-1234-1234567890AB'); expect(map.get_uuid()).toBe('12345678-1234-1234-1234-1234567890AB')
+    })
+
+    test('basic-map/max-min', () => {
+        const map : BasicMap = new BasicMap(puzzle_page_40_puzzle_71());
+        expect(map.max_of(7)).toBe(302249901647748183097344n)
+        expect(map.min_of(7)).toBe(70368744243204n)
+        expect(map.max_of(3)).toEqual(1152921504606846976n)
+        expect(map.min_of(3)).toEqual(1048576n)
+
+        map.set_source('BOOK')
+        expect(map.toString()).toEqual('BOOK')
+        map.set_page('41')
+        expect(map.toString()).toEqual('BOOK, 41')
+        // console.log(map.max_of(3))
+        // console.log(map.min_of(3))
+    })
+
+    test('basic-map/rotate+flip-n-rotate', () => {
         // Map ID
         //  explore the positional relationship of each number
         //  to determine a method for identifying "LIKE" puzzles
         //  even when their likeness has been hidden OR rather
-        //	simply unnoticed. It is believed that relationship
-        //  or likeness is a simple matter of position and is
-        //	realized through encoding each pattern.
+        //	simply obstructed. It is believed that relationship
+        //  or puzzle-likeness is a simple matter of position and is
+        //	realized through encoding a puzzle pattern.
         //
         // The tools we need:
         //  1) Ability to Rotate and Flip a map. Every map has
         //    eight (8) unique orientations. Assuming the original
         //    is #1 then each turn to the right or left will after
-        //    four turns land you back at start. If the map is flipped
-        //    once there are four additional turns. Same map with
-        //    eight different orientations we'll call "views".
+        //    four turns land you back at the start. When the map
+        //    is flipped once there are four additional turns.
+        //    Same map with eight different orientations we'll
+        //    call "views".
         //
         //  2) Encode "A" number's positional relationship for each
         //    of the eight views and compute the max. The max for
@@ -83,7 +121,7 @@ describe('model/sudoku/basic-map', () => {
         //
         // 4) HASH the results: using the sort(descending) of the nine
         //    max() view encodings into an encoded string. All maps
-        //    are a like as defined above will produce the same HASH.
+        //    that are alike will produce the same HASH.
         //
 
         // console.log(' ---- Explore MAP HASHING fundamentals ----')
@@ -140,11 +178,12 @@ describe('model/sudoku/basic-map', () => {
 // console.log("\n*** Hash (max) of each pattern **");
 // const map = puzzle_71();
 
-for ( let x = 1; x <= 9; x++ )
-    console.log(puzzle_71().toStringMap()+'\n'+puzzle_71().of(x).toStringMap()+'\n'+puzzle_71().max_of(x)+'\n'+puzzle_71().min_of(x));
+// for ( let x = 1; x <= 9; x++ )
+//     console.log(puzzle_71().toStringMap()+'\n'+puzzle_71().of(x).toStringMap()+'\n'+puzzle_71().max_of(x)+'\n'+puzzle_71().min_of(x));
 
 // console.log(puzzle_71().min_of(7));
-console.log(puzzle_71().toString());
+console.log(puzzle_71().toStringMap());
+console.log(puzzle_71().toHashID());
 
 // try {
 //     const md5 = crypto.createHash('md5');
