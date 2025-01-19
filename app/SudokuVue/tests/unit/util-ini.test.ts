@@ -3,7 +3,8 @@
 
 import { describe, expect, test     } from '@jest/globals'
 import { INI                        } from '@/js/util/INI';
-import { toISOStringWithoutFractionalSeconds } from '@/js/util/iso-8601';
+import { toISO8601Z                 } from '@/js/util/iso-8601';
+
 
 describe('INI', () => {
     test('INI/parse', () => {
@@ -21,7 +22,7 @@ describe('INI', () => {
     });
 
     test('INI/parse_file', async () => {
-        const ini = await INI.parse_file('tests/unit/fixtures/test-map-1.ini');
+        const ini = await INI.parse_file_async('tests/unit/fixtures/test-map-1.ini');
 
         expect(Object.keys(ini.as_object).length).toBe(301);    // 300 puzzles + 'global'
         expect(ini.param('global','a-key','a-value')).toBe('a-value');
@@ -53,7 +54,7 @@ describe('INI', () => {
             name=The Quick Brown Fox Jumped Over The Lazy Dogs Back.
         `);
 
-        expect(toISOStringWithoutFractionalSeconds(new Date(0))).toBe('1970-01-01T00:00:00Z');
+        expect(toISO8601Z(new Date(0))).toBe('1970-01-01T00:00:00Z');
         const strigified = ini.toString().split('\n')
 
         // console.log(ini.toString())
@@ -85,7 +86,7 @@ describe('INI', () => {
         ini_template.filename = file
         await ini_template.save(file)
 
-        const ini_fixture = await INI.parse_file(file);
+        const ini_fixture = await INI.parse_file_async(file);
         expect(ini_fixture.filename).toEqual(file);
         expect(ini_fixture.filename).toEqual(ini_template.filename)
         expect(ini_fixture.as_object).toEqual(ini_template.as_object)

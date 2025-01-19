@@ -26,31 +26,27 @@ describe('model/sudoku/basic-map', () => {
         // console.log( map.encodeMapString() );
         // console.log( map.encodeMapStringRL() );
         expect(map).not.toBeNull()
-        expect(map.encodeMapString()).toBe('MAP:NR:A:000000000000000000000000000000000000000000000000000000000000000000000000000000000')
+        expect(map.encodeMapStringNR()).toBe('MAP:NR:A:000000000000000000000000000000000000000000000000000000000000000000000000000000000')
         expect(map.encodeMapStringRL()).toBe('MAP:RL:A:R81X')
     })
 
     test('basic-map/compare', () => {
-        const map : BasicMap = new BasicMap();
-        // console.log( " ---- Null MAP Encode/Decode compare ----");
-        // console.log( "Compare (empty): " + (new BasicMap().decodeMapString(map.encodeMapStringRL()).encodeMapStringRL() === map.encodeMapStringRL()));
+        const map : BasicMap = new BasicMap()
+        // console.log( " ---- Null MAP Encode/Decode compare ----")
+        // console.log( "Compare (empty): " + (new BasicMap().decodeMapString(map.encodeMapStringRL()).encodeMapStringRL() === map.encodeMapStringRL()))
         expect(new BasicMap().decodeMapString(map.encodeMapStringRL()).encodeMapStringRL()).toBe(map.encodeMapStringRL())
     })
 
     test('basic-map/decode', () => {
-        // console.log(" ---- PUZ#71 ----");
+        // console.log(" ---- PUZ#71 ----")
+        expect(new BasicMap().decodeMapString(puzzle_71_nr()).toStringMap()).toBe(puzzle_71().toStringMap())
+        expect(new BasicMap().decodeMapString(puzzle_71_rl()).toStringMap()).toBe(puzzle_71().toStringMap())
+        expect(new BasicMap(puzzle_71().get_map()).encodeMapStringRL()).toBe(puzzle_71().encodeMapStringRL());
 
-        const map : BasicMap = new BasicMap( puzzle_page_40_puzzle_71() );
-        // console.log( "(start) : " + map );
-        // console.log( map.encodeMapString() );
-        // console.log( map.encodeMapStringRL() );
-
-        expect(new BasicMap().decodeMapString('MAP:NR:A:500000100000068000000000000400500070000000096000000000008000301070100500096005700').toStringMap()).toBe(map.toStringMap())
-        expect(new BasicMap().decodeMapString('MAP:RL:A:5R5X1R6X68R12X40050007R8X96R11X8000301070100500096005700').toStringMap()).toBe(map.toStringMap())
-        // console.log(map.toStringMap());
-
-        // From MAP[][]
-        expect(new BasicMap(map.get_map()).encodeMapStringRL()).toBe(map.encodeMapStringRL());
+        // console.log(" ---- PUZ#96 ----")
+        expect(new BasicMap().decodeMapString(puzzle_96_nr()).toStringMap()).toBe(puzzle_96().toStringMap())
+        expect(new BasicMap().decodeMapString(puzzle_96_rl()).toStringMap()).toBe(puzzle_96().toStringMap())
+        expect(new BasicMap(puzzle_96().get_map()).encodeMapStringRL()).toBe(puzzle_96().encodeMapStringRL());
     })
 
     test('basic-map/exceptions', () => {
@@ -65,11 +61,12 @@ describe('model/sudoku/basic-map', () => {
         expect(() => { new BasicMap().decodeMapString('MAP:RL:A:000K') }).toThrow(ex)
         expect(() => { new BasicMap().decodeMapString('MAP:NR:A:' + Array.from({length:80}, () => {return '0'}).join('')) }).toThrow(ex)
         expect(() => { new BasicMap().decodeMapString('MAP:NR:A:' + Array.from({length:82}, () => {return '0'}).join('')) }).toThrow(ex)
-        expect(() => { new BasicMap( puzzle_page_40_puzzle_71()).of(0) }).toThrow('IllegalArgumentException')
+        expect(() => { puzzle_71().of(0) }).toThrow('IllegalArgumentException')
+        expect(() => { puzzle_96().of(0) }).toThrow('IllegalArgumentException')
     })
 
     test('basic-map/identification', () => {
-        const map : BasicMap = new BasicMap(puzzle_page_40_puzzle_71());
+        const map : BasicMap = puzzle_71();
         map.set_comment('PUZ#71'); expect(map.get_comment()).toBe('PUZ#71')
         map.set_credits('SH'); expect(map.get_credits()).toBe('SH')
         map.set_email('bob@hope.org'); expect(map.get_email()).toBe('bob@hope.org')
@@ -79,7 +76,7 @@ describe('model/sudoku/basic-map', () => {
     })
 
     test('basic-map/max-min', () => {
-        const map : BasicMap = new BasicMap(puzzle_page_40_puzzle_71());
+        const map : BasicMap = puzzle_71()
         expect(map.max_of(7)).toBe(302249901647748183097344n)
         expect(map.min_of(7)).toBe(70368744243204n)
         expect(map.max_of(3)).toEqual(1152921504606846976n)
@@ -89,8 +86,6 @@ describe('model/sudoku/basic-map', () => {
         expect(map.toString()).toEqual('BOOK')
         map.set_page('41')
         expect(map.toString()).toEqual('BOOK, 41')
-        // console.log(map.max_of(3))
-        // console.log(map.min_of(3))
     })
 
     test('basic-map/rotate+flip-n-rotate', () => {
@@ -125,9 +120,9 @@ describe('model/sudoku/basic-map', () => {
         //
 
         // console.log(' ---- Explore MAP HASHING fundamentals ----')
-        const map = new BasicMap(puzzle_page_40_puzzle_71())
+        const map = puzzle_71()
 
-        // console.log('toString(): ', map.toStringAry())
+        // console.log('toStringAry(): ', map.toStringAry())
         expect(map.toStringAry()).toBe('5,,,,,,1,,,,,,,6,8,,,,,,,,,,,,,4,,,5,,,,7,,,,,,,,,9,6,,,,,,,,,,,,8,,,,3,,1,,7,,1,,,5,,,,9,6,,,5,7,,')
         expect(map.flip().toStringAry()).toBe(',,1,,,,,,5,,,,8,6,,,,,,,,,,,,,,,7,,,,5,,,4,6,9,,,,,,,,,,,,,,,,,1,,3,,,,8,,,,,5,,,1,,7,,,,7,5,,,6,9,')
         expect(map.rotate().toStringAry()).toBe(',,,,,4,,,5,9,7,,,,,,,,6,,8,,,,,,,,1,,,,5,,,,,,,,,,,6,,5,,,,,,,8,,7,5,3,,,,,,1,,,,,9,7,,,,,,1,,6,,,,')
@@ -135,8 +130,9 @@ describe('model/sudoku/basic-map', () => {
         expect(map.flip().rotate().rotate().toStringAry()).toBe(',9,6,,,5,7,,,,7,,1,,,5,,,,,8,,,,3,,1,,,,,,,,,,,,,,,,,9,6,4,,,5,,,,7,,,,,,,,,,,,,,,6,8,,,,5,,,,,,1,,')
         expect(map.flip().rotate().rotate().rotate().toStringAry()).toBe('5,,,4,,,,,,,,,,,,,7,9,,,,,,,8,,6,,,,5,,,,1,,,6,,,,,,,,,8,,,,,,,5,1,,,,,,3,5,7,,,,7,9,,,,,,,,,6,,1,,')
 
-        // console.log(map.toStringAry());
-        // console.log(map.toStringMap());
+        // console.log(map.toStringAry())
+        // console.log(map.toStringMap())
+        // console.log(puzzle_96().rotate().toStringMap())
 
         // console.log("FLIP");
         // console.log(map.toStringMap() + '\n' + map.flip().toStringMap() + map.toStringAry() + '\n' + map.flip().toStringAry());
@@ -148,19 +144,98 @@ describe('model/sudoku/basic-map', () => {
         // console.log(map.flip().rotate().rotate().rotate().toStringMap());
     })
 
-    test('basic-map/FRRFRR', () => expect(puzzle_71().encodeMapString()).toBe(puzzle_71().flip().rotate().rotate().flip().rotate().rotate().encodeMapString()))
-    test('basic-map/RFRF',   () => expect(puzzle_71().encodeMapString()).toBe(puzzle_71().rotate().flip().rotate().flip().encodeMapString()))
-    test('basic-map/FRFR',   () => expect(puzzle_71().encodeMapString()).toBe(puzzle_71().flip().rotate().flip().rotate().encodeMapString()))
-    test('basic-map/RRRR',   () => expect(puzzle_71().encodeMapString()).toBe(puzzle_71().rotate().rotate().rotate().rotate().encodeMapString()))
-    test('basic-map/FF',     () => expect(puzzle_71().encodeMapString()).toBe(puzzle_71().flip().flip().encodeMapString()))
+    test('basic-map/FRRFRR', () => {
+        expect(puzzle_71().encodeMapStringNR()).toBe(puzzle_71().flip().rotate().rotate().flip().rotate().rotate().encodeMapStringNR())
+        expect(puzzle_71().encodeMapStringRL()).toBe(puzzle_71().flip().rotate().rotate().flip().rotate().rotate().encodeMapStringRL())
+        expect(puzzle_96().encodeMapStringNR()).toBe(puzzle_96().flip().rotate().rotate().flip().rotate().rotate().encodeMapStringNR())
+        expect(puzzle_96().encodeMapStringRL()).toBe(puzzle_96().flip().rotate().rotate().flip().rotate().rotate().encodeMapStringRL())
+    })
 
+    test('basic-map/RFRF',   () => {
+        expect(puzzle_71().encodeMapStringNR()).toBe(puzzle_71().rotate().flip().rotate().flip().encodeMapStringNR())
+        expect(puzzle_71().encodeMapStringRL()).toBe(puzzle_71().rotate().flip().rotate().flip().encodeMapStringRL())
+        expect(puzzle_96().encodeMapStringNR()).toBe(puzzle_96().rotate().flip().rotate().flip().encodeMapStringNR())
+        expect(puzzle_96().encodeMapStringRL()).toBe(puzzle_96().rotate().flip().rotate().flip().encodeMapStringRL())
+    })
+
+    test('basic-map/FRFR',   () => {
+        expect(puzzle_71().encodeMapStringNR()).toBe(puzzle_71().flip().rotate().flip().rotate().encodeMapStringNR())
+        expect(puzzle_71().encodeMapStringRL()).toBe(puzzle_71().flip().rotate().flip().rotate().encodeMapStringRL())
+        expect(puzzle_96().encodeMapStringNR()).toBe(puzzle_96().flip().rotate().flip().rotate().encodeMapStringNR())
+        expect(puzzle_96().encodeMapStringRL()).toBe(puzzle_96().flip().rotate().flip().rotate().encodeMapStringRL())
+    })
+
+    test('basic-map/RRRR',   () => {
+        expect(puzzle_71().encodeMapStringNR()).toBe(puzzle_71().rotate().rotate().rotate().rotate().encodeMapStringNR())
+        expect(puzzle_71().encodeMapStringRL()).toBe(puzzle_71().rotate().rotate().rotate().rotate().encodeMapStringRL())
+        expect(puzzle_96().encodeMapStringNR()).toBe(puzzle_96().rotate().rotate().rotate().rotate().encodeMapStringNR())
+        expect(puzzle_96().encodeMapStringRL()).toBe(puzzle_96().rotate().rotate().rotate().rotate().encodeMapStringRL())
+    })
+
+    test('basic-map/FF',     () => {
+        expect(puzzle_71().encodeMapStringNR()).toBe(puzzle_71().flip().flip().encodeMapStringNR())
+        expect(puzzle_71().encodeMapStringRL()).toBe(puzzle_71().flip().flip().encodeMapStringRL())
+        expect(puzzle_96().encodeMapStringNR()).toBe(puzzle_96().flip().flip().encodeMapStringNR())
+        expect(puzzle_96().encodeMapStringRL()).toBe(puzzle_96().flip().flip().encodeMapStringRL())
+    })
+
+    test('basic-map/!RRR', () => {
+        [ puzzle_71(), puzzle_96() ].forEach((map) => {
+            expect(map.encodeMapStringNR()).not.toBe(map.rotate().encodeMapStringNR())
+            expect(map.encodeMapStringRL()).not.toBe(map.rotate().rotate().encodeMapStringRL())
+            expect(map.encodeMapStringNR()).not.toBe(map.rotate().rotate().rotate().encodeMapStringNR())
+
+            expect(map.encodeMapStringRL()).not.toBe(map.rotate().encodeMapStringRL())
+            expect(map.encodeMapStringRL()).not.toBe(map.rotate().rotate().encodeMapStringRL())
+            expect(map.encodeMapStringRL()).not.toBe(map.rotate().rotate().rotate().encodeMapStringRL())
+        })
+    })
+
+    test('basic-map/!FRRR', () => {
+        [ puzzle_71(), puzzle_96() ].forEach((map) => {
+            expect(map.encodeMapStringNR()).not.toBe(map.flip().encodeMapStringNR())
+            expect(map.encodeMapStringNR()).not.toBe(map.flip().rotate().encodeMapStringNR())
+            expect(map.encodeMapStringNR()).not.toBe(map.flip().rotate().rotate().encodeMapStringNR())
+            expect(map.encodeMapStringNR()).not.toBe(map.flip().rotate().rotate().rotate().encodeMapStringNR())
+
+            expect(map.encodeMapStringRL()).not.toBe(map.flip().encodeMapStringRL())
+            expect(map.encodeMapStringRL()).not.toBe(map.flip().rotate().encodeMapStringRL())
+            expect(map.encodeMapStringNR()).not.toBe(map.flip().rotate().rotate().encodeMapStringNR())
+            expect(map.encodeMapStringRL()).not.toBe(map.flip().rotate().rotate().rotate().encodeMapStringRL())
+        })
+    })
+
+    test('basic-map/hash-id', () => {
+        // puzzle #71
+        expect(puzzle_71_id()).toBe(puzzle_71().toHashID())
+        expect(puzzle_71_nr()).toBe(puzzle_71().encodeMapStringNR())
+        expect(puzzle_71_rl()).toBe(puzzle_71().encodeMapStringRL())
+        expect(puzzle_71_sa().split(',').length).toBe(81)
+        expect(puzzle_71_sa()).toBe(puzzle_71().toStringAry())
+
+        // puzzle #96
+        expect(puzzle_96_id()).toBe(puzzle_96().toHashID())
+        expect(puzzle_96_nr()).toBe(puzzle_96().encodeMapStringNR())
+        expect(puzzle_96_rl()).toBe(puzzle_96().encodeMapStringRL())
+        expect(puzzle_96_sa().split(',').length).toBe(81)
+        expect(puzzle_96_sa()).toBe(puzzle_96().toStringAry())
+
+        // Prove ID is the same on maps that are the "SAME"!
+        expect(puzzle_71().toHashID()).toBe(puzzle_71().rotate().flip().toHashID())
+        expect(puzzle_71().toHashID()).toBe(puzzle_71().rotate().flip().rotate().flip().toHashID())
+        expect(puzzle_71().toHashID()).toBe(puzzle_71().rotate().rotate().rotate().rotate().toHashID())
+        expect(puzzle_96().toHashID()).toBe(puzzle_96().rotate().flip().toHashID())
+        expect(puzzle_96().toHashID()).toBe(puzzle_96().rotate().flip().rotate().flip().toHashID())
+        expect(puzzle_96().toHashID()).toBe(puzzle_96().rotate().rotate().rotate().rotate().toHashID())
+})
 
 // Remember the following was written in Java, so please convert to TypeScript before offering up code
+// TODO: Tests for solved puzzles
 
 // Solve and print
 // console.log(" ---- Sudoku Board work ----");
 // const board = new Board(Board.BoardMode.NORMAL);
-// board.setStart(map);
+// board.setStart(puzzle_71());
 
 // console.log(board.toString2());
 // console.log("Solved: " + board.isSolved());
@@ -175,92 +250,15 @@ describe('model/sudoku/basic-map', () => {
 // console.log(map.encodeMapStringRL());
 // console.log(map.encodeMapString());
 
-// console.log("\n*** Hash (max) of each pattern **");
-// const map = puzzle_71();
-
-// for ( let x = 1; x <= 9; x++ )
-//     console.log(puzzle_71().toStringMap()+'\n'+puzzle_71().of(x).toStringMap()+'\n'+puzzle_71().max_of(x)+'\n'+puzzle_71().min_of(x));
-
-// console.log(puzzle_71().min_of(7));
-console.log(puzzle_71().toStringMap());
-console.log(puzzle_71().toHashID());
-
-// try {
-//     const md5 = crypto.createHash('md5');
-//     const b64 = Buffer.from;
-
-//     for (let x = 1; x <= 9; x++) {
-//     md5.update(map.min_of(x).toByteArray());
-//     console.log("  Member: " + x);
-//     console.log("     max: " + map.min_of(x));
-//     console.log("Encoding: " + map.of(x).encodeMapString());
-//     }
-
-//     console.log(" HASH: " + b64(md5.digest()).toString('base64'));
-// } catch (a) {
-//     console.log(a);
-// }
-
-// console.log(map.toHashID());
-// console.log("Char set?: " + Buffer.from('').toString());
-
-// Prove ID is the same on maps that are the "SAME"!
-// console.log(" ---- MAP ID Proofs ----");
-// console.log(" - " + (map.toStringMap() === map.rotate().toStringMap()));
-// console.log(" - " + (map.toStringMap() === map.rotate().flip().rotate().flip().toStringMap()));
-// console.log(" - " + (map.toStringMap() === map.rotate().toStringMap()));
-// console.log(" - " + (map.toHashID() === map.rotate().flip().toHashID()));
-//         System.out.println( "\n*** Hash (max) of each pattern **" );
-
-//         try {
-//             MessageDigest md5 = MessageDigest.getInstance( "MD5" );
-//             Encoder b64 = Base64.getEncoder().withoutPadding();
-
-//             for ( int x = 1 ; x <= 9 ; x++ )
-//             {
-//                 md5.update(map.min_of(x).toByteArray());
-// //				byte [] digest = md5.digest(map.min_of(x).toByteArray());
-// //				MessageDigest md5 = MessageDigest.getInstance( "MD5" );
-// //				System.out.println( "  Member: " + x );
-//                 System.out.println( "     max: " + map.min_of( x ) );
-//                 System.out.println( "Encoding: " + map.of( x ).encodeMapString() );
-// //				System.out.println( "        : " + digest.length + " << " + map.min_of(x).toByteArray().length );
-// //				System.out.println( "        : " + b64.encodeToString(digest));
-// //				System.out.println( "        : " + b64.encodeToString(map.min_of(x).toByteArray()));
-
-// //				System.out.print( "        : " );
-// //				for ( int i = 0 ; i < digest.length ; i++ )
-// //				{
-// //					System.out.print(String.format("%02x", digest[i]));
-// //				}
-// //				System.out.println();
-
-
-// //				System.out.println( "        : " +
-// //					String.format("%x",md5.digest(map.min_of(x).toByteArray())));
-// //				md5.reset();
-//             }
-
-//             System.out.println(" HASH: " + b64.encodeToString( md5.digest() ));
-//         }
-//         catch ( NoSuchAlgorithmException a )
-//         {
-//             System.out.println( a );
-//         }
-
-//         System.out.println( map.toHashID() );
-//         System.out.println("Char set?: " + Charset.defaultCharset().toString());
-
-//         // Prove ID is the same on maps that are the "SAME"!
-//         System.out.println(" ---- MAP ID Proofs ----");
-//         System.out.println(" - " + map.toStringMap().equals(map.rotate().toStringMap()));
-//         System.out.println(" - " + map.toStringMap().equals(map.rotate().flip().rotate().flip().toStringMap()));
-//         System.out.println(" - " + map.toStringMap().equals(map.rotate().toStringMap()));
-//         System.out.println(" - " + map.toHashID().equals(map.rotate().flip().toHashID()));
-
 })
 
+// SOURCE: "2015 The Must Have Sudoku Puzzle BOOK"
+
 function puzzle_71() { return new BasicMap(puzzle_page_40_puzzle_71()) }
+function puzzle_71_nr() { return 'MAP:NR:A:500000100000068000000000000400500070000000096000000000008000301070100500096005700' }
+function puzzle_71_rl() { return 'MAP:RL:A:5R5X1R6X68R12X40050007R8X96R11X8000301070100500096005700' }
+function puzzle_71_sa() { return '5,,,,,,1,,,,,,,6,8,,,,,,,,,,,,,4,,,5,,,,7,,,,,,,,,9,6,,,,,,,,,,,,8,,,,3,,1,,7,,1,,,5,,,,9,6,,,5,7,,' }
+function puzzle_71_id() { return 'HASHID-igiYPlqH/786eU779jNW5w==' }
 
 function puzzle_page_40_puzzle_71()
 {
@@ -275,6 +273,30 @@ function puzzle_page_40_puzzle_71()
         [ null, null,    8, null, null, null,    3, null,    1 ],
         [ null,    7, null,    1, null, null,    5, null, null ],
         [ null,    9,    6, null, null,    5,    7, null, null ]
+    ]
+
+    return map_ary
+}
+
+function puzzle_96() { return new BasicMap(puzzle_page_53_puzzle_96()) }
+function puzzle_96_nr() { return 'MAP:NR:A:080000020000350000000000000000084090307000000100002000500600703000000500020000000' }
+function puzzle_96_rl() { return 'MAP:RL:A:08R5X2000035R17X84090307R6X100002000500600703R6X50002R7X' }
+function puzzle_96_sa() { return ',8,,,,,,2,,,,,3,5,,,,,,,,,,,,,,,,,,8,4,,9,,3,,7,,,,,,,1,,,,,2,,,,5,,,6,,,7,,3,,,,,,,5,,,,2,,,,,,,' }
+function puzzle_96_id() { return 'HASHID-19lB8TlButSbE7Qagvn5Lg==' }
+
+function puzzle_page_53_puzzle_96()
+{
+    // From PAGE #53 PUZ#96
+    const map_ary : (number|null)[][] = [
+        [ null,    8, null, null, null, null, null,    2, null ],
+        [ null, null, null,    3,    5, null, null, null, null ],
+        [ null, null, null, null, null, null, null, null, null ],
+        [ null, null, null, null,    8,    4, null,    9, null ],
+        [    3, null,    7, null, null, null, null, null, null ],
+        [    1, null, null, null, null,    2, null, null, null ],
+        [    5, null, null,    6, null, null,    7, null,    3 ],
+        [ null, null, null, null, null, null,    5, null, null ],
+        [ null,    2, null, null, null, null, null, null, null ]
     ]
 
     return map_ary

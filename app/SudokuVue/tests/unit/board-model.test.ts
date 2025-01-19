@@ -49,7 +49,7 @@ describe('model/sudoku-board', () => {
     // console.log(BoardAdapterString.toString(board))
   })
 
-  describe('board/string/adapters', () => {
+  describe('board/adapters/string-text', () => {
     test('string/adapters', () => {
       expect(1).toBe(1)
       // BoardStringAdapter.toString(board)

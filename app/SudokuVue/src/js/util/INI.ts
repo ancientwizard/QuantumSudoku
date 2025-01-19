@@ -1,8 +1,8 @@
 
 // INI.ts
 
-import { writeFile, readFile, unlink            } from 'node:fs/promises'
-import { toISOStringWithoutFractionalSeconds    } from '@/js/util/iso-8601';
+import { writeFile, readFile, unlink    } from 'node:fs/promises'
+import { toISO8601Z                     } from '@/js/util/iso-8601'
 
 export class INI
 {
@@ -11,12 +11,29 @@ export class INI
 
     public get as_object(): { [key: string]: { [key: string]: string } } { return this.properties }
 
-    public static async parse_file(file: string): Promise<INI>
+    public static async parse_file_async(file: string): Promise<INI>
     {
-        const ini = INI.parse(await readFile(file, { encoding: 'utf8' }));
-        ini.filename = file
-        return ini
+        const ini: INI = INI.parse(await readFile(file, { encoding: 'utf8' }));
+        ini.filename = file;
+        return ini;
     }
+
+    // public static parse_file(file: string): INI
+    // {
+    //     let ini: INI;
+    //     let done = false;
+
+    //     INI.parse_file_async(file).then( result => {
+    //         ini = result;
+    //         done = true;
+    //     }).catch( err => { throw err } )
+
+    //     // Wait for the async operation to complete
+    //     // Caused the tests to hang; I gues its broken!!! POO!
+    //     deasync.loopWhile(() => !done);
+
+    //     return ini!;
+    // }
 
     public static parse(data: string): INI
     {
@@ -65,7 +82,7 @@ export class INI
         let result = ''
         result += `# ${this.filename}\n`
         result += `# version 0.1\n`
-        result += `# ${toISOStringWithoutFractionalSeconds(new Date())}\n\n`
+        result += `# ${toISO8601Z(new Date())}\n\n`
         
         for ( const section in this.properties )
         {
