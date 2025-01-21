@@ -14,5 +14,6 @@ interface iUnit
     isBroken () : boolean;
 }
 
-// vim: expandtab number tabstop=4
+
+// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
 // END

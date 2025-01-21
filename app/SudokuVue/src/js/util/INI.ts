@@ -10,6 +10,7 @@ export class INI
     private properties: { [key: string]: { [key: string]: string } } = {};
 
     public get as_object(): { [key: string]: { [key: string]: string } } { return this.properties }
+    public get sections(): string[] { return Object.keys(this.properties) }
 
     public static async parse_file_async(file: string): Promise<INI>
     {
@@ -72,6 +73,11 @@ export class INI
         return this.properties[section][key];
     }
 
+    public params(section: string): { [key: string]: string }
+    {
+        return section in this.properties ? this.properties[section] : {}
+    }
+
     public async save(file: string): Promise<void>
     {
         await writeFile(file, this.toString(), { encoding: 'utf8' });
@@ -106,4 +112,6 @@ export class INI
     }
 }
 
+
+// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
 // END

@@ -3,59 +3,82 @@
 import { describe, expect, test } from '@jest/globals'
 import { CellValue              } from '@/js/model/CellValue'
 
-describe('model/cell-label', () => {
-  test('HIDDEN.label',  () => expect(CellValue.HIDDEN.label).toBe('?'))
-  test('ONE.label',     () => expect(CellValue.ONE.label).toBe('1'))
-  test('TWO.label',     () => expect(CellValue.TWO.label).toBe('2'))
-  test('THREE.label',   () => expect(CellValue.THREE.label).toBe('3'))
-  test('FOUR.label',    () => expect(CellValue.FOUR.label).toBe('4'))
-  test('FIVE.label',    () => expect(CellValue.FIVE.label).toBe('5'))
-  test('SIX.label',     () => expect(CellValue.SIX.label).toBe('6'))
-  test('SEVEN.label',   () => expect(CellValue.SEVEN.label).toBe('7'))
-  test('EIGHT.label',   () => expect(CellValue.EIGHT.label).toBe('8'))
-  test('NINE.label',    () => expect(CellValue.NINE.label).toBe('9'))
-})
-
 describe('model/cell-value', () => {
-  test('HIDDEN.value',  () => expect(CellValue.HIDDEN.value).toBe(0))
-  test('ONE.value',     () => expect(CellValue.ONE.value).toBe(1))
-  test('TWO.value',     () => expect(CellValue.TWO.value).toBe(2))
-  test('THREE.value',   () => expect(CellValue.THREE.value).toBe(3))
-  test('FOUR.value',    () => expect(CellValue.FOUR.value).toBe(4))
-  test('FIVE.value',    () => expect(CellValue.FIVE.value).toBe(5))
-  test('SIX.value',     () => expect(CellValue.SIX.value).toBe(6))
-  test('SEVEN.value',   () => expect(CellValue.SEVEN.value).toBe(7))
-  test('EIGHT.value',   () => expect(CellValue.EIGHT.value).toBe(8))
-  test('NINE.value',    () => expect(CellValue.NINE.value).toBe(9))
-})
 
-describe('model/cell-index', () => {
-  test('HIDDEN.index',  () => expect(CellValue.HIDDEN.index).toBe(-1))
-  test('ONE.index',     () => expect(CellValue.ONE.index).toBe(0))
-  test('TWO.index',     () => expect(CellValue.TWO.index).toBe(1))
-  test('THREE.index',   () => expect(CellValue.THREE.index).toBe(2))
-  test('FOUR.index',    () => expect(CellValue.FOUR.index).toBe(3))
-  test('FIVE.index',    () => expect(CellValue.FIVE.index).toBe(4))
-  test('SIX.index',     () => expect(CellValue.SIX.index).toBe(5))
-  test('SEVEN.index',   () => expect(CellValue.SEVEN.index).toBe(6))
-  test('EIGHT.index',   () => expect(CellValue.EIGHT.index).toBe(7))
-  test('NINE.index',    () => expect(CellValue.NINE.index).toBe(8))
-})
-
-describe('model/cell-array', () => {
-  test('arrayFactory', () => {
-    const v = CellValue.arrayFactory
-    expect(v[0]).toBe(CellValue.ONE)
-    expect(v[1]).toBe(CellValue.TWO)
-    expect(v[2]).toBe(CellValue.THREE)
-    expect(v[3]).toBe(CellValue.FOUR)
-    expect(v[4]).toBe(CellValue.FIVE)
-    expect(v[5]).toBe(CellValue.SIX)
-    expect(v[6]).toBe(CellValue.SEVEN)
-    expect(v[7]).toBe(CellValue.EIGHT)
-    expect(v[8]).toBe(CellValue.NINE)
+  describe('/-exceptions', () => {
+    test('by(-1)', () => expect(() => CellValue.by(-1)).toThrowError())
+    test('by( 9)', () => expect(() => CellValue.by(10)).toThrowError())
   })
+
+  describe('/-label', () => {
+    test('HIDDEN.label',  () => expect(CellValue.HIDDEN.label).toBe('?'))
+    test('ONE.label',     () => expect(CellValue.ONE.label).toBe('1'))
+    test('TWO.label',     () => expect(CellValue.TWO.label).toBe('2'))
+    test('THREE.label',   () => expect(CellValue.THREE.label).toBe('3'))
+    test('FOUR.label',    () => expect(CellValue.FOUR.label).toBe('4'))
+    test('FIVE.label',    () => expect(CellValue.FIVE.label).toBe('5'))
+    test('SIX.label',     () => expect(CellValue.SIX.label).toBe('6'))
+    test('SEVEN.label',   () => expect(CellValue.SEVEN.label).toBe('7'))
+    test('EIGHT.label',   () => expect(CellValue.EIGHT.label).toBe('8'))
+    test('NINE.label',    () => expect(CellValue.NINE.label).toBe('9'))
+  })
+
+  describe('/-value', () => {
+    test('HIDDEN.value',  () => expect(CellValue.HIDDEN.value).toBe(0))
+    test('ONE.value',     () => expect(CellValue.ONE.value).toBe(1))
+    test('TWO.value',     () => expect(CellValue.TWO.value).toBe(2))
+    test('THREE.value',   () => expect(CellValue.THREE.value).toBe(3))
+    test('FOUR.value',    () => expect(CellValue.FOUR.value).toBe(4))
+    test('FIVE.value',    () => expect(CellValue.FIVE.value).toBe(5))
+    test('SIX.value',     () => expect(CellValue.SIX.value).toBe(6))
+    test('SEVEN.value',   () => expect(CellValue.SEVEN.value).toBe(7))
+    test('EIGHT.value',   () => expect(CellValue.EIGHT.value).toBe(8))
+    test('NINE.value',    () => expect(CellValue.NINE.value).toBe(9))
+  })
+
+  describe('/-index', () => {
+    test('HIDDEN.index',  () => expect(CellValue.HIDDEN.index).toBe(-1))
+    test('ONE.index',     () => expect(CellValue.ONE.index).toBe(0))
+    test('TWO.index',     () => expect(CellValue.TWO.index).toBe(1))
+    test('THREE.index',   () => expect(CellValue.THREE.index).toBe(2))
+    test('FOUR.index',    () => expect(CellValue.FOUR.index).toBe(3))
+    test('FIVE.index',    () => expect(CellValue.FIVE.index).toBe(4))
+    test('SIX.index',     () => expect(CellValue.SIX.index).toBe(5))
+    test('SEVEN.index',   () => expect(CellValue.SEVEN.index).toBe(6))
+    test('EIGHT.index',   () => expect(CellValue.EIGHT.index).toBe(7))
+    test('NINE.index',    () => expect(CellValue.NINE.index).toBe(8))
+  })
+
+  describe('/-by', () => {
+    test('by(0)',  () => expect(CellValue.by(0)).toBe(CellValue.HIDDEN))
+    test('by(1)',  () => expect(CellValue.by(1)).toBe(CellValue.ONE))
+    test('by(2)',  () => expect(CellValue.by(2)).toBe(CellValue.TWO))
+    test('by(3)',  () => expect(CellValue.by(3)).toBe(CellValue.THREE))
+    test('by(4)',  () => expect(CellValue.by(4)).toBe(CellValue.FOUR))
+    test('by(5)',  () => expect(CellValue.by(5)).toBe(CellValue.FIVE))
+    test('by(6)',  () => expect(CellValue.by(6)).toBe(CellValue.SIX))
+    test('by(7)',  () => expect(CellValue.by(7)).toBe(CellValue.SEVEN))
+    test('by(8)',  () => expect(CellValue.by(8)).toBe(CellValue.EIGHT))
+    test('by(9)',  () => expect(CellValue.by(9)).toBe(CellValue.NINE))
+  })
+
+  describe('/-array/factory', () => {
+    test('arrayFactory', () => {
+      const cv = CellValue.arrayFactory
+      expect(cv[0]).toBe(CellValue.ONE)
+      expect(cv[1]).toBe(CellValue.TWO)
+      expect(cv[2]).toBe(CellValue.THREE)
+      expect(cv[3]).toBe(CellValue.FOUR)
+      expect(cv[4]).toBe(CellValue.FIVE)
+      expect(cv[5]).toBe(CellValue.SIX)
+      expect(cv[6]).toBe(CellValue.SEVEN)
+      expect(cv[7]).toBe(CellValue.EIGHT)
+      expect(cv[8]).toBe(CellValue.NINE)
+    })
+  })
+
 })
 
-// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2
+
+// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
 // END

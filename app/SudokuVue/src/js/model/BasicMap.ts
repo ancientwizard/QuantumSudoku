@@ -55,20 +55,33 @@ export class BasicMap
         return this.map.map((row) => row.slice());
     }
 
+    public foreach ( callback: ( x: number, y: number, value: number ) => void ): void
+    {
+        for (let y = 0; y < 9; y++)
+        {
+            for (let x = 0; x < 9; x++)
+            {
+                const value = this.map[y][x] || 0
+                if ( value > 0 )
+                    callback( x, y, value - 1 )
+            }
+        }
+    }
+
     public decodeMapString(encoded_map: string): BasicMap
     {
-        if (encoded_map.startsWith('MAP:NR:A:'))
+        switch (true)
         {
-            this._decode_map_normal(encoded_map);
+            case encoded_map.startsWith('MAP:NR:A:'):
+                this._decode_map_normal(encoded_map)
+                break;
+            case encoded_map.startsWith("MAP:RL:A:"):
+                this._decode_map_rlengt(encoded_map)
+                break
+            default:
+                throw new Error("InvalidMapDefinition")
         }
-        else if (encoded_map.startsWith("MAP:RL:A:"))
-        {
-            this._decode_map_rlengt(encoded_map);
-        }
-        else
-        {
-            throw new Error("InvalidMapDefinition");
-        }
+
         return this;
     }
 
@@ -488,4 +501,6 @@ export class BasicMap
 //     }
 // }
 
+
+// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
 // END

@@ -51,5 +51,6 @@ abstract class aStrategyBase implements iStrategy
     protected abstract applyStrategy ( unit: iUnit  ): boolean
 }
 
-// vim: expandtab number tabstop=4
+
+// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
 // END

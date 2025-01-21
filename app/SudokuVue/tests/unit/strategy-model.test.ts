@@ -69,5 +69,6 @@ describe('strategy/base', () => {
         test('apply x '+x, () => expect(_mk_strategy_set(x).apply(new MyUnit())).toBe(false))
 })
 
-// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2
+
+// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
 // END

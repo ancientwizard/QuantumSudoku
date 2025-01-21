@@ -14,4 +14,6 @@ function toISO8601Z(date: Date): string
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`;
 }
 
+
+// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
 // END

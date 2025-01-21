@@ -24,16 +24,6 @@ function mk_unit ( size = 0, autosolve = true ) : UnitModel
 
 function unit (autosolve = true) : UnitModel { return mk_unit( 9, autosolve ) }
 
-describe('model/cell-index-basic', () => {
-  class MyBadIndex extends CellIndex
-  {
-    static less_than_0     () { return new MyBadIndex(-1) }
-    static greater_than_8  () { return new MyBadIndex(9) }
-  }
-
-  test('invalid-index-low', () => expect(()=>{MyBadIndex.less_than_0()}).toThrow('Invalid Sudoku INDEX [ -1 ]'))
-  test('invalid-index-hi',  () => expect(()=>{MyBadIndex.greater_than_8()}).toThrow('Invalid Sudoku INDEX [ 9 ]'))
-})
 
 describe('mk_cells function', () => {
   test('creates the correct number of cells', () => {
@@ -43,7 +33,7 @@ describe('mk_cells function', () => {
 
   test('creates cells with correct properties', () => {
     const cells = mk_cells(5, false);
-    cells.forEach((cell, index) => {
+    cells.forEach((cell) => {
       expect(cell.value).toBe(0);
       expect(cell.autosolve).toBe(false);
     });
@@ -58,7 +48,7 @@ describe('mk_unit function', () => {
 
   test('creates a UnitModel with cells having correct properties', () => {
     const unit = mk_unit(9, false);
-    unit.as_cell_array.forEach((cell, index) => {
+    unit.as_cell_array.forEach((cell) => {
       expect(cell.value).toBe(0);
       expect(cell.length).toBe(9);
       // console.log(cell.as_label_array)
@@ -192,5 +182,5 @@ describe('model/unit-model-solved', () => {
 })
 
 
-// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2
+// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
 // END

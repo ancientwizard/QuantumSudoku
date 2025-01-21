@@ -35,5 +35,6 @@ class CellIdent implements iCellIdentification
   get cname () { return CELLNAMES[this.point.column] }
 }
 
-// vim: expandtab number tabstop=2 shiftwidth=4
+
+// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
 // END

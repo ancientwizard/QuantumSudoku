@@ -7,5 +7,5 @@ function containsAll<T> ( array_A: T[], array_B: T[] ): boolean
 }
 
 
-// vim: expandtab number tabstop=4
+// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
 // END

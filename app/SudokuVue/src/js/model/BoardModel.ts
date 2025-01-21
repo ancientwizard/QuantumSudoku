@@ -13,7 +13,8 @@ import type { CellValue } from './CellValue'
 export enum BoardMode { EDIT, PLAY, DIAGONAL, SOLVE }
 
 export
-class BoardModel {
+class BoardModel
+{
     // Composition
     private grdunits: Array<BlockModel> = []    // 3x3 grid units
     private rowunits: Array<UnitModel>  = []    //   9 row units
@@ -175,5 +176,6 @@ class BoardModel {
     }
 }
 
-// vim: expandtab number tabstop=4
+
+// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
 // END

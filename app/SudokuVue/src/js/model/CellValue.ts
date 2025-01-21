@@ -30,6 +30,25 @@ class CellValue
   get value () : number { return this.value_int }
   get index () : number { return this.value_idx }
 
+  static by ( index: number ) : CellValue
+  {
+    switch ( index )
+    {
+      case 0: return CellValue.HIDDEN
+      case 1: return CellValue.ONE
+      case 2: return CellValue.TWO
+      case 3: return CellValue.THREE
+      case 4: return CellValue.FOUR
+      case 5: return CellValue.FIVE
+      case 6: return CellValue.SIX
+      case 7: return CellValue.SEVEN
+      case 8: return CellValue.EIGHT
+      case 9: return CellValue.NINE
+      default:
+        throw new Error(`Invalid cell value index ${index}`)
+    }
+  }
+
   static get arrayFactory () : Array<CellValue>
   {
     return [
@@ -40,5 +59,6 @@ class CellValue
   }
 }
 
-// vim: expandtab number tabstop=2 shiftwidth=4
+
+// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
 // END

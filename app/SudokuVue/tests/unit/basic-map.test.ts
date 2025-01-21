@@ -227,7 +227,16 @@ describe('model/sudoku/basic-map', () => {
         expect(puzzle_96().toHashID()).toBe(puzzle_96().rotate().flip().toHashID())
         expect(puzzle_96().toHashID()).toBe(puzzle_96().rotate().flip().rotate().flip().toHashID())
         expect(puzzle_96().toHashID()).toBe(puzzle_96().rotate().rotate().rotate().rotate().toHashID())
-})
+    })
+
+    test('foreach', () => {
+        const map : BasicMap = puzzle_71()
+        const ary: number[] = []
+        // X is zero indexed,Y is zero indexed, value is 0==1 based
+        map.foreach(( x, y, value ) => { ary.push(value+1) })
+        expect(ary.length).toBe(19)
+        expect(ary.join('')).toBe(puzzle_71_sa().replace(/,/g, ''))
+    })
 
 // Remember the following was written in Java, so please convert to TypeScript before offering up code
 // TODO: Tests for solved puzzles
@@ -302,4 +311,6 @@ function puzzle_page_53_puzzle_96()
     return map_ary
 }
 
+
+// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
 // END

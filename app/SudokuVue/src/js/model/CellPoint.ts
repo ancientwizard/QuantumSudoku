@@ -28,5 +28,6 @@ class CellPoint
   get coord  () : string { return '(' + this.COL + ',' + this.ROW + ')' }
 }
 
-// vim: expandtab number tabstop=2 shiftwidth=4
+
+// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
 // END

@@ -25,7 +25,7 @@ export class BoardStringAdapter
             board_strings.push('+-----+-----+-----+-----+-----+-----+-----+-----+-----+')
 
             // Each row in the board is made up of three lines of text values
-            //  I.E. one row of cells in a 3x27 grid of calle candidate values.
+            //  I.E. one row of cells in a 3x27 grid of cell candidate values.
             for ( let i = 0 ; i < cellHeight ; i++ )
                 row_matrix.push(
                     [ ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '
@@ -96,3 +96,7 @@ export class BoardStringAdapter
     //     return board;
     // }
 }
+
+
+// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
+// END

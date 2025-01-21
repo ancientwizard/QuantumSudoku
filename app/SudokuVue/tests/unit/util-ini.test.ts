@@ -41,8 +41,10 @@ describe('INI', () => {
         `);
 
         expect(ini.param('section', 'key')).toBe('value');
+        expect(ini.params('section')).toEqual({key:'value'});
         expect(ini.param('section', 'key', 'new-value')).toBe('new-value');
         expect(ini.param('section', 'key')).toBe('new-value');
+        expect(ini.params('section')).toEqual({key:'new-value'});
     });
 
     test('INI/toString', () => {
@@ -95,4 +97,6 @@ describe('INI', () => {
 
 });
 
+
+// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
 // END

@@ -14,5 +14,6 @@ interface iObservable
 
 export { iObservable as iSubject }
 
-// vim: expandtab number tabstop=2
+
+// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
 // END
