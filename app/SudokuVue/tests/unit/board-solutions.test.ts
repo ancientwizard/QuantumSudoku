@@ -31,38 +31,40 @@ describe('sudoku/library/solve', () => {
             expect(map_encoded).toBeDefined()
             expect(map.encodeMapStringRL()).toBe(map_encoded)
 
-            console.log( source, 'PAGE:'+page, map_encoded)
-            console.log(map.toStringMap())
+            // console.log( source, 'PAGE:'+page, map_encoded)
+            // console.log(map.toStringMap())
 
             const board = new BoardModel(BoardMode.EDIT)
-            const history = new ChangeHistory()
-            // const cindex = CellIndex.arrayFactory
-            // const cvalue = CellValue.arrayFactory
-            // const map_ary = map.get_map()
+            const initialHistory = new ChangeHistory()
+            const changeHistory = new ChangeHistory()
 
             // Behaviors to be added???
-            // - A board factory to play in the saved map
-            // - Two caches:
+            // - A board factory to play in the saved map to create another Class I;ve yet to name/invent
+            //    (not a behavior to put directly in the board model)
+            // - Two caches: (used in the above new class)
             //  - one for the INITAL board state (think reset() back to initial state)
             //     (the board is empty until the initial stat is loaded)
             //  - one for the USER/SOLVER moves for an UNDO
             //    (the user changes their mind and calls undo to undo their last move)
             // I'm thinking the caching should be a composition class of the board model
-            //  that adds these behaviors
+            //  that adds these behaviors (repete of what I stated above)
 
+            // Store retrived sudoku puzzle map into the histroy
+            //  (the initial state of the board)
             map.foreach(( x, y, value ) => {
-                history.include(CellIndex.by(x), CellIndex.by(y), CellValue.by(value))
+                initialHistory.include(CellIndex.by(x), CellIndex.by(y), CellValue.by(value))
             })
 
-            history.foreach(( x, y, value ) => { board.set( x, y, value ) })
+            initialHistory.foreach(( x, y, value ) => { board.set( x, y, value ) })
 
             // console.log(board.toStringValues())
-            console.log(board.toString())
+            // console.log(board.toString())
             // console.log(board.toStringCoords())
             // console.log(board.toStringNames())
             // console.log(cindex[1])
 
-            // board.load_ini(ini, key)
+            // Update changeHistory as user OR solver makes a change
+
             // expect(board.solve()).toBe(true)
 
             break;

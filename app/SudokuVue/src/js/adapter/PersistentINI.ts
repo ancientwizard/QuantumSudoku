@@ -3,13 +3,14 @@
 //  A Persistent Sudoku puzzle INI storage & loading using INI composition specific to storing and loading
 //  MANY Sudoku board definitions; one per section
 
-import type { INI   } from '@/js/util/INI'
+import type { INI           } from '@/js/util/INI'
+import      { v4 as uuidv4  } from 'uuid'
 
 class PuzzleINImember
 {
     uuid:       string | null = null
     source:     string | null = null
-    page:       string | null = null
+    page:       number | null = null
     credits:    string | null = null
     email:      string | null = null
     map:        string | null = null
@@ -30,45 +31,49 @@ export class PersistentINI
             .filter((e) => { return e !== 'global' })
             .map((e) => {
                 const p = new PuzzleINImember()
-                p.uuid     = this.ini?.param(e,'uuid')      ??null
-                p.source   = this.ini?.param(e,'source')    ??null
-                p.page     = this.ini?.param(e,'page')      ??null
-                p.credits  = this.ini?.param(e,'credits')   ??null
-                p.email    = this.ini?.param(e,'email')     ??null
-                p.map      = this.ini?.param(e,'map')       ??null
+                p.uuid      = this.ini?.param(e,'uuid')     ?? null
+                p.source    = this.ini?.param(e,'source')   ?? null
+                p.page      = parseInt(this.ini?.param(e,'page') ?? '0')
+                p.credits   = this.ini?.param(e,'credits')  ?? null
+                p.email     = this.ini?.param(e,'email')    ?? null
+                p.map       = this.ini?.param(e,'map')      ?? null
                 return p
             }) ?? []
     }
 
     public retrieve ( uuid: string ) : PuzzleINImember
     {
-        const ini = this.ini?.as_object ?? {}
+        const params = this.ini?.params(uuid) ?? null
         const member = new PuzzleINImember()
 
-        if ( ini[uuid] )
+        if ( params )
         {
-            member.uuid     = ini[uuid]['uuid']
-            member.source   = ini[uuid]['source']
-            member.page     = ini[uuid]['page']
-            member.credits  = ini[uuid]['credits']
-            member.email    = ini[uuid]['email']
-            member.map      = ini[uuid]['map']
+            member.uuid     = params['uuid']
+            member.source   = params['source']
+            member.page     = parseInt(params['page'] ?? '0')
+            member.credits  = params['credits']
+            member.email    = params['email']
+            member.map      = params['map']
         }
 
         return member
     }
 
-    public store ( uuid: string, member: PuzzleINImember )
-    {
-        if ( !this.ini ) return
+    static make_uuid_v4(): string { return uuidv4() }
 
-        this.ini.param(uuid, 'uuid',     member.uuid)
-        this.ini.param(uuid, 'source',   member.source)
-        this.ini.param(uuid, 'page',     member.page)
-        this.ini.param(uuid, 'credits',  member.credits)
-        this.ini.param(uuid, 'email',    member.email)
-        this.ini.param(uuid, 'map',      member.map)
-    }
+    // At some point I'll add a store method to save a puzzle; however
+    //  I'll need a way to create uuid's
+    // public store ( uuid: string, member: PuzzleINImember )
+    // {
+    //     if ( !this.ini ) return
+
+    //     this.ini.param(uuid, 'uuid',     member.uuid)
+    //     this.ini.param(uuid, 'source',   member.source)
+    //     this.ini.param(uuid, 'page',     member.page)
+    //     this.ini.param(uuid, 'credits',  member.credits)
+    //     this.ini.param(uuid, 'email',    member.email)
+    //     this.ini.param(uuid, 'map',      member.map)
+    // }
 }
 
 
