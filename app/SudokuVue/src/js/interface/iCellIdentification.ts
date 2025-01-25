@@ -7,7 +7,7 @@
 export
 interface iCellIdentification
 {
-    public    label: string;
+    label: string;
 
     readonly    col: number;
     readonly    row: number;

@@ -2,7 +2,6 @@
 
 import { describe, expect, test } from '@jest/globals'
 import type { iUnit             } from '@/js/interface/iUnit'
-//port type { iStrategy         } from '@/js/interface/iStrategy'
 import type { iCellIndex        } from '@/js/interface/iCellIndex'
 import type { iObservedState    } from '@/js/interface/iObservedState'
 import      { aStrategyBase     } from '@/js/abstract/aStrategyBase'

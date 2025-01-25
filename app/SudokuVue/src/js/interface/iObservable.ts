@@ -12,7 +12,7 @@ interface iObservable
   notifyObservers ( arg: iObservedState ): void;
 }
 
-export { iObservable as iSubject }
+export type { iObservable as iSubject }
 
 
 // vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix

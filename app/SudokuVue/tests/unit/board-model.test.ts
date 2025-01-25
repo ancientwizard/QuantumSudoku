@@ -1,25 +1,29 @@
 
 // board-model.test.ts
 
-import { describe, expect, test } from '@jest/globals'
-import { BoardMode, BoardModel  } from '@/js/model/BoardModel'
-import { BoardStringAdapter     } from '@/js/adapter/BoardStringAdapter'
-import { CellIndex              } from '@/js/model/CellIndex'
-import { CellValue              } from '@/js/model/CellValue'
+import { describe, expect, test           } from '@jest/globals'
+import { BoardMode, BoardType, BoardModel } from '@/js/model/BoardModel'
+import { BoardStringAdapter               } from '@/js/adapter/BoardStringAdapter'
+import { CellIndex                        } from '@/js/model/CellIndex'
+import { CellValue                        } from '@/js/model/CellValue'
 
 describe('model/sudoku-board', () => {
 
   test('board/modes', () => {
     expect(BoardMode.EDIT).toBe(0)
     expect(BoardMode.PLAY).toBe(1)
-    expect(BoardMode.DIAGONAL).toBe(2)
-    expect(BoardMode.SOLVE).toBe(3)
+    expect(BoardMode.SOLVE).toBe(2)
+  })
+
+  test('board/types', () => {
+    expect(BoardType.NORMAL).toBe(0)
+    expect(BoardType.DIAGONAL).toBe(1)
   })
 
   test('board/to-string-defaults', () => {
 
     // TODO: convert all string building into adapters
-    [ BoardMode.EDIT, BoardMode.PLAY, BoardMode.DIAGONAL, BoardMode.SOLVE ].forEach( mode => {
+    [ BoardMode.EDIT, BoardMode.PLAY, BoardMode.SOLVE ].forEach( mode => {
       expect(new BoardModel(mode).toStringNames()).toBe(board_string_names())
       expect(new BoardModel(mode).toStringValues()).toBe(board_string_values())
       expect(new BoardModel(mode).toStringCoords()).toBe(board_string_coords())

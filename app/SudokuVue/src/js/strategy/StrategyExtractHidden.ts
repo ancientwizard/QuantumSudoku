@@ -38,7 +38,7 @@ class StrategyExtractHidden
 
         set_of_undetermined_cells.forEach( unsolved_cell => {
             unsolved_cell.as_candidate_array.forEach( candidate_cell_value => {
-                let v2c = mapOfVals2Cells[ candidate_cell_value.index ]
+                const v2c = mapOfVals2Cells[ candidate_cell_value.index ]
                 v2c.value == CellValue.HIDDEN && ( v2c.value = candidate_cell_value )
                 v2c.cells.push( unsolved_cell )
             })

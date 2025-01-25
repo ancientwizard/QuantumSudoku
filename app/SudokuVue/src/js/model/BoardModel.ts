@@ -3,14 +3,14 @@
 // Sudoku Board Model
 //
 
-import { UnitModel      } from '@/js/model/UnitModel'
-import { BlockModel     } from '@/js/model/BlockModel'
-import { CellModel      } from '@/js/model/CellModel'
-//import type { CellIdent } from './CellIdent'
-import type { CellIndex } from './CellIndex'
-import type { CellValue } from './CellValue'
+import type { CellIndex     } from '@/js/model/CellIndex'
+import type { CellValue     } from '@/js/model/CellValue'
+import      { UnitModel     } from '@/js/model/UnitModel'
+import      { BlockModel    } from '@/js/model/BlockModel'
+import      { CellModel     } from '@/js/model/CellModel'
 
-export enum BoardMode { EDIT, PLAY, DIAGONAL, SOLVE }
+export enum BoardMode { EDIT, PLAY, SOLVE }
+export enum BoardType { NORMAL, DIAGONAL }
 
 export
 class BoardModel
@@ -21,10 +21,12 @@ class BoardModel
     private colunits: Array<UnitModel>  = []    //   9 column units
     private angunits: Array<UnitModel>  = []    //   2 diagonal units
     private MODE: BoardMode
+    private TYPE: BoardType
 
-    constructor(mode: BoardMode)
+    constructor( mode: BoardMode, type: BoardType = BoardType.NORMAL )
     {
         this.MODE = mode
+        this.TYPE = type
 
         const cells: Array<Array<CellModel>> = []
 
@@ -33,7 +35,7 @@ class BoardModel
         this.buildColumnUnits(cells)
         this.buildBlockUnits(cells)
 
-        if ( this.MODE == BoardMode.DIAGONAL ) this.buildDiagonalUnits(cells)
+        if ( this.TYPE == BoardType.DIAGONAL ) this.buildDiagonalUnits(cells)
     }
 
     public set ( x: CellIndex, y: CellIndex, value: CellValue ): boolean

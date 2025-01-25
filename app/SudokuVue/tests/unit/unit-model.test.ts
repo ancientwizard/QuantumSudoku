@@ -27,36 +27,38 @@ function unit (autosolve = true) : UnitModel { return mk_unit( 9, autosolve ) }
 
 describe('mk_cells function', () => {
   test('creates the correct number of cells', () => {
-    const cells = mk_cells(5);
-    expect(cells.length).toBe(5);
-  });
+    [ 0, 1, 2, 5, 9, 10, 12 ].forEach((size) => {
+      const cells = mk_cells(size)
+      expect(cells.length).toBe(size)
+    })
+  })
 
   test('creates cells with correct properties', () => {
-    const cells = mk_cells(5, false);
+    const cells = mk_cells(5, false)
     cells.forEach((cell) => {
-      expect(cell.value).toBe(0);
-      expect(cell.autosolve).toBe(false);
-    });
-  });
-});
+      expect(cell.value).toBe(0)
+      expect(cell.autosolve).toBe(false)
+    })
+  })
+})
 
 describe('mk_unit function', () => {
   test('creates a UnitModel with the correct number of cells', () => {
-    const unit = mk_unit(9);
-    expect(unit.as_cell_array.length).toBe(9);
-  });
+    const unit = mk_unit(9)
+    expect(unit.as_cell_array.length).toBe(9)
+  })
 
   test('creates a UnitModel with cells having correct properties', () => {
-    const unit = mk_unit(9, false);
+    const unit = mk_unit(9, false)
     unit.as_cell_array.forEach((cell) => {
-      expect(cell.value).toBe(0);
-      expect(cell.length).toBe(9);
+      expect(cell.value).toBe(0)
+      expect(cell.length).toBe(9)
       // console.log(cell.as_label_array)
-      expect(cell.as_label_array.length).toBe(9);
-      expect(cell.autosolve).toBe(false);
-    });
-  });
-});
+      expect(cell.as_label_array.length).toBe(9)
+      expect(cell.autosolve).toBe(false)
+    })
+  })
+})
 
 describe('model/unit-model-basic', () => {
 
@@ -93,6 +95,14 @@ describe('model/unit-model-basic', () => {
 # A8: ? [ 1,2,3,4,5,6,7,8,9 ]
 # A9: ? [ 1,2,3,4,5,6,7,8,9 ]
 `)})
+})
+
+describe('model/unit-model-exceptions', () => {
+  test('unit-empty', () => expect(() => new UnitModel(mk_cells(  ))).toThrow('Content size incorrect'))
+  test('unit-small', () => expect(() => new UnitModel(mk_cells( 8))).toThrow('Content size incorrect'))
+  test('unit-large', () => expect(() => new UnitModel(mk_cells(10))).toThrow('Content size incorrect'))
+  test('unit-large', () => expect(() => new UnitModel(mk_cells(12))).toThrow('Content size incorrect'))
+  test('unit-NINE',  () => expect(() => new UnitModel(mk_cells( 9))).not.toThrow())
 })
 
 describe('model/unit-model-broken', () => {

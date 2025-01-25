@@ -1,7 +1,7 @@
 // observer-concrete.test.ts
 
 import { describe, expect, test } from '@jest/globals'
-import { Subject                } from '@/js/model/Observable'
+import { Observable as Subject  } from '@/js/model/Observable'
 import type { iObservedState    } from '@/js/interface/iObservedState'
 import type { iObserver         } from '@/js/interface/iObserver'
 

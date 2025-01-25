@@ -4,6 +4,7 @@ import type { iObservedState    } from '@/js/interface/iObservedState'
 import type { iObservable       } from '@/js/interface/iObservable'
 import type { iObserver         } from '@/js/interface/iObserver'
 
+// Observer Pattern (Observable aka the Subject)
 export
 class Observable implements iObservable
 {
@@ -11,11 +12,10 @@ class Observable implements iObservable
 
     public includeObserver ( observer: iObserver ): void
     {
-
       // We don't intend to observe ourself in this implementation
-      //  The child class should implement this and the super.includeObserver()
-      //  called.  In the real world people that "talk" to themselves get funny looks
-//    if ( observer === this ) return
+      //  The child class should implement this in the super.includeObserver()
+      //  when called.  In the real world people that "talk" to themselves get funny looks
+      // if ( observer === this ) return
 
       // Keep our observers clean and unique!
       if ( ! this.observers.includes(observer))
@@ -38,14 +38,12 @@ class Observable implements iObservable
     public observers_as_array () : iObserver[]
     {
       return [...this.observers]
-      // is cryptic! I happen to like ...
+      // is cryptic! I happen to like ... though it too is a bit cryptic
       // return this.observers.filter( () => true )
     }
 
     get length () { return this.observers.length }
 }
-
-export { Observable as Subject }
 
 
 // vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix

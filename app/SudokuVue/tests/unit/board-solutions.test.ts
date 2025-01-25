@@ -35,11 +35,11 @@ describe('sudoku/library/solve', () => {
             // console.log(map.toStringMap())
 
             const board = new BoardModel(BoardMode.EDIT)
-            const initialHistory = new ChangeHistory()
-            const changeHistory = new ChangeHistory()
+            const historyInit = new ChangeHistory()
+            const historyPlay = new ChangeHistory()
 
             // Behaviors to be added???
-            // - A board factory to play in the saved map to create another Class I;ve yet to name/invent
+            // - A board factory to play in the saved map to create another Class I've yet to name-&-design
             //    (not a behavior to put directly in the board model)
             // - Two caches: (used in the above new class)
             //  - one for the INITAL board state (think reset() back to initial state)
@@ -49,21 +49,23 @@ describe('sudoku/library/solve', () => {
             // I'm thinking the caching should be a composition class of the board model
             //  that adds these behaviors (repete of what I stated above)
 
-            // Store retrived sudoku puzzle map into the histroy
-            //  (the initial state of the board)
+            // Store retrived sudoku puzzle map into the history
+            //  (used to build the initial state of the board)
             map.foreach(( x, y, value ) => {
-                initialHistory.include(CellIndex.by(x), CellIndex.by(y), CellValue.by(value))
+                historyInit.include(CellIndex.by(x), CellIndex.by(y), CellValue.by(value))
             })
 
-            initialHistory.foreach(( x, y, value ) => { board.set( x, y, value ) })
+            // Init the board with the puzzle map using the initial history (the START)
+            historyInit.foreach(( x, y, value ) => { board.set( x, y, value ) })
 
             // console.log(board.toStringValues())
             // console.log(board.toString())
-            // console.log(board.toStringCoords())
-            // console.log(board.toStringNames())
-            // console.log(cindex[1])
 
-            // Update changeHistory as user OR solver makes a change
+            // next steps
+            // - setup the strategy patterns
+            // - use strategy patterns to solve/play the board
+            // - use strategy historyPlay to store the user(solver) moves
+            
 
             // expect(board.solve()).toBe(true)
 
