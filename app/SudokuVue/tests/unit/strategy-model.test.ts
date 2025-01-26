@@ -20,12 +20,12 @@ class MyUnit implements iUnit
         return false
     }
 
-    isSolved () : boolean
+    get isSolved () : boolean
     {
         return false
     }
 
-    isBroken () : boolean
+    get isBroken () : boolean
     {
         return false
     }
@@ -43,7 +43,7 @@ class MyStrategy extends aStrategyBase
 
     protected applyStrategy ( unit: iUnit ) : boolean
     {
-        return false && ! unit.isBroken() // make lint quiet
+        return false && ! unit.isBroken // make lint quiet
     }
 }
 

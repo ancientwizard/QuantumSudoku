@@ -63,7 +63,7 @@ export class BasicMap
             {
                 const value = this.map[y][x] || 0
                 if ( value > 0 )
-                    callback( x, y, value - 1 )
+                    callback( x, y, value )
             }
         }
     }

@@ -10,8 +10,8 @@ interface iUnit
     is      ( idx: iCellIndex, value: iObservedState ) : boolean;
     exclude ( idx: iCellIndex, value: iObservedState ) : boolean;
 
-    isSolved () : boolean;
-    isBroken () : boolean;
+    get isSolved () : boolean;
+    get isBroken () : boolean;
 }
 
 

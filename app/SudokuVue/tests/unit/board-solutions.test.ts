@@ -1,13 +1,22 @@
 
 // board-model.test.ts
 
-import { describe, expect, test } from '@jest/globals'
-import { BoardMode, BoardModel  } from '@/js/model/BoardModel'
-import { CellIndex              } from '@/js/model/CellIndex'
-import { CellValue              } from '@/js/model/CellValue'
-import { INI                    } from '@/js/util/INI'
-import { BasicMap               } from '@/js/model/BasicMap'
-import { ChangeHistory          } from '@/js/model/ChangeHistory'
+import      { describe, expect, test            } from '@jest/globals'
+import type { iStrategy                         } from '@/js/interface/iStrategy'
+import      { BoardMode, BoardModel, BoardType  } from '@/js/model/BoardModel'
+import      { CellIndex                         } from '@/js/model/CellIndex'
+import      { CellValue                         } from '@/js/model/CellValue'
+import      { INI                               } from '@/js/util/INI'
+import      { BasicMap                          } from '@/js/model/BasicMap'
+import      { ChangeHistory                     } from '@/js/model/ChangeHistory'
+import      { StrategyUnique                    } from '@/js/strategy/StrategyUnique'
+import      { StrategyHiddenPair                } from '@/js/strategy/StrategyHiddenPair'
+import      { StrategyHiddenTriple              } from '@/js/strategy/StrategyHiddenTriple'
+import      { StrategyNakedPair                 } from '@/js/strategy/StrategyNakedPair'
+import      { StrategyNakedTriple               } from '@/js/strategy/StrategyNakedTriple'
+import      { StrategyNakedQuad                 } from '@/js/strategy/StrategyNakedQuad'
+import      { StrategyHiddenQuad                } from '@/js/strategy/StrategyHiddenQuad'
+import      { StrategyLogger                    } from '@/js/strategy/StrategyLogger'
 
 
 describe('sudoku/library/solve', () => {
@@ -34,12 +43,13 @@ describe('sudoku/library/solve', () => {
             // console.log( source, 'PAGE:'+page, map_encoded)
             // console.log(map.toStringMap())
 
-            const board = new BoardModel(BoardMode.EDIT) // BoardTYpe.NORMAL by default
+            // DEFAULT: BoardMode.EDIT, BoardType.NORMAL
+            const board = new BoardModel(BoardMode.SOLVE,BoardType.NORMAL)
             const init_history = new ChangeHistory()
-            const play_history = new ChangeHistory()
+            // const play_history = new ChangeHistory()
 
             expect(board).toBeDefined()
-            // expect(board.mo)
+            // expect(board.isEditMode).toBe(true)
 
             // This is our playground and then we'll refactor into classes etc.
 
@@ -71,15 +81,61 @@ describe('sudoku/library/solve', () => {
             //  - change the board mode to SOLVE OR PLAY which KEEP the INIT history
             //    and additional .set calls will store into the PLAY history
             //      (I think you got it now!)
+            console.log(map_encoded + '\n' + map.toStringMap())
             map.foreach(( x, y, value ) => {
+                // console.log(x, y, value, CellValue.by(value).label)
                 init_history.include(CellIndex.by(x), CellIndex.by(y), CellValue.by(value))
             })
 
             // Init the board with the puzzle map using the initial history (the START)
+            expect(board.toPlayMode().isPlayMode).toBe(true)
             init_history.foreach(( x, y, value ) => { board.set( x, y, value ) })
 
+            expect(board.toPlayMode().isPlayMode).toBe(true)
+            expect(board.toSolveMode().isSolveMode).toBe(true)
+            expect(board.isSolved).toBe(false)
+
+            // expect(board.set(CellIndex.ONE, CellIndex.ONE, CellValue.ONE)).toBe(true)
             // console.log(board.toStringValues())
+            console.log(ini.param(sectionKey, 'source'), ini.param(sectionKey, 'page'))
             // console.log(board.toString())
+            const init_state = board.toStringValues()
+
+            // expect(board.set(CellIndex.ONE,   CellIndex.ONE,    CellValue.NINE )).toBe(true)
+            // expect(board.set(CellIndex.THREE, CellIndex.ONE,    CellValue.EIGHT)).toBe(true)
+            // expect(board.set(CellIndex.TWO,   CellIndex.TWO,    CellValue.ONE  )).toBe(true)
+            // expect(board.set(CellIndex.THREE, CellIndex.THREE,  CellValue.FOUR )).toBe(true)
+            // expect(board.set(CellIndex.FOUR,  CellIndex.FOUR,   CellValue.TWO  )).toBe(true)
+            // expect(board.set(CellIndex.SEVEN, CellIndex.SEVEN,  CellValue.TWO  )).toBe(true)
+            // expect(board.set(CellIndex.EIGHT, CellIndex.EIGHT,  CellValue.SEVEN)).toBe(true)
+            // expect(board.set(CellIndex.NINE,  CellIndex.NINE,   CellValue.FIVE )).toBe(true)
+
+            const logger = new StrategyLogger()
+            const strategies: Array<iStrategy> = [
+                new StrategyUnique(logger),
+                new StrategyNakedPair(logger),
+                new StrategyHiddenPair(logger),
+                new StrategyNakedTriple(logger),
+                new StrategyHiddenTriple(logger),
+                new StrategyNakedQuad(logger),
+                new StrategyHiddenQuad(logger)
+            ];
+            const solver_chain = strategies[0]
+
+            strategies.reduce((prev, curr) => prev.setNext(curr));
+
+            for ( let i = 0; i < 8; i++ ) {
+                board.forEachRow(row => solver_chain.apply(row));
+                board.forEachColumn(column => solver_chain.apply(column));
+                board.forEachBlock(block => solver_chain.apply(block));
+                if ( board.isSolved ) { console.log('SOLVED-ON-LOOP: ' + i); break; }
+            }
+
+            // console.log(solver_chain);
+            // console.log(board.toString())
+            console.log(board.toStringValues())
+            // console.log(logger.as_array)
+            expect(board.toStringValues()).not.toBe(init_state)
 
             // next steps
             // - setup the strategy patterns
@@ -89,7 +145,7 @@ describe('sudoku/library/solve', () => {
 
             // expect(board.solve()).toBe(true)
 
-            break;
+            // break;
         }
 
         // const board = new BoardModel(BoardMode.SOLVE)

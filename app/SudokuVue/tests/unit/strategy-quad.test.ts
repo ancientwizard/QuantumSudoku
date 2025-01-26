@@ -33,7 +33,7 @@ describe('strategy/quad', () => {
 
     test('naked-quad', () => {
 
-        expect(unit.isSolved()).toBe(false)
+        expect(unit.isSolved).toBe(false)
         expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyNakedQuad(new StrategyLogger())
@@ -100,13 +100,13 @@ describe('strategy/quad', () => {
         // console.log(unit.toString())
 
         unit.reset();
-        expect(unit.isSolved()).toBe(false)
+        expect(unit.isSolved).toBe(false)
         expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
     })
 
     test('hidden-quad', () => {
 
-        expect(unit.isSolved()).toBe(false)
+        expect(unit.isSolved).toBe(false)
         expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyHiddenQuad(new StrategyLogger())
@@ -140,7 +140,7 @@ describe('strategy/quad', () => {
         // console.log(unit.toString())
 
         unit.reset();
-        expect(unit.isSolved()).toBe(false)
+        expect(unit.isSolved).toBe(false)
         expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
     })
 })

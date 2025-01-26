@@ -13,15 +13,20 @@ describe('model/sudoku-board', () => {
     expect(BoardMode.EDIT).toBe(0)
     expect(BoardMode.PLAY).toBe(1)
     expect(BoardMode.SOLVE).toBe(2)
-    expect(new BoardModel(BoardMode.EDIT).isEditMode()).toBe(true)
-    expect(new BoardModel(BoardMode.PLAY).isPlayMode()).toBe(true)
-    expect(new BoardModel(BoardMode.SOLVE).isSolveMode()).toBe(true);
+    expect(new BoardModel(BoardMode.EDIT).isEditMode).toBe(true)
+    expect(new BoardModel(BoardMode.PLAY).isPlayMode).toBe(true)
+    expect(new BoardModel(BoardMode.SOLVE).isSolveMode).toBe(true);
 
     [ BoardMode.EDIT, BoardMode.PLAY, BoardMode.SOLVE ].forEach( mode => {
-      expect(new BoardModel(mode).isEditMode()).toBe(mode == BoardMode.EDIT)
-      expect(new BoardModel(mode).isPlayMode()).toBe(mode == BoardMode.PLAY)
-      expect(new BoardModel(mode).isSolveMode()).toBe(mode == BoardMode.SOLVE)
+      expect(new BoardModel(mode).isEditMode).toBe(mode == BoardMode.EDIT)
+      expect(new BoardModel(mode).isPlayMode).toBe(mode == BoardMode.PLAY)
+      expect(new BoardModel(mode).isSolveMode).toBe(mode == BoardMode.SOLVE)
     })
+
+    expect(new BoardModel(BoardMode.PLAY).toEditMode().isEditMode).toBe(true)
+    expect(new BoardModel(BoardMode.EDIT).toPlayMode().isPlayMode).toBe(true)
+    expect(new BoardModel(BoardMode.PLAY).toSolveMode().isSolveMode).toBe(true)
+    expect(new BoardModel(BoardMode.SOLVE).restart().isEditMode).toBe(true)
   })
 
   test('board/types', () => {
@@ -29,8 +34,8 @@ describe('model/sudoku-board', () => {
     expect(BoardType.DIAGONAL).toBe(1); // line terminator saves next line from being miss read
 
     [ BoardMode.EDIT, BoardMode.PLAY, BoardMode.SOLVE ].forEach((mode:BoardMode) => {
-      expect(new BoardModel(mode, BoardType.NORMAL).isNormalType()).toBe(true)
-      expect(new BoardModel(mode, BoardType.DIAGONAL).isDiagonalType()).toBe(true)
+      expect(new BoardModel(mode, BoardType.NORMAL).isNormalType).toBe(true)
+      expect(new BoardModel(mode, BoardType.DIAGONAL).isDiagonalType).toBe(true)
     })
   })
 
@@ -96,6 +101,30 @@ describe('model/sudoku-board', () => {
     expect(board.get_diagonal_BL_TR()?.toStringValues()).toBe('2 3 4 9 5 1 8 7 6')
 
     // console.log(BoardStringAdapter.toString(board))
+  })
+
+  describe('board/rows', () => {
+    new BoardModel(BoardMode.SOLVE).forEachRow(row => {
+      expect(row.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+      expect(row.isSolved).toBe(false)
+      expect(row.isBroken).toBe(false)
+    })
+  })
+
+  describe('board/columns', () => {
+    new BoardModel(BoardMode.SOLVE).forEachColumn(column => {
+      expect(column.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+      expect(column.isSolved).toBe(false)
+      expect(column.isBroken).toBe(false)
+    })
+  })
+
+  describe('board/blocks', () => {
+    new BoardModel(BoardMode.SOLVE).forEachBlock(block => {
+      expect(block.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+      expect(block.isSolved).toBe(false)
+      expect(block.isBroken).toBe(false)
+    })
   })
 
   describe('board/adapters/string-text', () => {

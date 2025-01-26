@@ -33,7 +33,7 @@ describe('strategy/pair', () => {
 
     test('naked-pair', () => {
 
-        expect(unit.isSolved()).toBe(false)
+        expect(unit.isSolved).toBe(false)
         expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyNakedPair(new StrategyLogger())
@@ -83,7 +83,7 @@ describe('strategy/pair', () => {
         // console.log(unit.toString())
 
         unit.reset();
-        expect(unit.isSolved()).toBe(false)
+        expect(unit.isSolved).toBe(false)
         expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         strategy.logger && strategy.logger.reset()
@@ -92,7 +92,7 @@ describe('strategy/pair', () => {
 
     test('hidden-pair(A)', () => {
 
-        expect(unit.isSolved()).toBe(false)
+        expect(unit.isSolved).toBe(false)
         expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         expect(unit.is(CellIndex.ONE,   CellValue.SEVEN)).toBe(true)
@@ -135,7 +135,7 @@ describe('strategy/pair', () => {
         // console.log(unit.toString())
 
         unit.reset();
-        expect(unit.isSolved()).toBe(false)
+        expect(unit.isSolved).toBe(false)
         expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         strategy.logger && strategy.logger.reset()
@@ -144,7 +144,7 @@ describe('strategy/pair', () => {
 
     test('hidden-pair(B)', () => {
 
-        expect(unit.isSolved()).toBe(false)
+        expect(unit.isSolved).toBe(false)
         expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         expect(unit.is(CellIndex.ONE,   CellValue.SEVEN)).toBe(true)
@@ -193,7 +193,7 @@ describe('strategy/pair', () => {
         // console.log(unit.toString())
 
         unit.reset();
-        expect(unit.isSolved()).toBe(false)
+        expect(unit.isSolved).toBe(false)
         expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         strategy.logger && strategy.logger.reset()

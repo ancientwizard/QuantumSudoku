@@ -4,7 +4,6 @@
 import { describe, expect, test     } from '@jest/globals'
 import { INI                        } from '@/js/util/INI';
 import { toISO8601Z                 } from '@/js/util/iso-8601';
-import exp from 'node:constants';
 
 
 describe('INI', () => {

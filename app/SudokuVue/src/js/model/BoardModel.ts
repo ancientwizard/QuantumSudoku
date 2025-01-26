@@ -25,7 +25,7 @@ class BoardModel
     private MODE: BoardMode
     private TYPE: BoardType
 
-    constructor( mode: BoardMode, type: BoardType = BoardType.NORMAL )
+    constructor( mode: BoardMode = BoardMode.EDIT, type: BoardType = BoardType.NORMAL )
     {
         this.MODE = mode
         this.TYPE = type
@@ -59,6 +59,20 @@ class BoardModel
     {
         this.rowunits.forEach(( row, index ) => {
             callback( row, index );
+        });
+    }
+
+    public forEachColumn(callback: (column: UnitModel, index: number) => void): void
+    {
+        this.colunits.forEach(( column, index ) => {
+            callback( column, index );
+        });
+    }
+
+    public forEachBlock(callback: (block: BlockModel, index: number) => void): void
+    {
+        this.grdunits.forEach(( block, index ) => {
+            callback( block, index );
         });
     }
 
@@ -148,17 +162,49 @@ class BoardModel
     //     return this.angunits
     // }
 
-    public isEditMode()     : boolean { return this.MODE == BoardMode.EDIT }
-    public isPlayMode()     : boolean { return this.MODE == BoardMode.PLAY }
-    public isSolveMode()    : boolean { return this.MODE == BoardMode.SOLVE}
+    public get isEditMode()     : boolean { return this.MODE == BoardMode.EDIT }
+    public get isPlayMode()     : boolean { return this.MODE == BoardMode.PLAY }
+    public get isSolveMode()    : boolean { return this.MODE == BoardMode.SOLVE}
 
-    public isNormalType()   : boolean { return this.TYPE == BoardType.NORMAL }
-    public isDiagonalType() : boolean { return this.TYPE == BoardType.DIAGONAL }
+    public get isNormalType()   : boolean { return this.TYPE == BoardType.NORMAL }
+    public get isDiagonalType() : boolean { return this.TYPE == BoardType.DIAGONAL }
 
-    public toEditMode()     : void { this.MODE = BoardMode.EDIT }
-    public toPlayMode()     : void { this.MODE = BoardMode.PLAY }
-    public toSolveMode()    : void { this.MODE = BoardMode.SOLVE }
+    // CHANGE MODE(s)
+    public toEditMode(): BoardModel
+    {
+        // We're resetting cell values by using all-rows.
+        // This also covers all colums, blocks and diagonals
+        this.rowunits.forEach(u => u.reset())
+        this.MODE = BoardMode.EDIT
+        // If we Had INIT history we'd play it in now OR our consumer would do so!
+        return this
+    }
 
+    public toPlayMode(): BoardModel
+    {
+        this.MODE = BoardMode.PLAY
+        return this
+    }
+
+    public toSolveMode(): BoardModel
+    {
+        this.MODE = BoardMode.SOLVE
+        return this
+    }
+
+    public restart(): BoardModel { return this.toEditMode() }
+
+    public get isSolved(): boolean
+    {
+        return ! this.rowunits.some( row => ! row.isSolved );
+    }
+
+    // public reset(): void
+    // {
+    //     this.rowunits.forEach( row => row.reset() )
+    // }
+
+    // String formatting methods
     public toString(): string
     {
         let s = '  '

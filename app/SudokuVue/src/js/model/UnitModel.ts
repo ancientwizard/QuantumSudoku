@@ -106,29 +106,29 @@ class UnitModel implements iUnit
         })
     }
 
-    get as_cell_array () : Array<CellModel> { return [...this.cells] }
+    public get as_cell_array () : Array<CellModel> { return [...this.cells] }
 
 
     // Exclude
-    exclude ( cell: CellIndex, candidate: CellValue ) : boolean
+    public exclude ( cell: CellIndex, candidate: CellValue ) : boolean
     {
         return this.cells[ cell.index ].exclude( candidate );
     }
 
 
-    is ( cell: CellIndex, candidate: CellValue ) : boolean
+    public is ( cell: CellIndex, candidate: CellValue ) : boolean
     {
         return this.cells[ cell.index ].is( candidate );
     }
 
-    isSolved () : boolean
+    public get isSolved () : boolean
     {
         // When all Unit cell members are KNOWN then this unit is-solved
         //  The first UNKNOWN is our clue
         return this.cells.find( cell => cell.isUnknown ) === undefined
     }
 
-    isBroken () : boolean
+    public get isBroken () : boolean
     {
         let broken = false
 

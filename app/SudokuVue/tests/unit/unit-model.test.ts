@@ -67,8 +67,8 @@ describe('model/unit-model-basic', () => {
   test('large membership', () => expect(() => mk_unit(10)).toThrow('Content size incorrect'))
   test('NINE  membership', () => expect(() => mk_unit(9)).not.toThrow())
 
-  test('unit-solved',   () => expect(unit().isSolved()).toBe(false))
-  test('unit-unsolved', () => expect(unit().isBroken()).toBe(false))
+  test('unit-solved',   () => expect(unit().isSolved).toBe(false))
+  test('unit-unsolved', () => expect(unit().isBroken).toBe(false))
 
   test('unit-reset+tostring', () => {
     const u : UnitModel = unit()
@@ -77,8 +77,8 @@ describe('model/unit-model-basic', () => {
     u.as_cell_array.forEach( c => { expect(c.observers_as_array().length).toBe(8) })
 
     expect(u.is(CellIndex.ONE, CellValue.ONE)).toBe(true)
-    expect(u.isSolved()).toBe(false)
-    expect(u.isBroken()).toBe(false)
+    expect(u.isSolved).toBe(false)
+    expect(u.isBroken).toBe(false)
     expect(u.toStringValues()).toBe('1 ? ? ? ? ? ? ? ?')
 
     u.reset()
@@ -110,24 +110,24 @@ describe('model/unit-model-broken', () => {
     test('unit-broken', () => {
       let u : UnitModel = unit()
 
-      expect(u.isBroken()).toBe(false)
+      expect(u.isBroken).toBe(false)
 
       // Exclude same cell value from more than one cell
       //   an invalid Sudoku state
       CellIndex.arrayFactory.forEach( ci => {
-        expect(u.isBroken()).toBe(false)
+        expect(u.isBroken).toBe(false)
         u.exclude(ci, CellValue.ONE)
       })
 
-      expect(u.isBroken()).toBe(true)
+      expect(u.isBroken).toBe(true)
 
       // Set more than one unit cell member to the same value
       //  an invalid Sudoku state
       u = unit(false) // No autosolve, allow cells to have same value (an invalid Sudoku)
-      expect(u.isBroken()).toBe(false)
+      expect(u.isBroken).toBe(false)
       CellIndex.arrayFactory.forEach( ci => {
         expect(u.is(ci, CellValue.ONE)).toBe(true)
-        expect(u.isBroken()).toBe(ci.index>0)
+        expect(u.isBroken).toBe(ci.index>0)
       })
 
       // console.log(u.toStringValues())
@@ -150,7 +150,7 @@ describe('model/unit-model-solved', () => {
       expect(c.name).toBe(P[c.index])
   //  console.log(c,u.is(c, v[c.index]))
       expect(u.is(c, v[c.index])).toBe(c.index<8)
-      expect(u.isSolved()).toBe(v[c.index]===CellValue.NINE || v[c.index]===CellValue.EIGHT)
+      expect(u.isSolved).toBe(v[c.index]===CellValue.NINE || v[c.index]===CellValue.EIGHT)
     })
 
     // Backward
@@ -161,7 +161,7 @@ describe('model/unit-model-solved', () => {
     CellIndex.arrayFactory.reverse().forEach( c => {
       expect(c.name).toBe(P[c.index])
       expect(u.is(c, v[8-c.index])).toBe(c.index>0)
-      expect(u.isSolved()).toBe(v[c.index]===CellValue.ONE || v[c.index]===CellValue.TWO)
+      expect(u.isSolved).toBe(v[c.index]===CellValue.ONE || v[c.index]===CellValue.TWO)
     })
   })
 
@@ -176,7 +176,7 @@ describe('model/unit-model-solved', () => {
       let t = false
       expect(c.name).toBe(P[c.index])
       v.forEach( x => { expect(t=u.exclude(c, x)).toBe(t) })
-      expect(u.isSolved()).toBe(c===CellIndex.NINE || c===CellIndex.EIGHT)
+      expect(u.isSolved).toBe(c===CellIndex.NINE || c===CellIndex.EIGHT)
     })
 
     // Backward
@@ -186,7 +186,7 @@ describe('model/unit-model-solved', () => {
       let t = false
       expect(c.name).toBe(P[c.index])
       shuffleArray(v).forEach( x => { expect(t=u.exclude(c, x)).toBe(t) })
-      expect(u.isSolved()).toBe(c===CellIndex.ONE || c===CellIndex.TWO)
+      expect(u.isSolved).toBe(c===CellIndex.ONE || c===CellIndex.TWO)
     })
   })
 })

@@ -32,7 +32,7 @@ describe('strategy/unique', () => {
 
     test('unique-cell', () => {
 
-        expect(unit.isSolved()).toBe(false)
+        expect(unit.isSolved).toBe(false)
         expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyUnique(new StrategyLogger())
@@ -101,13 +101,13 @@ describe('strategy/unique', () => {
         // console.log(unit.toString())
 
         unit.reset()
-        expect(unit.isSolved()).toBe(false)
+        expect(unit.isSolved).toBe(false)
         expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
     })
 
     test('unique-cell[edges]', () => {
 
-        expect(unit.isSolved()).toBe(false)
+        expect(unit.isSolved).toBe(false)
         expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyUnique(new StrategyLogger())
@@ -124,7 +124,7 @@ describe('strategy/unique', () => {
         expect(unit.as_cell_array[CellIndex.NINE.index].isKnown).toBe(true)
 
         unit.reset()
-        expect(unit.isSolved()).toBe(false)
+        expect(unit.isSolved).toBe(false)
         expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
     })
 })

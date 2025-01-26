@@ -76,7 +76,7 @@ describe('strategy/base', () => {
         // Cell 5 == Value 7 triggers Cell 3 == Value 2
         expect(unit.is(CellIndex.FIVE,  CellValue.SEVEN)).toBe(true)
         expect(unit.as_cell_array[2].value).toBe(CellValue.TWO.value)
-        expect(unit.isSolved()).toBe(true)
+        expect(unit.isSolved).toBe(true)
         expect(unit.toStringValues()).toBe('5 6 2 8 7 9 4 3 1')
 
     //  console.log(unit.toString());

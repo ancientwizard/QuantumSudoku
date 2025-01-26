@@ -33,7 +33,7 @@ describe('strategy/triple', () => {
 
     test('naked-triple', () => {
 
-        expect(unit.isSolved()).toBe(false)
+        expect(unit.isSolved).toBe(false)
         expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyNakedTriple(new StrategyLogger())
@@ -94,13 +94,13 @@ describe('strategy/triple', () => {
         // console.log(unit.toString())
 
         unit.reset();
-        expect(unit.isSolved()).toBe(false)
+        expect(unit.isSolved).toBe(false)
         expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
     })
 
     test('hidden-triple', () => {
 
-        expect(unit.isSolved()).toBe(false)
+        expect(unit.isSolved).toBe(false)
         expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyHiddenTriple(new StrategyLogger())
@@ -131,7 +131,7 @@ describe('strategy/triple', () => {
         // console.log(unit.toString())
 
         unit.reset();
-        expect(unit.isSolved()).toBe(false)
+        expect(unit.isSolved).toBe(false)
         expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
     })
 })

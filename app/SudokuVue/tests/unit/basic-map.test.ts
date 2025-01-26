@@ -233,7 +233,7 @@ describe('model/sudoku/basic-map', () => {
         const map : BasicMap = puzzle_71()
         const ary: number[] = []
         // X is zero indexed,Y is zero indexed, value is 0==1 based
-        map.foreach(( x, y, value ) => { ary.push(value+1) })
+        map.foreach(( x, y, value ) => { ary.push(value) })
         expect(ary.length).toBe(19)
         expect(ary.join('')).toBe(puzzle_71_sa().replace(/,/g, ''))
     })
