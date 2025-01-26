@@ -18,7 +18,10 @@ describe('sudoku/storage/persistent-ini', () => {
     test('retrieve/puzzle(1,300)', async () => {
         const persistent = new PersistentINI( await load_ini( iniFileName ))
         const puzzles = persistent.get_puzzles()
-                .sort((a, b) => a.source!.toString().localeCompare(b.source!.toString()) || a.page! - b.page! )
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .sort((a, b) => a.source!.toString().localeCompare(b.source!.toString()) || a.page! - b.page! )
+
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const puzzle_page1 = persistent.retrieve(puzzles[0].uuid!)
 
         expect(puzzles.length).toBe(300)
@@ -30,6 +33,7 @@ describe('sudoku/storage/persistent-ini', () => {
         expect(puzzle_page1.email).toBe('')
         expect(puzzle_page1.map).toBe('MAP:RL:A:R5X4R9X3400270801000060075000900004R6X10008000500007000028030104006800')
 
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const puzzle_page300 = persistent.retrieve(puzzles[299].uuid!)
         expect(puzzle_page300).toEqual(puzzles[299])
         expect(puzzle_page300.uuid).toBe('14e1b27e-9eb2-4534-ae6d-aa6015bc72f0')

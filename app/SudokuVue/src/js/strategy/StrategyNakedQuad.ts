@@ -26,14 +26,14 @@ class StrategyNakedQuad extends aStrategyBase
     //       from all maining unsolved cells in the Unit.
     private strategy_set_naked_quad ( unit: iUnit ) : boolean
     {
-        let removed : number = 0;
-        let updated : Array<string> = [] as Array<string>
+        let removed  = 0;
+        const updated : Array<string> = [] as Array<string>
 
         NAKED_QUAD:
         {
             // We only need to work with those Cells that are undetermined (not solved)
             //  its a waste of time looking at stuff that is already solved
-            let setOfUndeterminedCells : Array<CellModel> = this.getUndeterminedCellList( unit )
+            const setOfUndeterminedCells : Array<CellModel> = this.getUndeterminedCellList( unit )
 
             this.logger?.add('# Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
 
@@ -43,12 +43,12 @@ class StrategyNakedQuad extends aStrategyBase
             // very rare and will very likely show up as a simpler strategy
             if ( setOfUndeterminedCells.length < 6 ) break NAKED_QUAD
 
-            let match : Array<CandidateMatch> = [] as Array<CandidateMatch>
+            const match : Array<CandidateMatch> = [] as Array<CandidateMatch>
 
             setOfUndeterminedCells.forEach( cell => {
                 if ( cell.length == 4 )
                 {
-                    let matched : boolean = false
+                    let matched  = false
                     const cell_va : Array<CellValue> = cell.as_candidate_array
 
                     match.forEach( candidate => {
@@ -70,7 +70,7 @@ class StrategyNakedQuad extends aStrategyBase
 
                 if ( candidate.all.length == 4 )
                 {
-                    let first_naked_displayed : boolean = false;
+                    let first_naked_displayed  = false;
 
                     // We have a winner
                     setOfUndeterminedCells.forEach( cell => {

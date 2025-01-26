@@ -1,6 +1,12 @@
 
 // Strategy Box Line
 
+export
+class StrategyBoxLine
+{
+	// TBD
+}
+
 // A level 1 Strategy
 //  Box Line: This strategy attempts to remove candidates from a Block
 //    by comparing candidates in a Block (aka box) that intersects a line.

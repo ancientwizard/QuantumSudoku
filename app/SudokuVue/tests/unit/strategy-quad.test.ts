@@ -1,6 +1,6 @@
 // strategy-quad.test.ts
 
-import { describe, expect, test, beforeAll, beforeEach } from '@jest/globals'
+import { describe, expect, test, beforeEach } from '@jest/globals'
 import { CellIndex              } from '@/js/model/CellIndex'
 import { CellValue              } from '@/js/model/CellValue'
 import { CellModel              } from '@/js/model/CellModel'
@@ -60,7 +60,7 @@ describe('strategy/quad', () => {
         expect(unit.as_cell_array[CellIndex.EIGHT.index].toString2()).toBe('# A8: ? [ 4,5,7,9 ]')
         expect(unit.as_cell_array[CellIndex. NINE.index].toString2()).toBe('# A9: ? [ 4,5,7,9 ]')
 
-  		expect(strategy.apply( unit )).toBe(true)
+        expect(strategy.apply( unit )).toBe(true)
         strategy.logger && expect(strategy.logger.as_array.length).toBe(3)
         expect(unit.as_cell_array[CellIndex.  ONE.index].toString2()).toBe('# A1: ? [ 1,2,3,6,8 ]')
         expect(unit.as_cell_array[CellIndex. FOUR.index].toString2()).toBe('# A4: ? [ 1,2,3,6,8 ]')
@@ -89,7 +89,7 @@ describe('strategy/quad', () => {
         expect(unit.as_cell_array[CellIndex.  ONE.index].toString2()).toBe('# A1: ? [ 1,2,3,6,8 ]')
         expect(unit.as_cell_array[CellIndex. FOUR.index].toString2()).toBe('# A4: ? [ 1,2,3,6 ]')
 
-  		expect(strategy.apply( unit )).toBe(true)
+        expect(strategy.apply( unit )).toBe(true)
 
         expect(unit.as_cell_array[CellIndex.  ONE.index].toString2()).toBe('# A1: 8 [ ]')
         expect(unit.as_cell_array[CellIndex.  ONE.index].isKnown).toBe(true)

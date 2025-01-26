@@ -13,11 +13,25 @@ describe('model/sudoku-board', () => {
     expect(BoardMode.EDIT).toBe(0)
     expect(BoardMode.PLAY).toBe(1)
     expect(BoardMode.SOLVE).toBe(2)
+    expect(new BoardModel(BoardMode.EDIT).isEditMode()).toBe(true)
+    expect(new BoardModel(BoardMode.PLAY).isPlayMode()).toBe(true)
+    expect(new BoardModel(BoardMode.SOLVE).isSolveMode()).toBe(true);
+
+    [ BoardMode.EDIT, BoardMode.PLAY, BoardMode.SOLVE ].forEach( mode => {
+      expect(new BoardModel(mode).isEditMode()).toBe(mode == BoardMode.EDIT)
+      expect(new BoardModel(mode).isPlayMode()).toBe(mode == BoardMode.PLAY)
+      expect(new BoardModel(mode).isSolveMode()).toBe(mode == BoardMode.SOLVE)
+    })
   })
 
   test('board/types', () => {
-    expect(BoardType.NORMAL).toBe(0)
-    expect(BoardType.DIAGONAL).toBe(1)
+    expect(BoardType.NORMAL).toBe(0);
+    expect(BoardType.DIAGONAL).toBe(1); // line terminator saves next line from being miss read
+
+    [ BoardMode.EDIT, BoardMode.PLAY, BoardMode.SOLVE ].forEach((mode:BoardMode) => {
+      expect(new BoardModel(mode, BoardType.NORMAL).isNormalType()).toBe(true)
+      expect(new BoardModel(mode, BoardType.DIAGONAL).isDiagonalType()).toBe(true)
+    })
   })
 
   test('board/to-string-defaults', () => {
@@ -31,7 +45,7 @@ describe('model/sudoku-board', () => {
     })
   })
 
-  test('board/set()', () => {
+  test('board-normal/set()', () => {
     const board = new BoardModel(BoardMode.SOLVE)
 
     expect(board.set(CellIndex.ONE, CellIndex.ONE, CellValue.ONE)).toBe(true)
@@ -53,6 +67,37 @@ describe('model/sudoku-board', () => {
     // console.log(BoardAdapterString.toString(board))
   })
 
+  describe('board-diagonal/set()', () => {
+    const board = new BoardModel(BoardMode.SOLVE, BoardType.DIAGONAL)
+
+    expect(board.set(CellIndex.ONE, CellIndex.ONE, CellValue.ONE)).toBe(true)
+    expect(board.set(CellIndex.TWO, CellIndex.TWO, CellValue.TWO)).toBe(true)
+    expect(board.set(CellIndex.THREE, CellIndex.THREE, CellValue.THREE)).toBe(true)
+    expect(board.set(CellIndex.FOUR, CellIndex.FOUR, CellValue.FOUR)).toBe(true)
+    expect(board.set(CellIndex.FIVE, CellIndex.FIVE, CellValue.FIVE)).toBe(true)
+    expect(board.set(CellIndex.SIX, CellIndex.SIX, CellValue.SIX)).toBe(true)
+    expect(board.set(CellIndex.SEVEN, CellIndex.SEVEN, CellValue.SEVEN)).toBe(true)
+    expect(board.set(CellIndex.EIGHT, CellIndex.EIGHT, CellValue.EIGHT)).toBe(true)
+    // The BOTTOM-LEFT auto solved
+    expect(board.set(CellIndex.NINE, CellIndex.NINE, CellValue.NINE)).toBe(false)
+
+    expect(board.set(CellIndex.ONE, CellIndex.NINE, CellValue.TWO)).toBe(true)
+    expect(board.set(CellIndex.TWO, CellIndex.EIGHT, CellValue.THREE)).toBe(true)
+    expect(board.set(CellIndex.THREE, CellIndex.SEVEN, CellValue.FOUR)).toBe(true)
+    expect(board.set(CellIndex.FOUR, CellIndex.SIX, CellValue.NINE)).toBe(true)
+    expect(board.set(CellIndex.SIX, CellIndex.FOUR, CellValue.ONE)).toBe(true)
+    expect(board.set(CellIndex.SEVEN, CellIndex.THREE, CellValue.EIGHT)).toBe(true)
+    expect(board.set(CellIndex.EIGHT, CellIndex.TWO, CellValue.SEVEN)).toBe(true)
+    // The TOP-RIGHT auto solved
+    expect(board.set(CellIndex.NINE, CellIndex.ONE, CellValue.FIVE)).toBe(false)
+
+
+    expect(board.get_diagonal_TL_BR()?.toStringValues()).toBe('1 2 3 4 5 6 7 8 9')
+    expect(board.get_diagonal_BL_TR()?.toStringValues()).toBe('2 3 4 9 5 1 8 7 6')
+
+    // console.log(BoardStringAdapter.toString(board))
+  })
+
   describe('board/adapters/string-text', () => {
     test('string/adapters', () => {
       expect(1).toBe(1)
@@ -69,7 +114,7 @@ describe('model/sudoku-board', () => {
   // console.log(new BoardModel(BoardMode.EDIT).toString())
     })
 
-    test('board/adapter/VueJS', () => {
+    test('board/adapter/VueJS/!!!-INCOMPLETE-!!!', () => {
       expect(1).toBe(1)
       // BoardVueAdapter.toString(board)
     })

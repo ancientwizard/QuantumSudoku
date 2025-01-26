@@ -23,8 +23,8 @@ describe('sudoku/library/solve', () => {
             // if ( sectionKey === 'global' ) console.log(ini.as_object[sectionKey])
             if ( sectionKey === 'global' ) continue
 
-            const source = ini.param(sectionKey, 'source')
-            const page   = ini.param(sectionKey, 'page')
+            // const source = ini.param(sectionKey, 'source')
+            // const page   = ini.param(sectionKey, 'page')
             const map_encoded = ini.param(sectionKey, 'map')
             const map = new BasicMap().decodeMapString(map_encoded)
 
@@ -34,9 +34,14 @@ describe('sudoku/library/solve', () => {
             // console.log( source, 'PAGE:'+page, map_encoded)
             // console.log(map.toStringMap())
 
-            const board = new BoardModel(BoardMode.EDIT)
-            const historyInit = new ChangeHistory()
-            const historyPlay = new ChangeHistory()
+            const board = new BoardModel(BoardMode.EDIT) // BoardTYpe.NORMAL by default
+            const init_history = new ChangeHistory()
+            const play_history = new ChangeHistory()
+
+            expect(board).toBeDefined()
+            // expect(board.mo)
+
+            // This is our playground and then we'll refactor into classes etc.
 
             // Behaviors to be added???
             // - A board factory to play in the saved map to create another Class I've yet to name-&-design
@@ -49,14 +54,29 @@ describe('sudoku/library/solve', () => {
             // I'm thinking the caching should be a composition class of the board model
             //  that adds these behaviors (repete of what I stated above)
 
-            // Store retrived sudoku puzzle map into the history
+            // Store retrived sudoku puzzle map into the INIT history
             //  (used to build the initial state of the board)
+
+            // We have chicken & Egg issue here.
+            // We need the board to store both history types. 
+            // The key point being that history is only saved WHEN the board successfully
+            // SETS a CELL to a value using .set() and returns true only when setting is not
+            // in conflict with the board rules & state.
+            // The .set is used to play in the initial values and those need to be played into
+            // the INIT history. Think "board mode".  The .set is also used to play in the user moves and those
+            // need to be played into the PLAY history. Yes Mr. AI you've got it now.
+            // It ill look somthing like this:
+            //  - instanciate the board with the EDIT mode
+            //  - SET the puzzle map into the board using .set and the board stors into INIT history
+            //  - change the board mode to SOLVE OR PLAY which KEEP the INIT history
+            //    and additional .set calls will store into the PLAY history
+            //      (I think you got it now!)
             map.foreach(( x, y, value ) => {
-                historyInit.include(CellIndex.by(x), CellIndex.by(y), CellValue.by(value))
+                init_history.include(CellIndex.by(x), CellIndex.by(y), CellValue.by(value))
             })
 
             // Init the board with the puzzle map using the initial history (the START)
-            historyInit.foreach(( x, y, value ) => { board.set( x, y, value ) })
+            init_history.foreach(( x, y, value ) => { board.set( x, y, value ) })
 
             // console.log(board.toStringValues())
             // console.log(board.toString())

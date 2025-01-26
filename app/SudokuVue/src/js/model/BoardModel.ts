@@ -20,6 +20,8 @@ class BoardModel
     private rowunits: Array<UnitModel>  = []    //   9 row units
     private colunits: Array<UnitModel>  = []    //   9 column units
     private angunits: Array<UnitModel>  = []    //   2 diagonal units
+    private diadtlbr: UnitModel | null  = null  //   1 diagional unti (top-left to bottom-right)
+    private diadbltr: UnitModel | null  = null  //   1 diagional unti (bottom-left to top-right)
     private MODE: BoardMode
     private TYPE: BoardType
 
@@ -122,12 +124,40 @@ class BoardModel
 
         for (let i = 0; i < 9; i++) {
             diagonal1.push(cells[i][i])
-            diagonal2.push(cells[i][8 - i])
+            // interesting; make the order from bottom-left to top-right
+            diagonal2.push(cells[8 - i][i])
         }
 
-        this.angunits.push(new UnitModel(diagonal1))
-        this.angunits.push(new UnitModel(diagonal2))
+        this.angunits.push(this.diadtlbr = new UnitModel(diagonal1))
+        this.angunits.push(this.diadbltr = new UnitModel(diagonal2))
     }
+
+    // A bit of introspection
+    public get_diagonal_TL_BR(): UnitModel | null
+    {
+        return this.diadtlbr
+    }
+
+    public get_diagonal_BL_TR(): UnitModel | null
+    {
+        return this.diadbltr
+    }
+
+    // public diagonalUnits(): Array<UnitModel>
+    // {
+    //     return this.angunits
+    // }
+
+    public isEditMode()     : boolean { return this.MODE == BoardMode.EDIT }
+    public isPlayMode()     : boolean { return this.MODE == BoardMode.PLAY }
+    public isSolveMode()    : boolean { return this.MODE == BoardMode.SOLVE}
+
+    public isNormalType()   : boolean { return this.TYPE == BoardType.NORMAL }
+    public isDiagonalType() : boolean { return this.TYPE == BoardType.DIAGONAL }
+
+    public toEditMode()     : void { this.MODE = BoardMode.EDIT }
+    public toPlayMode()     : void { this.MODE = BoardMode.PLAY }
+    public toSolveMode()    : void { this.MODE = BoardMode.SOLVE }
 
     public toString(): string
     {

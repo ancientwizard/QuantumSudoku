@@ -25,13 +25,13 @@ class StrategyNakedTriple extends aStrategyBase
 
     private strategy_set_naked_triple ( unit : iUnit ) : boolean
     {
-        let removed : number = 0
-        let updated : Array<string> = [] as Array<string>
+        let removed  = 0
+        const updated : Array<string> = [] as Array<string>
 
         NAKED_TRIPLE:
         {
             // We only need to work with those Cells that are undetermined (not solved)
-            let setOfUndeterminedCells : Array<CellModel> = this.getUndeterminedCellList( unit )
+            const setOfUndeterminedCells : Array<CellModel> = this.getUndeterminedCellList( unit )
 
             this.logger?.add('# Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
 
@@ -41,12 +41,12 @@ class StrategyNakedTriple extends aStrategyBase
             // very rare and will very likely show up as a simpler strategy
             if ( setOfUndeterminedCells.length < 5 ) break NAKED_TRIPLE
 
-            let match : Array<CandidateMatch> = [] as Array<CandidateMatch>
+            const match : Array<CandidateMatch> = [] as Array<CandidateMatch>
 
             setOfUndeterminedCells.forEach( cell => {
                 if ( cell.length == 3 )
                 {
-                    let matched : boolean = false
+                    let matched  = false
                     const cell_va : Array<CellValue> = cell.as_candidate_array
 
                     match.forEach( candidate => {
@@ -68,7 +68,7 @@ class StrategyNakedTriple extends aStrategyBase
 
                 if ( candidate.all.length == 3 )
                 {
-                    let first_naked_displayed : boolean = false;
+                    let first_naked_displayed  = false;
 
                     // We have a winner
                     setOfUndeterminedCells.forEach( cell => {

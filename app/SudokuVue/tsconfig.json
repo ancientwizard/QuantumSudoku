@@ -2,9 +2,8 @@
   "extends": "@vue/tsconfig/tsconfig.web.json",
   "include": ["env.d.ts", "src/**/*", "tests/**/*"],
   "compilerOptions": {
-//  "target": "ES6",
     "target": "ES2020",
-    "module": "CommonJS",
+    "module": "ES2022",
     "preserveValueImports": false,
     "allowJs": true,
     "outDir": "./dist",
@@ -22,5 +21,5 @@
   ]
 }
 
-// vim: expandtab tabstop=2 number
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2
 // END

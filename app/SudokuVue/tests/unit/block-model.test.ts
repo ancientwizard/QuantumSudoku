@@ -61,7 +61,7 @@ describe('model/block-model/constructor', () =>
   test('constructor', () => {
     const block = mk_block()
     expect(block).toBeInstanceOf(BlockModel)
-    block.as_cell_array.forEach((cell, index) => {
+    block.as_cell_array.forEach((cell) => {
       expect(cell.value).toBe(0)
       expect(cell.length).toBe(9)
       expect(cell.as_label_array.length).toBe(9)

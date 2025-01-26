@@ -45,9 +45,10 @@ class StrategyHiddenTriple extends aStrategyBase
                 // A descrete set of Hidden Triple candidates; we've cut out the obvious garbage
                 hidden_triple_candidates,
 
+                // THE-CALLBACK
                 // In this context I dont really need A, B & C as they are the same
                 //  as long as we trust the code sending the arrays to us is always correct
-                ( p, A, B, C ) => {
+                ( p, A /*, B, C */ ) => {
 
                     this.logger?.add(`# Strategy 2 - Hidden Triple Cells: (${A.map(c => c.name).join(',')}) Hidden: [${p.join(',')}]`)
 

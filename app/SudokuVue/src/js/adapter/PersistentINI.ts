@@ -18,7 +18,7 @@ class PuzzleINImember
 
 export class PersistentINI
 {
-    private ini: INI | null = null
+    private ini: INI
 
     constructor ( ini: INI )
     {
@@ -27,30 +27,30 @@ export class PersistentINI
 
     get_puzzles () : Array<PuzzleINImember>
     {
-        return this.ini?.sections
+        return this.ini.sections
             .filter((e) => { return e !== 'global' })
             .map((e) => {
                 const p = new PuzzleINImember()
-                p.uuid      = this.ini?.param(e,'uuid')     ?? null
-                p.source    = this.ini?.param(e,'source')   ?? null
-                p.page      = parseInt(this.ini?.param(e,'page') ?? '0')
-                p.credits   = this.ini?.param(e,'credits')  ?? null
-                p.email     = this.ini?.param(e,'email')    ?? null
-                p.map       = this.ini?.param(e,'map')      ?? null
+                p.uuid      = this.ini.param(e,'uuid')
+                p.source    = this.ini.param(e,'source')
+                p.page      = parseInt(this.ini.param(e,'page'))
+                p.credits   = this.ini.param(e,'credits')
+                p.email     = this.ini.param(e,'email')
+                p.map       = this.ini.param(e,'map')
                 return p
-            }) ?? []
+            })
     }
 
     public retrieve ( uuid: string ) : PuzzleINImember
     {
-        const params = this.ini?.params(uuid) ?? null
+        const params = this.ini.params(uuid)
         const member = new PuzzleINImember()
 
         if ( params )
         {
             member.uuid     = params['uuid']
             member.source   = params['source']
-            member.page     = parseInt(params['page'] ?? '0')
+            member.page     = parseInt(params['page'])
             member.credits  = params['credits']
             member.email    = params['email']
             member.map      = params['map']

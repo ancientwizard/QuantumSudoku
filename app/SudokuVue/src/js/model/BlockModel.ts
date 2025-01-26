@@ -5,19 +5,13 @@
 
 import      { UnitModel     } from '@/js/model/UnitModel'
 import type { CellModel     } from '@/js/model/CellModel'
-import      { CellIdent     } from '@/js/model/CellIdent'
+// import      { CellIdent     } from '@/js/model/CellIdent'
 import      { CellValue     } from '@/js/model/CellValue'
 
 export
 class BlockModel extends UnitModel
 {
-    // static iC1: Array<number> = [ 1, 4, 7 ] // Col 1
-    // static iC2: Array<number> = [ 2, 5, 8 ] // Col 2
-    // static iC3: Array<number> = [ 3, 6, 9 ] // Col 3
-    // static iR1: Array<number> = [ 1, 2, 3 ] // Row 1
-    // static iR2: Array<number> = [ 4, 5, 6 ] // Row 2
-    // static iR3: Array<number> = [ 7, 8, 9 ] // Row 3
-
+    // Where ROWS & COLUMNS come to intersect
     static iC1: Array<CellValue> = [ CellValue.ONE,   CellValue.FOUR,   CellValue.SEVEN ] // Col 1
     static iC2: Array<CellValue> = [ CellValue.TWO,   CellValue.FIVE,   CellValue.EIGHT ] // Col 2
     static iC3: Array<CellValue> = [ CellValue.THREE, CellValue.SIX,    CellValue.NINE  ] // Col 3

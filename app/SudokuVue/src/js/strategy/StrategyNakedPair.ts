@@ -22,8 +22,8 @@ class StrategyNakedPair extends aStrategyBase
     //       from all other unsolved cells in the Unit.
     private strategy_set_naked_pair ( unit : iUnit ) : boolean
     {
-        let removed : number = 0;
-        let updated : Array<string> = [] as Array<string>
+        let removed  = 0;
+        const updated : Array<string> = [] as Array<string>
 
         NAKED_PAIR:
         {

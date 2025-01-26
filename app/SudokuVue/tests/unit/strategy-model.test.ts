@@ -43,7 +43,7 @@ class MyStrategy extends aStrategyBase
 
     protected applyStrategy ( unit: iUnit ) : boolean
     {
-        return false
+        return false && ! unit.isBroken() // make lint quiet
     }
 }
 
