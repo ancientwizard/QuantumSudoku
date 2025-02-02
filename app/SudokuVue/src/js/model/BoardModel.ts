@@ -16,7 +16,7 @@ export
 class BoardModel
 {
     // Composition
-    private grdunits: Array<BlockModel> = []    // 3x3 grid units
+    private boxunits: Array<BlockModel> = []    // 3x3 box/grid units
     private rowunits: Array<UnitModel>  = []    //   9 row units
     private colunits: Array<UnitModel>  = []    //   9 column units
     private angunits: Array<UnitModel>  = []    //   2 diagonal units
@@ -71,7 +71,7 @@ class BoardModel
 
     public forEachBlock(callback: (block: BlockModel, index: number) => void): void
     {
-        this.grdunits.forEach(( block, index ) => {
+        this.boxunits.forEach(( block, index ) => {
             callback( block, index );
         });
     }
@@ -127,7 +127,7 @@ class BoardModel
                     for (let x = 0 ; x < 3 ; x++ )
                         blockCells.push(cells[blockY * 3 + y][blockX * 3 + x])
 
-                this.grdunits.push(new BlockModel(blockCells));
+                this.boxunits.push(new BlockModel(blockCells));
             }
     }
 
