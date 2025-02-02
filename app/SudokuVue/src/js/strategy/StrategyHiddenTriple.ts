@@ -30,7 +30,7 @@ class StrategyHiddenTriple extends aStrategyBase
             // We only need to work with those Cells that are undetermined (not solved)
             const setOfUndeterminedCells : Array<CellModel> = this.getUndeterminedCellList( unit )
 
-            this.logger?.add('# Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
+            this.logger?.add('# (Hidden-Triple) Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
 
             // No point in looking for triple's when there are less than four Cells
             // to compare!

@@ -2,7 +2,6 @@
 
 import type { CellModel             } from '@/js/model/CellModel'
 import type { iLogger               } from '@/js/interface/iLogger'
-//port type { StrategyLogger        } from '@/js/strategy/StrategyLogger'
 import      { CellValue             } from '@/js/model/CellValue'
 import      { containsAll           } from '@/js/util/contains-all'
 

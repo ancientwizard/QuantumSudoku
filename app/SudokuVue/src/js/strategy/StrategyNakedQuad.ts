@@ -35,7 +35,7 @@ class StrategyNakedQuad extends aStrategyBase
             //  its a waste of time looking at stuff that is already solved
             const setOfUndeterminedCells : Array<CellModel> = this.getUndeterminedCellList( unit )
 
-            this.logger?.add('# Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
+            this.logger?.add('# (Naked-Quad) Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
 
             // No point in looking for Naked Quad when there are less than six Cells
             // to compare! Basically if four Cells match the fifth will always be unique

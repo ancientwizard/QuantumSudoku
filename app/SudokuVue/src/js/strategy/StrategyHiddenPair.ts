@@ -31,7 +31,7 @@ class StrategyHiddenPair extends aStrategyBase
             //  looking at stuff that is already solved isn'y useful
             const setOfUndeterminedCells : Array<CellModel> = this.getUndeterminedCellList( unit )
 
-            this.logger && this.logger.add('# Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
+            this.logger && this.logger.add('# (Hidden-Pair) Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
 
             // No point in looking for "HIDDEN" pairs when there are less than three Cells
             // to compare! Basically if the last two match, so what! There are only two

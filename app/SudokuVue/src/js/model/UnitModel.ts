@@ -108,13 +108,11 @@ class UnitModel implements iUnit
 
     public get as_cell_array () : Array<CellModel> { return [...this.cells] }
 
-
     // Exclude
     public exclude ( cell: CellIndex, candidate: CellValue ) : boolean
     {
         return this.cells[ cell.index ].exclude( candidate );
     }
-
 
     public is ( cell: CellIndex, candidate: CellValue ) : boolean
     {

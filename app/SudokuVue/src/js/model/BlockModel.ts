@@ -3,21 +3,20 @@
 // Sudoku Block Model (3x3 grid [box])
 //
 
-import      { UnitModel     } from '@/js/model/UnitModel'
 import type { CellModel     } from '@/js/model/CellModel'
-// import      { CellIdent     } from '@/js/model/CellIdent'
-import      { CellValue     } from '@/js/model/CellValue'
+import      { CellIndex     } from '@/js/model/CellIndex'
+import      { UnitModel     } from '@/js/model/UnitModel'
 
 export
 class BlockModel extends UnitModel
 {
     // Where ROWS & COLUMNS come to intersect
-    static iC1: Array<CellValue> = [ CellValue.ONE,   CellValue.FOUR,   CellValue.SEVEN ] // Col 1
-    static iC2: Array<CellValue> = [ CellValue.TWO,   CellValue.FIVE,   CellValue.EIGHT ] // Col 2
-    static iC3: Array<CellValue> = [ CellValue.THREE, CellValue.SIX,    CellValue.NINE  ] // Col 3
-    static iR1: Array<CellValue> = [ CellValue.ONE,   CellValue.TWO,    CellValue.THREE ] // Row 1
-    static iR2: Array<CellValue> = [ CellValue.FOUR,  CellValue.FIVE,   CellValue.SIX   ] // Row 2
-    static iR3: Array<CellValue> = [ CellValue.SEVEN, CellValue.EIGHT,  CellValue.NINE  ] // Row 3
+    static iC1: Array<CellIndex> = [ CellIndex.ONE,   CellIndex.FOUR,   CellIndex.SEVEN ] // Col 1
+    static iC2: Array<CellIndex> = [ CellIndex.TWO,   CellIndex.FIVE,   CellIndex.EIGHT ] // Col 2
+    static iC3: Array<CellIndex> = [ CellIndex.THREE, CellIndex.SIX,    CellIndex.NINE  ] // Col 3
+    static iR1: Array<CellIndex> = [ CellIndex.ONE,   CellIndex.TWO,    CellIndex.THREE ] // Row 1
+    static iR2: Array<CellIndex> = [ CellIndex.FOUR,  CellIndex.FIVE,   CellIndex.SIX   ] // Row 2
+    static iR3: Array<CellIndex> = [ CellIndex.SEVEN, CellIndex.EIGHT,  CellIndex.NINE  ] // Row 3
 
     // The BlockModel constructor is a bit different from the UnitModel constructor
     //  because the BlockModel constructor is also an arrangement of three rows of three cells

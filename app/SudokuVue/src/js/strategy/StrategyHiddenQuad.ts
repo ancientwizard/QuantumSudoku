@@ -31,7 +31,7 @@ class StrategyHiddenQuad extends aStrategyBase
             // We only need to work with those Cells that are undetermined (not solved)
             const setOfUndeterminedCells : Array<CellModel> = this.getUndeterminedCellList( unit )
 
-            this.logger?.add('# Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
+            this.logger?.add('# (Hidden-Quad) Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
 
             // No point in looking for quad's when there are less than five Cells
             // to compare!
@@ -51,12 +51,12 @@ class StrategyHiddenQuad extends aStrategyBase
                 //  as long as we trust the code sending the arrays to us is always correct
                 ( p, A /*, B, C, D */ ) => {
 
-                    this.logger?.add(`# Strategy 2 - Hidden Triple Cells: (${A.map(c => c.name).join(',')}) Hidden: [${p.join(',')}]`)
+                    this.logger?.add(`# Strategy 2 - Hidden Quad Cells: (${A.map(c => c.name).join(',')}) Hidden: [${p.join(',')}]`)
 
                     A.forEach( cell =>
                       cell.as_candidate_array.forEach( cv => {
                         if ( p.includes( cv.value )) return
-                        // Exclude unwanted candidate values from the hidden triple cell set
+                        // Exclude unwanted candidate values from the hidden quad cell set
                         if ( cell.exclude(cv)) { removed++; updated.includes(cell.name) || updated.push(cell.name) }
                       })
                    )

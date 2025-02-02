@@ -33,7 +33,7 @@ class StrategyNakedTriple extends aStrategyBase
             // We only need to work with those Cells that are undetermined (not solved)
             const setOfUndeterminedCells : Array<CellModel> = this.getUndeterminedCellList( unit )
 
-            this.logger?.add('# Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
+            this.logger?.add('# (Naked-Triple) Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
 
             // No point in looking for tripple solutions when there are less than five Cells
             // to compare! Basically if three Cells match the fifth will always be unique

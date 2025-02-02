@@ -81,7 +81,10 @@ describe('sudoku/library/solve', () => {
             //  - change the board mode to SOLVE OR PLAY which KEEP the INIT history
             //    and additional .set calls will store into the PLAY history
             //      (I think you got it now!)
+
+            console.log('SOURCE: ' + ini.param(sectionKey, 'source') + '\n  PAGE: ' + ini.param(sectionKey, 'page'))
             console.log(map_encoded + '\n' + map.toStringMap())
+
             map.foreach(( x, y, value ) => {
                 // console.log(x, y, value, CellValue.by(value).label)
                 init_history.include(CellIndex.by(x), CellIndex.by(y), CellValue.by(value))
@@ -97,7 +100,6 @@ describe('sudoku/library/solve', () => {
 
             // expect(board.set(CellIndex.ONE, CellIndex.ONE, CellValue.ONE)).toBe(true)
             // console.log(board.toStringValues())
-            console.log(ini.param(sectionKey, 'source'), ini.param(sectionKey, 'page'))
             // console.log(board.toString())
             const init_state = board.toStringValues()
 

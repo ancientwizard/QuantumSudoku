@@ -1,11 +1,10 @@
 
 // Strategy Box Line
 
-export
-class StrategyBoxLine
-{
-	// TBD
-}
+import type { iUnit 				} from '@/js/interface/iUnit'
+import type { CellModel 			} from '@/js/model/CellModel'
+import      { CellValue 			} from '@/js/model/CellValue'
+
 
 // A level 1 Strategy
 //  Box Line: This strategy attempts to remove candidates from a Block
@@ -23,10 +22,13 @@ class StrategyBoxLine
 //  Z = intersection
 //
 
-/*
-	public boolean strategy_box_line( Unit line, IntersectMap iB, IntersectMap iL )
+
+export
+class StrategyBoxLine
+{
+	private strategy_box_line( line: iUnit, iB: IntersectMap, iL: IntersectMap ) : boolean
 	{
-		int changed = 0;
+		let changed = 0;
 
 		// Lines (rows and columns) have three parts { A, B, C }
 		//   A = Cells 1-3
@@ -36,6 +38,7 @@ class StrategyBoxLine
 		// Blocks are intersected horizontally with Line rows
 		//     and vertically with Line columns. A Block has six(6) intersections
 		//     three(3) horizontal and three(3) vertical.
+		//
 		//  Block horizontal intersects
 		//   A = Cells 1-3
 		//	 B = Cells 4-6
@@ -44,6 +47,43 @@ class StrategyBoxLine
 		//   D = Cells 1,4,7
 		//   E = Cells 2,5,8
 		//   F = Cells 3,6,9
+
+		// The Intersect candidates
+		//  unique set of undetermined cell candidate values 
+		const intersectCandidates = iL.getIntersectCandidates( line.cells );
+
+		// Line non-intersect candidates
+		//  unique set of undetermined cell candidate values
+		const lineNonIntersectCandidates = iL.getNonIntersectCandidates( line.cells );
+
+		// Clean-able Candidates
+		//  The unique candidate set that we can exclude from non-intersected block cells
+		const cleanerCandidateSet = intersectCandidates.filter( (value) => !lineNonIntersectCandidates.includes(value) );
+
+		if ( debug )
+		{
+			console.log(" Intersect: " + intersectCandidates + " - " + intersectCandidates.length);
+			console.log("      Line: " + lineNonIntersectCandidates + " - " + lineNonIntersectCandidates.length);
+
+			// Non Intersect Line (Unit) Cells
+			console.log("  Cleaning: " + cleanerCandidateSet + " - " + cleanerCandidateSet.length);
+		}
+
+		// Were done if there is nothing to clean
+		if ( cleanerCandidateSet.length > 0 )
+		{
+			// Let the cleaning begin!
+			// - Build set of non-intersect line cells
+			// - exclude cleaning candidate set.
+			const blockNonIntersectCells = iB.getNonIntersectCells( this.cells );
+
+		}
+}
+
+/*
+	public boolean strategy_box_line( Unit line, IntersectMap iB, IntersectMap iL )
+	{
+		int changed = 0;
 
 		// The Intersect candidates
 		//  unique set of undetermined cell candidate values 

@@ -31,7 +31,7 @@ class StrategyNakedPair extends aStrategyBase
             //  looking at stuff that is already solved isn't useful
             const setOfUndeterminedCells : Array<CellModel> = this.getUndeterminedCellList( unit )
 
-            this.logger && this.logger.add('# Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
+            this.logger && this.logger.add('# (Naked-Pair) Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
 
             // No point in looking for pairs when there are less than four Cells
             // to compare! Consider when two Cells match the third will always be unique

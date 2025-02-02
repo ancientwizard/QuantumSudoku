@@ -16,6 +16,7 @@ class StrategyPointingLine
 	}
 }
 
+
 // A level 1 Strategy
 //  Pointing Line: This strategy attempts to remove candidates from a Line
 //    by comparing candidates in a Block (aka box) that intersect that line.
