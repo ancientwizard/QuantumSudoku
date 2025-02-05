@@ -6,7 +6,7 @@
 import type { CellIndex     } from '@/js/model/CellIndex'
 import type { CellValue     } from '@/js/model/CellValue'
 import      { UnitModel     } from '@/js/model/UnitModel'
-import      { BlockModel    } from '@/js/model/BlockModel'
+import      { BoxModel      } from '@/js/model/BoxModel'
 import      { CellModel     } from '@/js/model/CellModel'
 
 export enum BoardMode { EDIT, PLAY, SOLVE }
@@ -16,7 +16,7 @@ export
 class BoardModel
 {
     // Composition
-    private boxunits: Array<BlockModel> = []    // 3x3 box/grid units
+    private boxunits: Array<BoxModel> = []    // 3x3 box/grid units
     private rowunits: Array<UnitModel>  = []    //   9 row units
     private colunits: Array<UnitModel>  = []    //   9 column units
     private angunits: Array<UnitModel>  = []    //   2 diagonal units
@@ -34,8 +34,8 @@ class BoardModel
 
         this.initializeCellsAndNames(cells)
         this.buildRowUnits(cells)
-        this.buildColumnUnits(cells)
-        this.buildBlockUnits(cells)
+        this.buildColUnits(cells)
+        this.buildBoxUnits(cells)
 
         if ( this.TYPE == BoardType.DIAGONAL ) this.buildDiagonalUnits(cells)
     }
@@ -45,7 +45,7 @@ class BoardModel
         return this.rowunits[y.index].is(x, value)
     }
 
-    // public getBlock ( grid_index: CellIndex ): BlockModel
+    // public getBox ( grid_index: CellIndex ): BoxModel
     // {
     //     return this.grdunits[grid_index.index]
     // }
@@ -62,14 +62,14 @@ class BoardModel
         });
     }
 
-    public forEachColumn(callback: (column: UnitModel, index: number) => void): void
+    public forEachCol(callback: (column: UnitModel, index: number) => void): void
     {
         this.colunits.forEach(( column, index ) => {
             callback( column, index );
         });
     }
 
-    public forEachBlock(callback: (block: BlockModel, index: number) => void): void
+    public forEachBox(callback: (block: BoxModel, index: number) => void): void
     {
         this.boxunits.forEach(( block, index ) => {
             callback( block, index );
@@ -104,7 +104,7 @@ class BoardModel
             this.rowunits[y - 1] = new UnitModel(cells[y - 1])
     }
 
-    private buildColumnUnits(cells: Array<Array<CellModel>>): void
+    private buildColUnits(cells: Array<Array<CellModel>>): void
     {
         for ( let x = 1 ; x <= 9 ; x++ )
         {
@@ -116,7 +116,7 @@ class BoardModel
         }
     }
 
-    private buildBlockUnits(cells: Array<Array<CellModel>>): void
+    private buildBoxUnits(cells: Array<Array<CellModel>>): void
     {
         for ( let blockY = 0 ; blockY < 3 ; blockY++ )
             for ( let blockX = 0 ; blockX < 3 ; blockX++ )
@@ -127,7 +127,7 @@ class BoardModel
                     for (let x = 0 ; x < 3 ; x++ )
                         blockCells.push(cells[blockY * 3 + y][blockX * 3 + x])
 
-                this.boxunits.push(new BlockModel(blockCells));
+                this.boxunits.push(new BoxModel(blockCells));
             }
     }
 

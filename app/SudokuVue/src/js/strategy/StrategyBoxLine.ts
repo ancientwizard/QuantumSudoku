@@ -1,10 +1,14 @@
 
 // Strategy Box Line
 
-import type { iUnit 				} from '@/js/interface/iUnit'
-import type { CellModel 			} from '@/js/model/CellModel'
-import      { CellValue 			} from '@/js/model/CellValue'
+import type { iUnit             } from '@/js/interface/iUnit'
+import type { iBox                 } from '@/js/interface/iBox'
+import type { IntersectMap        } from '@/js/model/IntersectMap'
+import      { aStrategyBase     } from '@/js/abstract/aStrategyBase'
 
+// import type { BoxModel       } from '@/js/model/BoxModel'
+// import type { CellModel      } from '@/js/model/CellModel'
+// import      { CellValue      } from '@/js/model/CellValue'
 
 // A level 1 Strategy
 //  Box Line: This strategy attempts to remove candidates from a Block
@@ -24,115 +28,127 @@ import      { CellValue 			} from '@/js/model/CellValue'
 
 
 export
-class StrategyBoxLine
+class StrategyBoxLine extends aStrategyBase
 {
-	private strategy_box_line( line: iUnit, iB: IntersectMap, iL: IntersectMap ) : boolean
-	{
-		let changed = 0;
+    protected applyStrategy(unit: iUnit): boolean
+    {
+        return  false // this.strategy_box_line( unit )
+    }
 
-		// Lines (rows and columns) have three parts { A, B, C }
-		//   A = Cells 1-3
-		//   B = Cells 4-6
-		//   C = Cells 7-9
-		//
-		// Blocks are intersected horizontally with Line rows
-		//     and vertically with Line columns. A Block has six(6) intersections
-		//     three(3) horizontal and three(3) vertical.
-		//
-		//  Block horizontal intersects
-		//   A = Cells 1-3
-		//	 B = Cells 4-6
-		//   C = Cells 7-9
-		//  Block vertical intersects
-		//   D = Cells 1,4,7
-		//   E = Cells 2,5,8
-		//   F = Cells 3,6,9
+    // A level 1 Strategy
+    private strategy_box_line( box: iBox, line: iUnit, iB: IntersectMap, iL: IntersectMap ) : boolean
+    {
+        let changed = 0;
 
-		// The Intersect candidates
-		//  unique set of undetermined cell candidate values 
-		const intersectCandidates = iL.getIntersectCandidates( line.cells );
+        // Lines (rows and columns) have three parts { A, B, C }
+        //   A = Cells 1-3
+        //   B = Cells 4-6
+        //   C = Cells 7-9
+        //
+        // Blocks are intersected horizontally with Line rows
+        //     and vertically with Line columns. A Block has six(6) intersections
+        //     three(3) horizontal and three(3) vertical.
+        //
+        //  Block horizontal intersects
+        //   A = Cells 1-3
+        //     B = Cells 4-6
+        //   C = Cells 7-9
+        //  Block vertical intersects
+        //   D = Cells 1,4,7
+        //   E = Cells 2,5,8
+        //   F = Cells 3,6,9
 
-		// Line non-intersect candidates
-		//  unique set of undetermined cell candidate values
-		const lineNonIntersectCandidates = iL.getNonIntersectCandidates( line.cells );
+        // The Intersect candidates
+        //  unique set of undetermined cell candidate values 
+        const intersectCandidates = iL.getIntersectCandidates( line.cells );
 
-		// Clean-able Candidates
-		//  The unique candidate set that we can exclude from non-intersected block cells
-		const cleanerCandidateSet = intersectCandidates.filter( (value) => !lineNonIntersectCandidates.includes(value) );
+        // Line non-intersect candidates
+        //  unique set of undetermined cell candidate values
+        const lineNonIntersectCandidates = iL.getNonIntersectCandidates( line.cells );
 
-		if ( debug )
-		{
-			console.log(" Intersect: " + intersectCandidates + " - " + intersectCandidates.length);
-			console.log("      Line: " + lineNonIntersectCandidates + " - " + lineNonIntersectCandidates.length);
+        // Clean-able Candidates
+        //  The unique candidate set that we can exclude from non-intersected block cells
+        const cleanerCandidateSet = intersectCandidates.filter( (value) => !lineNonIntersectCandidates.includes(value) );
 
-			// Non Intersect Line (Unit) Cells
-			console.log("  Cleaning: " + cleanerCandidateSet + " - " + cleanerCandidateSet.length);
-		}
+        if ( this.logger )
+        {
+            this.logger.add(' Intersect: ' + intersectCandidates + ' - ' + intersectCandidates.length);
+            this.logger.add('      Line: ' + lineNonIntersectCandidates + ' - ' + lineNonIntersectCandidates.length);
 
-		// Were done if there is nothing to clean
-		if ( cleanerCandidateSet.length > 0 )
-		{
-			// Let the cleaning begin!
-			// - Build set of non-intersect line cells
-			// - exclude cleaning candidate set.
-			const blockNonIntersectCells = iB.getNonIntersectCells( this.cells );
+            // Non Intersect Line (Unit) Cells
+            this.logger.add("  Cleaning: " + cleanerCandidateSet + " - " + cleanerCandidateSet.length);
+        }
 
-		}
+        // Were done if there is nothing to clean
+        if ( cleanerCandidateSet.length > 0 )
+        {
+            // Let the cleaning begin!
+            // - Build set of non-intersect line cells
+            // - exclude cleaning candidate set.
+            const blockNonIntersectCells = iB.getNonIntersectCells( this.cells );
+
+        }
+
+        if ( changed > 0 && this.logger )
+            console.log( "# Strategy 1 - box_line cleaned " + changed + " candicates");
+
+        return changed > 0;
+    }
 }
 
 /*
-	public boolean strategy_box_line( Unit line, IntersectMap iB, IntersectMap iL )
-	{
-		int changed = 0;
+    public boolean strategy_box_line( Unit line, IntersectMap iB, IntersectMap iL )
+    {
+        int changed = 0;
 
-		// The Intersect candidates
-		//  unique set of undetermined cell candidate values 
-		ArrayList<Integer> intersectCandidates = iL.getIntersectCandidates( line.cells );
+        // The Intersect candidates
+        //  unique set of undetermined cell candidate values 
+        ArrayList<Integer> intersectCandidates = iL.getIntersectCandidates( line.cells );
 
-		// Line non-intersect candidates
-		//  unique set of undetermined cell candidate values
-		ArrayList<Integer> lineNonIntersectCandidates = iL.getNonIntersectCandidates( line.cells );
+        // Line non-intersect candidates
+        //  unique set of undetermined cell candidate values
+        ArrayList<Integer> lineNonIntersectCandidates = iL.getNonIntersectCandidates( line.cells );
 
-		// Clean-able Candidates
-		//  The unique candidate set that we can exclude from non-intersected block cells
-		ArrayList<Integer> cleanerCandidateSet = new ArrayList<Integer>(intersectCandidates);
-		cleanerCandidateSet.removeAll(lineNonIntersectCandidates);
+        // Clean-able Candidates
+        //  The unique candidate set that we can exclude from non-intersected block cells
+        ArrayList<Integer> cleanerCandidateSet = new ArrayList<Integer>(intersectCandidates);
+        cleanerCandidateSet.removeAll(lineNonIntersectCandidates);
 
-		// System.out.println(iL.set);
+        // System.out.println(iL.set);
 
-		if ( debug )
-		{
-			System.out.println(" Intersect: " + intersectCandidates + " - " + intersectCandidates.size());
-			System.out.println("      Line: " + lineNonIntersectCandidates +
-				" - " + lineNonIntersectCandidates.size());
+        if ( debug )
+        {
+            System.out.println(" Intersect: " + intersectCandidates + " - " + intersectCandidates.size());
+            System.out.println("      Line: " + lineNonIntersectCandidates +
+                " - " + lineNonIntersectCandidates.size());
 
-			// Non Intersect Line (Unit) Cells
-			System.out.println("  Cleaning: " + cleanerCandidateSet + " - " + cleanerCandidateSet.size());
-		}
+            // Non Intersect Line (Unit) Cells
+            System.out.println("  Cleaning: " + cleanerCandidateSet + " - " + cleanerCandidateSet.size());
+        }
 
-		// Were done if there is nothing to clean
-		if ( cleanerCandidateSet.size() > 0 )
-		{
-			// Let the cleaning begin!
-			// - Build set of non-intersect line cells
-			// - exclude cleaning candidate set.
-			ArrayList<Cell> blockNonIntersectCells = iB.getNonIntersectCells( this.cells );
+        // Were done if there is nothing to clean
+        if ( cleanerCandidateSet.size() > 0 )
+        {
+            // Let the cleaning begin!
+            // - Build set of non-intersect line cells
+            // - exclude cleaning candidate set.
+            ArrayList<Cell> blockNonIntersectCells = iB.getNonIntersectCells( this.cells );
 
-			//new ArrayList<Cell>(9 - iL.set.size());
-			for ( Cell c : blockNonIntersectCells )
-			{
-			//	System.out.println(" Line: " + c.getName());
-				for ( Integer N : cleanerCandidateSet )
-					if (c.exclude(N))
-						changed++;
-			}
-		}
+            //new ArrayList<Cell>(9 - iL.set.size());
+            for ( Cell c : blockNonIntersectCells )
+            {
+            // System.out.println(" Line: " + c.getName());
+                for ( Integer N : cleanerCandidateSet )
+                    if (c.exclude(N))
+                      changed++;
+            }
+        }
 
-		if ( changed > 0 && debug )
-			System.out.println( "# Strategy 1 - box_line cleaned " + changed + " candicates");
+        if ( changed > 0 && debug )
+            System.out.println( "# Strategy 1 - box_line cleaned " + changed + " candicates");
 
-		return changed > 0;
-	}
+        return changed > 0;
+    }
 */
 
 

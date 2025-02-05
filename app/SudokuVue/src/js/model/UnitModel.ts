@@ -14,9 +14,9 @@ class UnitModel implements iUnit
 {
     // The Unit is the second logical layer in our implementation of the
     // Sudoku Solver. The Sudoku puzzle is made up of nine (9) 3x3 grids
-    // we'll call a block as well as nine (9) columns and nine (9) rows.
+    // we'll call a box as well as nine (9) columns and nine (9) rows.
     // Therefore each Cell is a member of three basic units.
-    //  - a block
+    //  - a box
     //  - a column and
     //  - a row
     // Each of these units have Sudoku rules (logic/laws) they must
@@ -79,7 +79,7 @@ class UnitModel implements iUnit
     //   the Hidden candidate Cell set.
     //
 
-    // Protected variables (Block etc extends us)
+    // Our Cell set of nine (9) Cells
     protected cells: Array<CellModel>
 
     constructor ( member_cells: Array<CellModel> )

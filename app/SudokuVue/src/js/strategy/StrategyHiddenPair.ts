@@ -14,12 +14,12 @@ class StrategyHiddenPair extends aStrategyBase
         return this.strategy_set_hidden_pair( unit )
     }
 
-	// A level 1 Strategy
-	// Hidden Pair: Exactly one pair of cells contain two matching candidates
-	//   not found in any other Cells. The the candidate cell-value set are the solutions for these
-	//   pair of cells. All other candidates in this Cell set may be removed. This pair
-	//   which was "Hidden" now becomes A "Naked" pair; however we already know that these
-	//   candidates are not in any other Cells so no further action is required
+    // A level 1 Strategy
+    // Hidden Pair: Exactly one pair of cells contain two matching candidates
+    //   not found in any other Cells. The the candidate cell-value set are the solutions for these
+    //   pair of cells. All other candidates in this Cell set may be removed. This pair
+    //   which was "Hidden" now becomes A "Naked" pair; however we already know that these
+    //   candidates are not in any other Cells so no further action is required
     private strategy_set_hidden_pair ( unit : iUnit ) : boolean
     {
         let     removed = 0;

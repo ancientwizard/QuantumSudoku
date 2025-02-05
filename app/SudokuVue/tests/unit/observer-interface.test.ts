@@ -1,7 +1,7 @@
 // observer-interface.test.ts
 
 import { describe, expect, test } from '@jest/globals'
-import type { iSubject   	    } from '@/js/interface/iObservable'
+import type { iSubject           } from '@/js/interface/iObservable'
 import type { iObservedState    } from '@/js/interface/iObservedState'
 import type { iObserver         } from '@/js/interface/iObserver'
 

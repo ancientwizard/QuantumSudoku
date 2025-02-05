@@ -128,8 +128,8 @@ describe('sudoku/library/solve', () => {
 
             for ( let i = 0; i < 8; i++ ) {
                 board.forEachRow(row => solver_chain.apply(row));
-                board.forEachColumn(column => solver_chain.apply(column));
-                board.forEachBlock(block => solver_chain.apply(block));
+                board.forEachCol(column => solver_chain.apply(column));
+                board.forEachBox(block => solver_chain.apply(block));
                 if ( board.isSolved ) { console.log('SOLVED-ON-LOOP: ' + i); break; }
             }
 

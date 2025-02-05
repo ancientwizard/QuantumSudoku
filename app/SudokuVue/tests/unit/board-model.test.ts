@@ -112,7 +112,7 @@ describe('model/sudoku-board', () => {
   })
 
   describe('board/columns', () => {
-    new BoardModel(BoardMode.SOLVE).forEachColumn(column => {
+    new BoardModel(BoardMode.SOLVE).forEachCol(column => {
       expect(column.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
       expect(column.isSolved).toBe(false)
       expect(column.isBroken).toBe(false)
@@ -120,7 +120,7 @@ describe('model/sudoku-board', () => {
   })
 
   describe('board/blocks', () => {
-    new BoardModel(BoardMode.SOLVE).forEachBlock(block => {
+    new BoardModel(BoardMode.SOLVE).forEachBox(block => {
       expect(block.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
       expect(block.isSolved).toBe(false)
       expect(block.isBroken).toBe(false)

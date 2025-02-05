@@ -93,9 +93,9 @@ describe('model/sudoku/basic-map', () => {
         //  explore the positional relationship of each number
         //  to determine a method for identifying "LIKE" puzzles
         //  even when their likeness has been hidden OR rather
-        //	simply obstructed. It is believed that relationship
+        //  simply obstructed. It is believed that relationship
         //  or puzzle-likeness is a simple matter of position and is
-        //	realized through encoding a puzzle pattern.
+        //  realized through encoding a puzzle pattern.
         //
         // The tools we need:
         //  1) Ability to Rotate and Flip a map. Every map has

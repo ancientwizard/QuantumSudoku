@@ -3,7 +3,7 @@
 
 import { describe, expect, test } from '@jest/globals'
 import { CellModel              } from '@/js/model/CellModel'
-import { BlockModel             } from '@/js/model/BlockModel'
+import { BoxModel               } from '@/js/model/BoxModel'
 import { CellIndex              } from '@/js/model/CellIndex'
 import { CellValue              } from '@/js/model/CellValue'
 
@@ -18,49 +18,49 @@ function mk_cells ( autosolve = true ) : Array<CellModel>
   return cell_set
 }
 
-function mk_block ( autosolve = true ) : BlockModel
+function mk_block ( autosolve = true ) : BoxModel
 {
-  return new BlockModel(mk_cells( autosolve ))
+  return new BoxModel(mk_cells( autosolve ))
 }
 
 
 describe('model/block-model/grid-mapping', () => {
 
   test('row/col mapping', () => {
-    expect(BlockModel.iC1.length).toBe(3); expect(BlockModel.iR1.length).toBe(3)
-    expect(BlockModel.iC2.length).toBe(3); expect(BlockModel.iR2.length).toBe(3)
-    expect(BlockModel.iC3.length).toBe(3); expect(BlockModel.iR3.length).toBe(3)
+    expect(BoxModel.iC1.length).toBe(3); expect(BoxModel.iR1.length).toBe(3)
+    expect(BoxModel.iC2.length).toBe(3); expect(BoxModel.iR2.length).toBe(3)
+    expect(BoxModel.iC3.length).toBe(3); expect(BoxModel.iR3.length).toBe(3)
 
-    expect(BlockModel.iC1[0].index).toBe(0); expect(BlockModel.iC1[0].name).toBe("1")
-    expect(BlockModel.iC1[1].index).toBe(3); expect(BlockModel.iC1[1].name).toBe("4") 
-    expect(BlockModel.iC1[2].index).toBe(6); expect(BlockModel.iC1[2].name).toBe("7")
+    expect(BoxModel.iC1[0].index).toBe(0); expect(BoxModel.iC1[0].name).toBe("1")
+    expect(BoxModel.iC1[1].index).toBe(3); expect(BoxModel.iC1[1].name).toBe("4") 
+    expect(BoxModel.iC1[2].index).toBe(6); expect(BoxModel.iC1[2].name).toBe("7")
 
-    expect(BlockModel.iC2[0].index).toBe(1); expect(BlockModel.iC2[0].name).toBe("2")
-    expect(BlockModel.iC2[1].index).toBe(4); expect(BlockModel.iC2[1].name).toBe("5")
-    expect(BlockModel.iC2[2].index).toBe(7); expect(BlockModel.iC2[2].name).toBe("8")
+    expect(BoxModel.iC2[0].index).toBe(1); expect(BoxModel.iC2[0].name).toBe("2")
+    expect(BoxModel.iC2[1].index).toBe(4); expect(BoxModel.iC2[1].name).toBe("5")
+    expect(BoxModel.iC2[2].index).toBe(7); expect(BoxModel.iC2[2].name).toBe("8")
 
-    expect(BlockModel.iC3[0].index).toBe(2); expect(BlockModel.iC3[0].name).toBe("3")
-    expect(BlockModel.iC3[1].index).toBe(5); expect(BlockModel.iC3[1].name).toBe("6")
-    expect(BlockModel.iC3[2].index).toBe(8); expect(BlockModel.iC3[2].name).toBe("9")
+    expect(BoxModel.iC3[0].index).toBe(2); expect(BoxModel.iC3[0].name).toBe("3")
+    expect(BoxModel.iC3[1].index).toBe(5); expect(BoxModel.iC3[1].name).toBe("6")
+    expect(BoxModel.iC3[2].index).toBe(8); expect(BoxModel.iC3[2].name).toBe("9")
 
-    expect(BlockModel.iR1[0].index).toBe(0); expect(BlockModel.iR1[0].name).toBe("1")
-    expect(BlockModel.iR1[1].index).toBe(1); expect(BlockModel.iR1[1].name).toBe("2")
-    expect(BlockModel.iR1[2].index).toBe(2); expect(BlockModel.iR1[2].name).toBe("3")
+    expect(BoxModel.iR1[0].index).toBe(0); expect(BoxModel.iR1[0].name).toBe("1")
+    expect(BoxModel.iR1[1].index).toBe(1); expect(BoxModel.iR1[1].name).toBe("2")
+    expect(BoxModel.iR1[2].index).toBe(2); expect(BoxModel.iR1[2].name).toBe("3")
 
-    expect(BlockModel.iR2[0].index).toBe(3); expect(BlockModel.iR2[0].name).toBe("4")
-    expect(BlockModel.iR2[1].index).toBe(4); expect(BlockModel.iR2[1].name).toBe("5")
-    expect(BlockModel.iR2[2].index).toBe(5); expect(BlockModel.iR2[2].name).toBe("6")
+    expect(BoxModel.iR2[0].index).toBe(3); expect(BoxModel.iR2[0].name).toBe("4")
+    expect(BoxModel.iR2[1].index).toBe(4); expect(BoxModel.iR2[1].name).toBe("5")
+    expect(BoxModel.iR2[2].index).toBe(5); expect(BoxModel.iR2[2].name).toBe("6")
 
-    expect(BlockModel.iR3[0].index).toBe(6); expect(BlockModel.iR3[0].name).toBe("7")
-    expect(BlockModel.iR3[1].index).toBe(7); expect(BlockModel.iR3[1].name).toBe("8")
-    expect(BlockModel.iR3[2].index).toBe(8); expect(BlockModel.iR3[2].name).toBe("9")
+    expect(BoxModel.iR3[0].index).toBe(6); expect(BoxModel.iR3[0].name).toBe("7")
+    expect(BoxModel.iR3[1].index).toBe(7); expect(BoxModel.iR3[1].name).toBe("8")
+    expect(BoxModel.iR3[2].index).toBe(8); expect(BoxModel.iR3[2].name).toBe("9")
   })
 })
 
 describe('model/block-model/constructor', () => 
   test('constructor', () => {
     const block = mk_block()
-    expect(block).toBeInstanceOf(BlockModel)
+    expect(block).toBeInstanceOf(BoxModel)
     block.as_cell_array.forEach((cell) => {
       expect(cell.value).toBe(0)
       expect(cell.length).toBe(9)

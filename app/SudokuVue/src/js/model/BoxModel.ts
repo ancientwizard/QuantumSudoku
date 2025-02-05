@@ -3,12 +3,13 @@
 // Sudoku Block Model (3x3 grid [box])
 //
 
+import type { iBox          } from '@/js/interface/iBox'
 import type { CellModel     } from '@/js/model/CellModel'
 import      { CellIndex     } from '@/js/model/CellIndex'
 import      { UnitModel     } from '@/js/model/UnitModel'
 
 export
-class BlockModel extends UnitModel
+class BoxModel extends UnitModel implements iBox
 {
     // Where ROWS & COLUMNS come to intersect
     static iC1: Array<CellIndex> = [ CellIndex.ONE,   CellIndex.FOUR,   CellIndex.SEVEN ] // Col 1
@@ -18,16 +19,18 @@ class BlockModel extends UnitModel
     static iR2: Array<CellIndex> = [ CellIndex.FOUR,  CellIndex.FIVE,   CellIndex.SIX   ] // Row 2
     static iR3: Array<CellIndex> = [ CellIndex.SEVEN, CellIndex.EIGHT,  CellIndex.NINE  ] // Row 3
 
-    // The BlockModel constructor is a bit different from the UnitModel constructor
-    //  because the BlockModel constructor is also an arrangement of three rows of three cells
+    // The BoxModel constructor is a bit different from the UnitModel constructor
+    //  because the BoxModel constructor is also an arrangement of three rows of three cells
     //  and three columns of three cells. This makes up nine cells in total like the unit.
     //  With the added complexity of intersecting with three Row's and Column's as three cells.
-    //  Whereas a typical unit making up a row or column only interscts with one cell.
+    //  Whereas a typical line-unit making up a row or column only interscts with one cell.
 
     constructor ( member_cells: Array<CellModel> )
     {
         super( member_cells )
     }
+
+    public isBox(): boolean { return true }
 
     public toStringBlock(): string
     {

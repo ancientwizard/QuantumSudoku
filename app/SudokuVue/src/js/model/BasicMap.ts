@@ -330,7 +330,7 @@ export class BasicMap
         //  the defined solution and starting points. Lets see how this works.
         //
         // Consider: All Sudoku puzzles have an *ENDING* and a *BEGINNING*. While the
-        //	ending plays a minor role in the puzzles beginning the BEGINNING has the
+        //  ending plays a minor role in the puzzles beginning the BEGINNING has the
         //  significant influence over the puzzle difficulty to solve. This also means
         //  that the same puzzle can have many beginnings all having the same outcome
         //  but all providing a different difficulty and experience. This hashing is
@@ -352,7 +352,7 @@ export class BasicMap
         // RULE #3: Every map is made up of the integer set 1-9 having no value
         //  except their relative position to one another; therefore puzzles are
         //  the same by simply swapping all the twos with sevens; or any other
-        //	combination of swapping so long as the relative positioning is unchanged!
+        //  combination of swapping so long as the relative positioning is unchanged!
         //
         // RULE #3: Every map has a "NATURAL LAYOUT"; simply put is a way of orienting
         //  the map so that all maps like it will produce the same "NATURAL LAYOUT"

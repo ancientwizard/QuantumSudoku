@@ -3,21 +3,21 @@
 // It is used by the StrategyPointingLine and StrategyBoxLine classes to identify
 // the cells that are common to both the line and the block, their intersection.
 
-import type { CellValue             } from '@/js/model/CellValue';
-import type { CellIndex             } from '@/js/model/CellIndex';
-import type { CellModel             } from '@/js/model/CellModel';
-import      { BlockModel            } from '@/js/model/BlockModel';
+import type { CellValue             } from '@/js/model/CellValue'
+import type { CellIndex             } from '@/js/model/CellIndex'
+import type { CellModel             } from '@/js/model/CellModel'
+import      { BoxModel              } from '@/js/model/BoxModel'
 
 export
 class IntersectMap
 {
     // Reusable Intersect MAPS
-    public static iC1: IntersectMap = new IntersectMap(BlockModel.iC1)
-    public static iC2: IntersectMap = new IntersectMap(BlockModel.iC2)
-    public static iC3: IntersectMap = new IntersectMap(BlockModel.iC3)
-    public static iR1: IntersectMap = new IntersectMap(BlockModel.iR1)
-    public static iR2: IntersectMap = new IntersectMap(BlockModel.iR2)
-    public static iR3: IntersectMap = new IntersectMap(BlockModel.iR3)
+    public static iC1: IntersectMap = new IntersectMap(BoxModel.iC1)
+    public static iC2: IntersectMap = new IntersectMap(BoxModel.iC2)
+    public static iC3: IntersectMap = new IntersectMap(BoxModel.iC3)
+    public static iR1: IntersectMap = new IntersectMap(BoxModel.iR1)
+    public static iR2: IntersectMap = new IntersectMap(BoxModel.iR2)
+    public static iR3: IntersectMap = new IntersectMap(BoxModel.iR3)
 
     private intersect: Array<CellIndex> = []
 
