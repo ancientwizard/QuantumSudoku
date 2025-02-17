@@ -20,7 +20,7 @@ abstract class aStrategyBoard
         // Written to allow the entire chain of strategies to
         // make their attempt and return true if one or more succeed
         //  ( consumer could choose not to call again to help avoid deep
-        //    recursive calls when not needed )
+        //    recursive calls when not needed OR spending time making no progress )
         const modified = this.applyStrategy(board)
 
         return ( this.nextStrategy && this.nextStrategy.apply(board)) || modified

@@ -10,7 +10,7 @@ export
 class StrategyXWing extends aStrategyBoard
 {
 
-  public applyStrategy ( board: iBoard ) : boolean
+  protected applyStrategy ( board: iBoard ) : boolean
   {
     // Apply the X-Wing strategy to the board
     return this.strategy_X_Wing(board)

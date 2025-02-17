@@ -5,6 +5,7 @@ import type { iUnit             } from '@/js/interface/iUnit'
 import type { iCellIndex        } from '@/js/interface/iCellIndex'
 import type { iObservedState    } from '@/js/interface/iObservedState'
 import      { aStrategyUnit     } from '@/js/abstract/aStrategyUnit'
+import type { CellModel } from '@/js/model/CellModel'
 
 class MyUnit implements iUnit
 {
@@ -12,6 +13,14 @@ class MyUnit implements iUnit
     is ( cell: iCellIndex, value: iObservedState ) : boolean
     {
         return false
+    }
+
+    forEachCell ( callback: (cell: CellModel, index: number) => void) : void
+    {
+        // Mock implementation
+        const mockCell = {} as CellModel; // Replace with actual cell model
+        const mockIndex = 0; // Replace with actual index
+        callback(mockCell, mockIndex);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

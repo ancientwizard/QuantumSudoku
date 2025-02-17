@@ -2,7 +2,7 @@
 // board-model.test.ts
 
 import      { describe, expect, test            } from '@jest/globals'
-import type { iStrategyUnit                         } from '@/js/interface/iStrategyUnit'
+import type { iStrategyUnit                     } from '@/js/interface/iStrategyUnit'
 import      { BoardMode, BoardModel, BoardType  } from '@/js/model/BoardModel'
 import      { CellIndex                         } from '@/js/model/CellIndex'
 import      { CellValue                         } from '@/js/model/CellValue'
@@ -17,6 +17,7 @@ import      { StrategyNakedTriple               } from '@/js/strategy/StrategyNa
 import      { StrategyNakedQuad                 } from '@/js/strategy/StrategyNakedQuad'
 import      { StrategyHiddenQuad                } from '@/js/strategy/StrategyHiddenQuad'
 import      { StrategyLogger                    } from '@/js/strategy/StrategyLogger'
+import      { StrategyXWing                     } from '@/js/strategy/StrategyXWing'
 
 
 describe('sudoku/library/solve', () => {
@@ -24,6 +25,7 @@ describe('sudoku/library/solve', () => {
     test('load_ini', async () => {
         // Use test-map-1.ini as the test input
         const ini: INI = await load_ini('test-map-1.ini')
+        let solved_puzzle_count = 0
 
         expect(ini.sections.length).toBe(301)    // 300 puzzles + 'global'
 
@@ -82,8 +84,8 @@ describe('sudoku/library/solve', () => {
             //    and additional .set calls will store into the PLAY history
             //      (I think you got it now!)
 
-            console.log('SOURCE: ' + ini.param(sectionKey, 'source') + '\n  PAGE: ' + ini.param(sectionKey, 'page'))
-            console.log(map_encoded + '\n' + map.toStringMap())
+            // console.log('SOURCE: ' + ini.param(sectionKey, 'source') + '\n  PAGE: ' + ini.param(sectionKey, 'page'))
+            // console.log(map_encoded + '\n' + map.toStringMap())
 
             map.foreach(( x, y, value ) => {
                 // console.log(x, y, value, CellValue.by(value).label)
@@ -123,6 +125,7 @@ describe('sudoku/library/solve', () => {
                 new StrategyHiddenQuad(logger)
             ];
             const solver_chain = strategies[0]
+            const xwing = new StrategyXWing(logger)
 
             strategies.reduce((prev, curr) => prev.setNext(curr));
 
@@ -130,12 +133,18 @@ describe('sudoku/library/solve', () => {
                 board.forEachRow(row => solver_chain.apply(row));
                 board.forEachCol(column => solver_chain.apply(column));
                 board.forEachBox(block => solver_chain.apply(block));
-                if ( board.isSolved ) { console.log('SOLVED-ON-LOOP: ' + i); break; }
+                xwing.apply(board)
+                if ( board.isSolved )
+                {
+                  // console.log('SOLVED-ON-LOOP: ' + i)
+                  solved_puzzle_count++
+                  break
+                }
             }
 
             // console.log(solver_chain);
             // console.log(board.toString())
-            console.log(board.toStringValues())
+            // console.log(board.toStringValues())
             // console.log(logger.as_array)
             expect(board.toStringValues()).not.toBe(init_state)
 
@@ -150,6 +159,7 @@ describe('sudoku/library/solve', () => {
             // break;
         }
 
+        console.log('SOLVED PUZZLE COUNT: ' + solved_puzzle_count)
         // const board = new BoardModel(BoardMode.SOLVE)
         // console.log(board)
     })

@@ -52,7 +52,13 @@ export class BasicMap
     public get_map(): (number|null)[][]
     {
         // return a copy of the map
-        return this.map.map((row) => row.slice());
+        return this.map.map( row => row.slice());
+    }
+
+    public get_map_with_zeros(): number[][]
+    {
+        // return a copy of the map
+        return this.map.map( row => row.map( val => val === null ? 0 : val ));
     }
 
     public foreach ( callback: ( x: number, y: number, value: number ) => void ): void
