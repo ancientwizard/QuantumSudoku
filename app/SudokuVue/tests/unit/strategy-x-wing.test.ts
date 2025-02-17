@@ -11,6 +11,7 @@ import { CellValue              } from '@/js/model/CellValue'
 
 import { StrategyLogger         } from '@/js/strategy/StrategyLogger'
 import { StrategyXWing          } from '@/js/strategy/StrategyXWing'
+import { BasicMap } from '@/js/model/BasicMap'
 
 
 function template_to_string( template: number[][] ): string
@@ -55,38 +56,41 @@ describe('strategy/x-wing', () => {
         // console.log(template_to_string(template))
         // console.log(board.toStringValues())
 
-        // X-Wing pairs are two rows and two columns
-        //  where the same value appears in the same cells
-        //  in each row and column.
-        //  The cells are not necessarily the same cells.
-        //  The cells must be in the same row or column.
+        {
+          const logger = new StrategyLogger()
+          const xwing = new StrategyXWing(logger)
+          // const basicmap = new BasicMap(template)
 
-        // PLAN: for each candidate value we'll need to
-        //   NOTICE: to keep the description simpler we'll only describe
-        //       using rows to find the X-Wings. However applying the
-        //       same logic to columns the same in that columns make up
-        //       the X-Wing and additonal colums are the targes for removal
+          // console.log(basicmap.toStringMap())
 
-        // 1. Tack two sets of rows
-        // 2. SET-A; are TWO rows that make up the X-wing
-        //    and SIX rows that are not part of the X-wing; this is
-        //    importent because we need to remove the candidate values
-        //    that make up the X-WIng from the non-X-wing rows.
+          xwing.applyStrategy(board)
+          console.log(logger)
+          // console.log(BoardStringAdapter.toString(board))
+        }
 
-        const logger = new StrategyLogger()
-        const xwing = new StrategyXWing(logger)
+        // Lets play with COL based X-Wing detection by using BasicMap to rotate the template
+        //  to seed a board for X-Wing detection
 
-        xwing.applyStrategy(board)
+        {
+          const logger = new StrategyLogger()
+          const xwing = new StrategyXWing(logger)
+          const board2 = new BoardModel(BoardMode.SOLVE)
+          const basicmap = new BasicMap(template)
 
-        console.log(BoardStringAdapter.toString(board))
+          // console.log(basicmap.rotate().toStringMap())
 
-        // console.log('board\n', board.toString(), '\n' + board.toStringValues())
-        // board.forEachRow( (row) => { console.log('row\n', row.toString()) })
+          basicmap.rotate().get_map().forEach( (row,Yidx) => {
+              row.forEach(( cv, Xidx ) => {
+                  if ( ! cv || cv === 0 ) return
+                  board2.set(ci_set[Xidx], ci_set[Yidx], cv_set[cv-1])
+              })
+          })
 
-        // const xwing = board.detectXWing()
-
-        // expect(xwing).toBeTruthy()
-    })
+          xwing.applyStrategy(board2)
+          console.log(logger)
+          // console.log(BoardStringAdapter.toString(board2))
+        }
+      })
 })
 
 
