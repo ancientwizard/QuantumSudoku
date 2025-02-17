@@ -5,6 +5,7 @@
 
 import type { CellIndex     } from '@/js/model/CellIndex'
 import type { CellValue     } from '@/js/model/CellValue'
+import type { iBoard        } from '@/js/interface/iBoard'
 import      { UnitModel     } from '@/js/model/UnitModel'
 import      { BoxModel      } from '@/js/model/BoxModel'
 import      { CellModel     } from '@/js/model/CellModel'
@@ -13,7 +14,7 @@ export enum BoardMode { EDIT, PLAY, SOLVE }
 export enum BoardType { NORMAL, DIAGONAL }
 
 export
-class BoardModel
+class BoardModel implements iBoard
 {
     // Composition
     private boxunits: Array<BoxModel> = []    // 3x3 box/grid units
@@ -255,5 +256,5 @@ class BoardModel
 }
 
 
-// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix
 // END

@@ -14,7 +14,15 @@ describe('model/cell-model', () => {
 
   test('(0,0).as_candidate_array()', () => expect(_c_fac(0,0).as_candidate_array.length).toBe(9))
 
-    // IS
+  test('(0,0).forEachValue()', () => {
+        const _c = _c_fac(0,0)
+        const _a = [1,2,3,4,5,6,7,8,9]
+        expect(_a.length).toBe(9)
+        _c.forEachValue( v => expect(v.value).toBe(_a.shift()) )
+        expect(_a.length).toBe(0)
+    })
+
+  // IS .arrayFactory
   CellValue.arrayFactory.forEach(
     (v) => test('(0,0).is(' + v.label + ').<props>',
       () => {
@@ -153,5 +161,5 @@ describe('model/cell-model', () => {
 })
 
 
-// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix
 // END

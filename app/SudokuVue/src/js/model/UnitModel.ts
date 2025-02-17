@@ -183,6 +183,10 @@ class UnitModel implements iUnit
         return broken;
     }
 
+    public forEachCell ( callback: (cell: CellModel, index: number) => void ) : void
+    {
+        this.cells.forEach(( cell, idx ) => { callback( cell, idx ) })
+    }
 
 //public void solve()
 //{
@@ -301,5 +305,5 @@ class UnitModel implements iUnit
 }
 
 
-// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix
 // END

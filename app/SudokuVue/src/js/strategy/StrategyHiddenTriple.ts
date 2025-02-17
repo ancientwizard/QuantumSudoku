@@ -3,12 +3,12 @@
 
 import type { iUnit                 } from '@/js/interface/iUnit'
 import type { CellModel             } from '@/js/model/CellModel'
-import      { aStrategyBase         } from '@/js/abstract/aStrategyBase'
+import      { aStrategyUnit         } from '@/js/abstract/aStrategyUnit'
 //import      { containsAll           } from '@/js/util/contains-all'
 import      { StrategyExtractHidden } from '@/js/strategy/StrategyExtractHidden'
 
 export
-class StrategyHiddenTriple extends aStrategyBase
+class StrategyHiddenTriple extends aStrategyUnit
 {
     protected applyStrategy ( unit: iUnit ) : boolean
     {
@@ -71,5 +71,5 @@ class StrategyHiddenTriple extends aStrategyBase
 }
 
 
-// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix
 // END

@@ -1,17 +1,17 @@
 
-// aStrategyBase.ts
+// aStrategyUnit.ts
 
-import type { iStrategy         } from '@/js/interface/iStrategy'
+import type { iStrategyUnit     } from '@/js/interface/iStrategyUnit'
 import type { iLogger           } from '@/js/interface/iLogger'
 import type { iUnit             } from '@/js/interface/iUnit'
 import type { CellModel         } from '@/js/model/CellModel'
 import type { UnitModel         } from '@/js/model/UnitModel'
 
 export
-abstract class aStrategyBase implements iStrategy
+abstract class aStrategyUnit implements iStrategyUnit
 {
     readonly  logger : iLogger | null;
-    protected nextStrategy: aStrategyBase | null = null;
+    protected nextStrategy: aStrategyUnit | null = null;
 
     constructor ( logger : iLogger | null = null )
     {
@@ -29,7 +29,7 @@ abstract class aStrategyBase implements iStrategy
         return ( this.nextStrategy && this.nextStrategy.apply(unit)) || modified
     }
 
-    public setNext ( strategy: aStrategyBase ) : aStrategyBase
+    public setNext ( strategy: aStrategyUnit ) : aStrategyUnit
     {
         return ( this.nextStrategy = strategy )
     }
@@ -52,5 +52,5 @@ abstract class aStrategyBase implements iStrategy
 }
 
 
-// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix
 // END

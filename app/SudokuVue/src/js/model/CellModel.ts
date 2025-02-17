@@ -112,6 +112,13 @@ class CellModel extends Subject implements iObserver
     this.exclude( arg )
   }
 
+  // TODO: retire the .as_candidate_array() method
+  //       and use thie method instead; I smell a refactor
+  forEachValue ( callback: (value: CellValue, inedex: number) => void ) : void
+  {
+    this.candidates.forEach( (item,idx) => callback(item,idx))
+  }
+
   get isKnown () : boolean
   {
     return this.cvalue !== CellValue.HIDDEN
@@ -153,5 +160,5 @@ class CellModel extends Subject implements iObserver
 }
 
 
-// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix
 // END

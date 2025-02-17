@@ -2,11 +2,11 @@
 
 import type { iUnit             } from '@/js/interface/iUnit'
 import type { CellModel         } from '@/js/model/CellModel'
-import      { aStrategyBase     } from '@/js/abstract/aStrategyBase'
+import      { aStrategyUnit     } from '@/js/abstract/aStrategyUnit'
 import      { CellValue         } from '@/js/model/CellValue'
 
 export
-class StrategyUnique extends aStrategyBase
+class StrategyUnique extends aStrategyUnit
 {
 
     public applyStrategy ( unit: iUnit ) : boolean
@@ -21,7 +21,7 @@ class StrategyUnique extends aStrategyBase
 
     private strategy_unique ( unit: iUnit ) : boolean
     {
-        let solved  = 0;
+        let solved = 0;
 
         UNIQUE:
         {
@@ -70,5 +70,5 @@ class StrategyUnique extends aStrategyBase
 }
 
 
-// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix
 // END

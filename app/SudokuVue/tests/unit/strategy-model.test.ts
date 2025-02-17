@@ -4,7 +4,7 @@ import { describe, expect, test } from '@jest/globals'
 import type { iUnit             } from '@/js/interface/iUnit'
 import type { iCellIndex        } from '@/js/interface/iCellIndex'
 import type { iObservedState    } from '@/js/interface/iObservedState'
-import      { aStrategyBase     } from '@/js/abstract/aStrategyBase'
+import      { aStrategyUnit     } from '@/js/abstract/aStrategyUnit'
 
 class MyUnit implements iUnit
 {
@@ -31,7 +31,7 @@ class MyUnit implements iUnit
     }
 }
 
-class MyStrategy extends aStrategyBase
+class MyStrategy extends aStrategyUnit
 {
     public label : string
 
@@ -68,6 +68,5 @@ describe('strategy/base', () => {
         test('apply x '+x, () => expect(_mk_strategy_set(x).apply(new MyUnit())).toBe(false))
 })
 
-
-// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix
 // END

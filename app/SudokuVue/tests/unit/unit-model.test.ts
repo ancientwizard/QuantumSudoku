@@ -105,6 +105,18 @@ describe('model/unit-model-exceptions', () => {
   test('unit-NINE',  () => expect(() => new UnitModel(mk_cells( 9))).not.toThrow())
 })
 
+describe('model/unit-model-forEachCell', () => {
+    // In the future I expect to use retire unit's.as_cell_array
+    //  and use the unit's forEachCell() method; I smell a refactor comming!
+    test('unit-forEachCell', () => {
+        const cells : Array<CellModel> = []
+        const u : UnitModel = unit()
+        u.forEachCell( (cell) => { cells.push(cell) })
+        expect(cells.length).toBe(9)
+        expect(cells.map((c) => c.name).join(',')).toBe('A1,A2,A3,A4,A5,A6,A7,A8,A9')
+    })
+})
+
 describe('model/unit-model-broken', () => {
   
     test('unit-broken', () => {
@@ -192,5 +204,5 @@ describe('model/unit-model-solved', () => {
 })
 
 
-// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix
 // END

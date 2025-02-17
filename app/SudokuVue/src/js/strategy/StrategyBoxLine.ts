@@ -2,9 +2,9 @@
 // Strategy Box Line
 
 import type { iUnit             } from '@/js/interface/iUnit'
-import type { iBox                 } from '@/js/interface/iBox'
-import type { IntersectMap        } from '@/js/model/IntersectMap'
-import      { aStrategyBase     } from '@/js/abstract/aStrategyBase'
+import type { iBox              } from '@/js/interface/iBox'
+import type { IntersectMap      } from '@/js/model/IntersectMap'
+import      { aStrategyUnit     } from '@/js/abstract/aStrategyUnit'
 
 // import type { BoxModel       } from '@/js/model/BoxModel'
 // import type { CellModel      } from '@/js/model/CellModel'
@@ -28,7 +28,7 @@ import      { aStrategyBase     } from '@/js/abstract/aStrategyBase'
 
 
 export
-class StrategyBoxLine extends aStrategyBase
+class StrategyBoxLine extends aStrategyUnit
 {
     protected applyStrategy(unit: iUnit): boolean
     {
@@ -38,7 +38,7 @@ class StrategyBoxLine extends aStrategyBase
     // A level 1 Strategy
     private strategy_box_line( box: iBox, line: iUnit, iB: IntersectMap, iL: IntersectMap ) : boolean
     {
-        let changed = 0;
+        const changed = 0;
 
         // Lines (rows and columns) have three parts { A, B, C }
         //   A = Cells 1-3
@@ -152,5 +152,5 @@ class StrategyBoxLine extends aStrategyBase
 */
 
 
-// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix
 // END

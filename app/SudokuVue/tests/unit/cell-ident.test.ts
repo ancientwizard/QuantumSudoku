@@ -53,5 +53,5 @@ describe('model/cell-ident (NAMES)', () => {
 })
 
 
-// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix
 // END

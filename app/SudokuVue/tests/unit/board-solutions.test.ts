@@ -2,7 +2,7 @@
 // board-model.test.ts
 
 import      { describe, expect, test            } from '@jest/globals'
-import type { iStrategy                         } from '@/js/interface/iStrategy'
+import type { iStrategyUnit                         } from '@/js/interface/iStrategyUnit'
 import      { BoardMode, BoardModel, BoardType  } from '@/js/model/BoardModel'
 import      { CellIndex                         } from '@/js/model/CellIndex'
 import      { CellValue                         } from '@/js/model/CellValue'
@@ -113,7 +113,7 @@ describe('sudoku/library/solve', () => {
             // expect(board.set(CellIndex.NINE,  CellIndex.NINE,   CellValue.FIVE )).toBe(true)
 
             const logger = new StrategyLogger()
-            const strategies: Array<iStrategy> = [
+            const strategies: Array<iStrategyUnit> = [
                 new StrategyUnique(logger),
                 new StrategyNakedPair(logger),
                 new StrategyHiddenPair(logger),
@@ -161,5 +161,5 @@ async function load_ini(filename: string): Promise<INI>
 }
 
 
-// vim: expandtab number tabstop=4 shiftwidth=4 softtabstop=2 fileformat=unix
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix
 // END
