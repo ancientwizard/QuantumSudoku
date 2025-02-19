@@ -21,6 +21,7 @@ import      { StrategyLogger                    } from '@/js/strategy/StrategyLo
 import      { StrategyXWing                     } from '@/js/strategy/StrategyXWing'
 import      { StrategyYWing                     } from '@/js/strategy/StrategyYWing'
 // import      { StrategyYWing                     } from '@/js/strategy/StrategyYWing-I'
+import      { BoardStringAdapter                } from '@/js/adapter/BoardStringAdapter'
 
 
 describe('sudoku/library/solve', () => {
@@ -29,6 +30,7 @@ describe('sudoku/library/solve', () => {
         // Use test-map-1.ini as the test input
         const ini: INI = await load_ini('test-map-1.ini')
         let solved_puzzle_count = 0
+        let failed_puzzle_count = 0
 
         expect(ini.sections.length).toBe(301)    // 300 puzzles + 'global'
 
@@ -139,7 +141,7 @@ describe('sudoku/library/solve', () => {
             unit_strategies.reduce((prev, curr) => prev.setNext(curr));
             board_strategies.reduce((prev, curr) => prev.setNext(curr));
 
-            for ( let i = 0; i < 8; i++ )
+            for ( let i = 0; i < 12; i++ )
             {
                 // Apply UNIT based strategies
                 board.forEachRow(   row => unit_solver_chain.apply(row));
@@ -149,6 +151,17 @@ describe('sudoku/library/solve', () => {
                 // Apply BOARD based strategies
                 board_solver_chain.apply(board)
                 ywing_logger.as_array.length && console.log(ywing_logger.as_array)
+
+                let broken = false
+                board.forEachRow( row => {
+                  broken ||= row.isBroken
+                })
+
+                if ( broken )
+                {
+                  failed_puzzle_count++
+                  break
+                }
 
                 if ( board.isSolved )
                 {
@@ -164,6 +177,8 @@ describe('sudoku/library/solve', () => {
             // console.log(logger.as_array)
             expect(board.toStringValues()).not.toBe(init_state)
 
+            board.isSolved || console.log(BoardStringAdapter.toString(board))
+
             // next steps
             // - setup the strategy patterns
             // - use strategy patterns to solve/play the board
@@ -175,7 +190,11 @@ describe('sudoku/library/solve', () => {
             // break;
         }
 
-        console.log('SOLVED PUZZLE COUNT: ' + solved_puzzle_count)
+        console.log('SOLVED PUZZLE COUNT: ' + solved_puzzle_count
+                , '\nFAILED PUZZLE COUNT: ' + failed_puzzle_count)
+        // expect(solved_puzzle_count).toBe(300)
+        expect(failed_puzzle_count).toBe(0)
+
         // const board = new BoardModel(BoardMode.SOLVE)
         // console.log(board)
     })

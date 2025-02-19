@@ -35,13 +35,13 @@ describe('strategy/y-wing', () => {
       const logger = new StrategyLogger()
       const ywing  = new StrategyYWing(logger)
 
-      console.log(ywing.apply(board))
-      console.log(ywing.apply(board))
+      console.log('APPLY-Y-WING:',ywing.apply(board))
+      console.log('APPLY-Y-WING:',ywing.apply(board))
 
       console.log(logger)
-      console.log(BoardStringAdapter.toString(board))
+      // console.log(BoardStringAdapter.toString(board))
 
-      console.log(board.isSolved);
+      console.log('SOLVED:',board.isSolved);
       // expect(logger.as_array.length).toBe(9)
       // expect(logger.as_array[0]).toBe('# (Y-Wing[ROW(detect)-COL(exclude)]): 3 (VALUE)')
       // expect(logger.as_array[1]).toBe('#  Include: COLS:[ 2, 5 ] => [ B3, B5, E3, E5 ]')

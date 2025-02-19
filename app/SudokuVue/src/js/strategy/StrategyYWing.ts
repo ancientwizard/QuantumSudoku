@@ -19,15 +19,21 @@ class StrategyYWing extends aStrategyBoard
   {
     let changesMade = 0;
 
-    // Preprocess the board to collect cells with exactly two candidates
+    // All cells that are untested/proved candidates for Y-Wing
+    //  - they have exactly two possible values
     const candidateCells: Array<CellModel> = [];
+
+    // Map cells to their peers
+    //  - this is used to find the common candidates
     const peerMap = new Map<CellModel, Set<CellModel>>();
 
     const processUnit = (unit: iUnit) => {
 
       unit.forEachCell( cell => {
 
-        // if (cell.isKnown) return
+        // Skip if the cell has a "determined" value
+        //  - It won't be a candidate for Y-Wing nor do we need to know its peers
+        if (cell.isKnown) return
 
         if (cell.as_candidate_array.length === 2 && ! candidateCells.includes(cell))
           candidateCells.push(cell);
@@ -47,13 +53,12 @@ class StrategyYWing extends aStrategyBoard
 
     // Debugging: Log candidate pairs and their cells
     // Looks incomplete! No it does not work!
-    this.logger?.add(`# YWing: Found ${candidateCells.length} candidate pairs`);
-    this.logger?.add(`# YWing: (${candidateCells.map(c => c.name).join(',')})`);
+    // this.logger?.add(`# YWing: Found ${candidateCells.length} candidate pairs`);
+    // this.logger?.add(`# YWing: (${candidateCells.map(c => c.name).join(',')})`);
 
-    // candidateCells.forEach(cell => {
-    //   const key = cell.as_candidate_array.map(c => c.value).sort().join(',');
-    //   this.logger?.add(`# YWing: Found candidate pair [${key}] in cell: ${cell.name}`);
-    // });
+    // My goal is to push y-wing triples into this array
+    // TODO: store before cleanup... we'll get there
+    const yWingTriples: Array<[CellModel, CellModel, CellModel]> = [];
 
     // Iterate over the candidate cells to find potential Y-Wing patterns
     for (const pivot of candidateCells)
@@ -66,36 +71,47 @@ class StrategyYWing extends aStrategyBoard
       //   more of the puzzles in the library. This version helpes solve a few more.
       if ( pivot.isKnown) continue;
 
+      // A Pivot candidate, lets find if we have cells that complete this Y-Wing
+      //  - The pivot cell must have two candidates, unique candidates
+      //  - that form (A,B) => (B,C) => (C,A)
+      //  - The (B,C) pincer must intersect with the (A,B) pivot OR intersect with the (C,A) pincer
+      //  - The (C,A) pincer must intersect with the (A,B) pivot OR intersect with the (B,C) pincer
       const [a, b] = pivot.as_candidate_array;
 
-      // Find pincers for (A,B) => (B,C) and (A,B) => (C,A)
-      // this code fails to verify the third leg of the Y-Wing of (C,A) => (A,B)
-
       // This is the first leg of a canidate Y-Wing (A,B) => F(B,C)
+      //  - they are untested as intercepts; that will be the final after we have the BC's and CA's
       const pincersBC = this.findPincerCells(candidateCells, pivot, b, a);
       // This is the second leg of a candidate Y-Wing (A,B) => F(C,A)
       const pincersCA = this.findPincerCells(candidateCells, pivot, a, b);
 
       const commonBC = pincersBC.filter( pincerBC => {
         return pincersCA.some( pincerCA => {
-          const [a1, b1] = pincerBC.as_candidate_array;
-          const [a2, b2] = pincerCA.as_candidate_array;
-          return ( a1 == b2 ) // ( b === b1 && a === b2 ) || ( a === a1 && b === b1 );
+          // const [a1, b1] = pincerBC.as_candidate_array;
+          // const [a2, b2] = pincerCA.as_candidate_array;
+          return ( // a1 == b2 && // b1 !== a2 &&
+              peerMap.get(pivot)?.has(pincerBC) &&
+              peerMap.get(pivot)?.has(pincerCA) &&
+             !peerMap.get(pincerCA)?.has(pincerBC)
+            );
         })
       })
 
       const commonCA = pincersCA.filter( pincerCA => {
         return pincersBC.some( pincerBC => {
-          const [a1, b1] = pincerBC.as_candidate_array;
-          const [a2, b2] = pincerCA.as_candidate_array;
-          return ( a1 == b2 ) // ( b === b1 && a === b2 ) || ( a === a1 && b === b1 );
+          // const [a1, b1] = pincerBC.as_candidate_array;
+          // const [a2, b2] = pincerCA.as_candidate_array;
+          return ( // a1 == b2 && // && b1 !== a2
+              peerMap.get(pivot)?.has(pincerCA) &&
+              peerMap.get(pivot)?.has(pincerBC) &&
+             !peerMap.get(pincerBC)?.has(pincerCA)
+            );
         })
       })
 
       // const whereABCintersects: Array<CellModel> = [...commonBC,...commonCA];
 
       // Debugging: Log the pincers found
-      this.logger?.add(`# YWing: Pivot ${pivot.name} (${a.value},${b.value}) => (${pincersBC.map(c => c.name).join(',')}) => (${pincersCA.map(c => c.name).join(',')})`);
+      // this.logger?.add(`# YWing: Pivot ${pivot.name} (${a.value},${b.value}) => (${pincersBC.map(c => c.name).join(',')}) => (${pincersCA.map(c => c.name).join(',')})`);
       // this.logger?.add(`# YWing: CAN: (${whereABCintersects.map(c => c.name).join(',')})`);
 
       // pincersBC.forEach(pincer => {
@@ -105,10 +121,10 @@ class StrategyYWing extends aStrategyBoard
       //   this.logger?.add(`# YWing: Pincer CA: ${pincer.name} (${pincer.as_candidate_array.map(c => c.value).join(',')})`);
       // });
       // commonCA.forEach(pincer => {
-      //   this.logger?.add(`# YWing: Common candidate: ${pincer.name} (${pincer.as_candidate_array.map(c => c.value).join(',')})`);
+      //   this.logger?.add(`# YWing: (B,C) ${pincer.name} (${pincer.as_candidate_array.map(c => c.value).join(',')})`);
       // });
       // commonBC.forEach(pincer => {
-      //   this.logger?.add(`# YWing: Common candidate: ${pincer.name} (${pincer.as_candidate_array.map(c => c.value).join(',')})`);
+      //   this.logger?.add(`# YWing: (C,A) ${pincer.name} (${pincer.as_candidate_array.map(c => c.value).join(',')})`);
       // });
 
       for (const pincer1 of commonBC)
@@ -125,9 +141,9 @@ class StrategyYWing extends aStrategyBoard
             // Just because we get here doesn't mean we have a Y-Wing
             // In fact most of the set are invalid and do not from a chain!
 
-            this.logger?.add(`# YWing: Found Y-Wing with pivot ${pivot.name} having pincers [${pincer1.name},${pincer2.name}]`);
-            this.logger?.add(`# YWing: ([A,B]=${pivot.as_candidate_array.map(c => c.value).join(',')}) => ([B,C]=${pincer1.as_candidate_array.map(c => c.value).join(',')}) => ([C,A]=${pincer2.as_candidate_array.map(c => c.value).join(',')})`);
-            this.logger?.add(`# YWing: Common candidate: ${commonCandidate?.value}`);
+            // this.logger?.add(`# YWing: Found Y-Wing with pivot ${pivot.name} having pincers [${pincer1.name},${pincer2.name}]`);
+            // this.logger?.add(`# YWing: ([A,B]=${pivot.as_candidate_array.map(c => c.value).join(',')}) => ([B,C]=${pincer1.as_candidate_array.map(c => c.value).join(',')}) => ([C,A]=${pincer2.as_candidate_array.map(c => c.value).join(',')})`);
+            // this.logger?.add(`# YWing: Common candidate: ${commonCandidate?.value}`);
 
             if ( commonCandidate !== null )
               changesMade += this.eliminateCandidateFromCommonPeers(peerMap, pivot, pincer1, pincer2, commonCandidate);
@@ -169,18 +185,53 @@ class StrategyYWing extends aStrategyBoard
         , candidate: CellValue
     ) : number
   {
-    const pivot_peers = peerMap.get(pivot);
+    // Find the common peers between the two pincers
+    //  - this is the set of cells that are common to both pincers
+    //     (intersecting)
+    //  - these cells are the ones that will have the candidate value excluded from them
+    //  - unsolved, having the candidate value
+    const wing_a_peers = peerMap.get(wing_a) || new Set([]);
+    const wing_b_peers = peerMap.get(wing_b) || new Set([]);
+
+    const wing_a_peers_intersect = [...wing_a_peers]
+      .filter( peer => {
+        return peer.as_candidate_array.includes(candidate)
+            && peer !== pivot
+            && wing_b_peers?.has(peer)
+      });
+
+    const wing_b_peers_intersect = [...wing_b_peers]
+      .filter( peer => {
+        return peer.as_candidate_array.includes(candidate)
+            && peer !== pivot
+            && wing_a_peers?.has(peer)
+      });
+
+    const unique_peers = new Set<CellModel>([ ...wing_a_peers_intersect, ...wing_b_peers_intersect]);
+
+    // console.log('# A:', wing_a.name, [...wing_a_peers].map(cell => cell.name).sort().join(','));
+    // console.log('# B:', wing_b.name, [...wing_b_peers].map(cell => cell.name).sort().join(','));
+    // console.log([...unique_a_b_peers].map(cell => cell.name).join(','));
+
+    let first = true;
     let changes = 0;
 
-    if ( pivot_peers )
-      for (const peer of pivot_peers)
+    for ( const peer of unique_peers )
+    {
+      const excluded = peer.exclude(candidate);
+
+      if ( first && excluded )
       {
-        if ( peer !== wing_a && peer !== wing_b && peer.as_candidate_array.includes(candidate)) {
-          const excluded = peer.exclude(candidate);
-          this.logger?.add(`# YWing: ${peer.name}.exclude(${candidate.value}) ${excluded}`);
-          excluded && changes++;
-        }
+        this.logger?.add(`# YWing: Found Y-Wing with pivot ${pivot.name} having pincers [${wing_a.name},${wing_b.name}]`);
+        this.logger?.add(`# YWing: ([A,B]=${pivot.as_candidate_array.map(c => c.value).join(',')}) => ([B,C]=${wing_a.as_candidate_array.map(c => c.value).join(',')}) => ([C,A]=${wing_b.as_candidate_array.map(c => c.value).join(',')})`);
+        this.logger?.add(`# YWing: Common candidate: ${candidate?.value}`);
+        this.logger?.add(`# YWing: ${peer.name}.exclude(${candidate.value}) ${excluded}`);
+        first = false;
       }
+
+      first && this.logger?.add(`# YWing: ${peer.name}.exclude(${candidate.value}) ${excluded}`);
+      excluded && changes++;
+    }
 
     return changes;
   }
