@@ -1,11 +1,12 @@
 
 // aStrategyBoard.ts
 
-import type { iLogger       } from '@/js/interface/iLogger'
-import type { BoardModel    } from '@/js/model/BoardModel'
+import type { iStrategyBoard  } from '@/js/interface/iStrategyBoard'
+import type { iLogger         } from '@/js/interface/iLogger'
+import type { iBoard          } from '@/js/interface/iBoard'
 
 export
-abstract class aStrategyBoard
+abstract class aStrategyBoard implements iStrategyBoard
 {
     readonly logger : iLogger | null = null
     protected nextStrategy: aStrategyBoard | null = null;
@@ -15,7 +16,7 @@ abstract class aStrategyBoard
         this.logger = logger
     }
 
-    public apply ( board: BoardModel ) : boolean
+    public apply ( board: iBoard ) : boolean
     {
         // Written to allow the entire chain of strategies to
         // make their attempt and return true if one or more succeed
@@ -31,7 +32,7 @@ abstract class aStrategyBoard
         return ( this.nextStrategy = strategy )
     }
 
-    protected abstract applyStrategy ( unit: BoardModel  ): boolean
+    protected abstract applyStrategy ( board: iBoard  ): boolean
 
 }
 

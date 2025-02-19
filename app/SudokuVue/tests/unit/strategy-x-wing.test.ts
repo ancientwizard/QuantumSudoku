@@ -14,13 +14,6 @@ import { StrategyXWing          } from '@/js/strategy/StrategyXWing'
 import { BasicMap               } from '@/js/model/BasicMap'
 
 
-function template_to_string( template: number[][] ): string
-{
-    return template.map( row => {
-      return row.map(( cv, idx ) => { return ( cv == 0 ? '?' : cv ) + (idx<8?' ':'')}).join('')
-    }).join("\n") + '\n'
-}
-
 describe('strategy/x-wing', () => {
   let board : BoardModel
 
@@ -81,14 +74,14 @@ describe('strategy/x-wing', () => {
       // console.log(logger)
       expect(logger.as_array.length).toBe(9)
       expect(logger.as_array[0]).toBe('# (X-Wing[COL(detect)-ROW(exclude)]): 4 (VALUE)')
-      expect(logger.as_array[1]).toBe('#  Include: ROWS:[ 2, 5 ] => [ E5, E5, G7, G7 ]')
-      expect(logger.as_array[2]).toBe('#  Exclude: ROWS:[ 2, 5 ] => [ D4, D4, H8, H8, I9, I9 ]')
-      expect(logger.as_array[3]).toBe('X-Wing: D4.exclude(4) true')
-      expect(logger.as_array[4]).toBe('X-Wing: H8.exclude(4) true')
-      expect(logger.as_array[5]).toBe('X-Wing: I9.exclude(4) true')
-      expect(logger.as_array[6]).toBe('X-Wing: D4.exclude(4) true')
-      expect(logger.as_array[7]).toBe('X-Wing: H8.exclude(4) true')
-      expect(logger.as_array[8]).toBe('X-Wing: I9.exclude(4) true')
+      expect(logger.as_array[1]).toBe('#  Include: ROWS:[ 2, 5 ] => [ E2, E5, G2, G5 ]')
+      expect(logger.as_array[2]).toBe('#  Exclude: ROWS:[ 2, 5 ] => [ D2, D5, H2, H5, I2, I5 ]')
+      expect(logger.as_array[3]).toBe('X-Wing: D2.exclude(4) true')
+      expect(logger.as_array[4]).toBe('X-Wing: H2.exclude(4) true')
+      expect(logger.as_array[5]).toBe('X-Wing: I2.exclude(4) true')
+      expect(logger.as_array[6]).toBe('X-Wing: D5.exclude(4) true')
+      expect(logger.as_array[7]).toBe('X-Wing: H5.exclude(4) true')
+      expect(logger.as_array[8]).toBe('X-Wing: I5.exclude(4) true')
 
       // console.log(BoardStringAdapter.toString(board2))
     }
@@ -96,7 +89,14 @@ describe('strategy/x-wing', () => {
 })
 
 
-// A Sudoku board X-Wing detection template:
+// Helper functions
+function template_to_string( template: number[][] ): string
+{
+    return template.map( row => {
+      return row.map(( cv, idx ) => { return ( cv == 0 ? '?' : cv ) + (idx<8?' ':'')}).join('')
+    }).join("\n") + '\n'
+}
+
 function apply_template( board: BoardModel, template: number[][] = get_template() ) : number[][]
 {
   const ci_set = CellIndex.arrayFactory

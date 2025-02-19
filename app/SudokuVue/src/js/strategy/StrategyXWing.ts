@@ -132,9 +132,9 @@ class StrategyXWing extends aStrategyBoard
           const positionLabel = detectByRow ? 'COLS' : 'ROWS';
           this.logger.add(`# (X-Wing[${detectByRow ? 'ROW(detect)-COL(exclude)' : 'COL(detect)-ROW(exclude)'}]): ${cv.label} (VALUE)`);
           this.logger.add(`#  Include: ${positionLabel}:[ ${xwing_unit[xwing_position].join(', ')} ] => [ `
-            + xwing_unit[xwing_cell_include_idx].flat().map(c => c.cname + (detectByRow ? c.row : c.col)).sort().join(', ') + ' ]');
+            + xwing_unit[xwing_cell_include_idx].flat().map(c => c.name).sort().join(', ') + ' ]');
           this.logger.add(`#  Exclude: ${positionLabel}:[ ${xwing_unit[xwing_position].join(', ')} ] => [ `
-            + exclude_cv_from_cell_set.map(cell => cell && cell.cname + (detectByRow ? cell.row : cell.col)).sort().join(', ') + ' ]');
+            + exclude_cv_from_cell_set.map(cell => cell && cell.name).sort().join(', ') + ' ]');
         }
 
         // Scrub and Log it!
@@ -142,7 +142,7 @@ class StrategyXWing extends aStrategyBoard
           if (cell) {
             const change = cell.exclude(cv);
             change && excludes++;
-            this.logger && this.logger.add(`X-Wing: ${cell.cname}${detectByRow ? cell.row : cell.col}.exclude(${cv.label}) ${change}`);
+            this.logger?.add(`X-Wing: ${cell.name}.exclude(${cv.label}) ${change}`);
           }
         })
       })

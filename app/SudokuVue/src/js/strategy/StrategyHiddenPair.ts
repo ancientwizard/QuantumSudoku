@@ -31,7 +31,7 @@ class StrategyHiddenPair extends aStrategyUnit
             //  looking at stuff that is already solved isn'y useful
             const setOfUndeterminedCells : Array<CellModel> = this.getUndeterminedCellList( unit )
 
-            this.logger && this.logger.add('# (Hidden-Pair) Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
+            this.logger?.add('# (Hidden-Pair) Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
 
             // No point in looking for "HIDDEN" pairs when there are less than three Cells
             // to compare! Basically if the last two match, so what! There are only two
@@ -86,10 +86,9 @@ class StrategyHiddenPair extends aStrategyUnit
                         // Nothing to clean up?
                         if ( A[0].length == 2 && B[1].length == 2) return
 
-                        if ( this.logger )
-                            this.logger.add('# Strategy 1 - Hidden Pair (' +
-                                A[0].name + ',' +
-                                A[1].name + ')' )
+                        this.logger?.add('# Strategy 1 - Hidden Pair (' +
+                            A[0].name + ',' +
+                            A[1].name + ')' )
 
                         // Clean up
                         A.forEach( cell => {
@@ -103,8 +102,8 @@ class StrategyHiddenPair extends aStrategyUnit
             })
         }
 
-        if ( removed > 0 && this.logger )
-            this.logger.add('# Strategy 1 - Hidden Pair cleaned ' + removed + ' candidate values ' + updated.length + ' from cells (' + updated.join(',') + ')');
+        if ( removed > 0 )
+            this.logger?.add('# Strategy 1 - Hidden Pair cleaned ' + removed + ' candidate values ' + updated.length + ' from cells (' + updated.join(',') + ')');
 
         return removed > 0;
     }

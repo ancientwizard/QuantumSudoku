@@ -31,7 +31,7 @@ class StrategyNakedPair extends aStrategyUnit
             //  looking at stuff that is already solved isn't useful
             const setOfUndeterminedCells : Array<CellModel> = this.getUndeterminedCellList( unit )
 
-            this.logger && this.logger.add('# (Naked-Pair) Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
+            this.logger?.add('# (Naked-Pair) Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
 
             // No point in looking for pairs when there are less than four Cells
             // to compare! Consider when two Cells match the third will always be unique
@@ -84,7 +84,7 @@ class StrategyNakedPair extends aStrategyUnit
                         if ( ! first_naked_shown && cell.includes(cv))
                         {
                             first_naked_shown = true;
-                            this.logger && this.logger.add('# Strategy 1 - Naked  Pair ' + candidate );
+                            this.logger?.add('# Strategy 1 - Naked  Pair ' + candidate );
                         }
 
                         if ( cell.exclude(cv)) { removed++; updated.includes(cell.name) || updated.push(cell.name) }
@@ -93,8 +93,8 @@ class StrategyNakedPair extends aStrategyUnit
             })
         }
 
-        if ( removed > 0 && this.logger )
-            this.logger.add('# Strategy 2 - Naked Pair cleaned ' + removed + ' candidate values from ' + updated.length + ' cells (' + updated.join(',') + ')');
+        if ( removed > 0 )
+            this.logger?.add('# Strategy 2 - Naked Pair cleaned ' + removed + ' candidate values from ' + updated.length + ' cells (' + updated.join(',') + ')');
 
         return removed > 0;
     }

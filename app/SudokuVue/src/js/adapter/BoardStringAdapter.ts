@@ -14,7 +14,6 @@ export class BoardStringAdapter
         // Column labels
         board_strings.push(board.columnNamesAsArray().map( name => `   ${name}` ).join('  '))
 
-        // CellIndex.arrayFactory.forEach( row_idx => {
         board.forEachRow( row => {
 
             // Each cell in a row having nine possible cell values will require three lines
@@ -54,7 +53,7 @@ export class BoardStringAdapter
                         case 5: row_matrix[1][((cell.col-1) * 3 ) + 1 ] = '5'; break;
                         case 6: row_matrix[1][((cell.col-1) * 3 ) + 2 ] = '6'; break;
                         case 7: row_matrix[2][((cell.col-1) * 3 )     ] = '7'; break;
-                        case 8: row_matrix[2][((cell.col-1) * 3 ) + 2 ] = '8'; break;
+                        case 8: row_matrix[2][((cell.col-1) * 3 ) + 1 ] = '8'; break;
                         case 9: row_matrix[2][((cell.col-1) * 3 ) + 2 ] = '9'; break;
                     }
                 })

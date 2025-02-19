@@ -3,6 +3,7 @@
 
 import      { describe, expect, test            } from '@jest/globals'
 import type { iStrategyUnit                     } from '@/js/interface/iStrategyUnit'
+import type { iStrategyBoard                    } from '@/js/interface/iStrategyBoard'
 import      { BoardMode, BoardModel, BoardType  } from '@/js/model/BoardModel'
 import      { CellIndex                         } from '@/js/model/CellIndex'
 import      { CellValue                         } from '@/js/model/CellValue'
@@ -18,6 +19,8 @@ import      { StrategyNakedQuad                 } from '@/js/strategy/StrategyNa
 import      { StrategyHiddenQuad                } from '@/js/strategy/StrategyHiddenQuad'
 import      { StrategyLogger                    } from '@/js/strategy/StrategyLogger'
 import      { StrategyXWing                     } from '@/js/strategy/StrategyXWing'
+import      { StrategyYWing                     } from '@/js/strategy/StrategyYWing'
+// import      { StrategyYWing                     } from '@/js/strategy/StrategyYWing-I'
 
 
 describe('sudoku/library/solve', () => {
@@ -115,7 +118,7 @@ describe('sudoku/library/solve', () => {
             // expect(board.set(CellIndex.NINE,  CellIndex.NINE,   CellValue.FIVE )).toBe(true)
 
             const logger = new StrategyLogger()
-            const strategies: Array<iStrategyUnit> = [
+            const unit_strategies: Array<iStrategyUnit> = [
                 new StrategyUnique(logger),
                 new StrategyNakedPair(logger),
                 new StrategyHiddenPair(logger),
@@ -124,16 +127,29 @@ describe('sudoku/library/solve', () => {
                 new StrategyNakedQuad(logger),
                 new StrategyHiddenQuad(logger)
             ];
-            const solver_chain = strategies[0]
-            const xwing = new StrategyXWing(logger)
+            const unit_solver_chain = unit_strategies[0]
 
-            strategies.reduce((prev, curr) => prev.setNext(curr));
+            const ywing_logger = new StrategyLogger()
+            const board_strategies: Array<iStrategyBoard> = [
+                new StrategyYWing(logger), //ywing_logger),
+                new StrategyXWing(logger),
+              ]
+            const board_solver_chain = board_strategies[0]
 
-            for ( let i = 0; i < 8; i++ ) {
-                board.forEachRow(row => solver_chain.apply(row));
-                board.forEachCol(column => solver_chain.apply(column));
-                board.forEachBox(block => solver_chain.apply(block));
-                xwing.apply(board)
+            unit_strategies.reduce((prev, curr) => prev.setNext(curr));
+            board_strategies.reduce((prev, curr) => prev.setNext(curr));
+
+            for ( let i = 0; i < 8; i++ )
+            {
+                // Apply UNIT based strategies
+                board.forEachRow(   row => unit_solver_chain.apply(row));
+                board.forEachCol(column => unit_solver_chain.apply(column));
+                board.forEachBox( block => unit_solver_chain.apply(block));
+
+                // Apply BOARD based strategies
+                board_solver_chain.apply(board)
+                ywing_logger.as_array.length && console.log(ywing_logger.as_array)
+
                 if ( board.isSolved )
                 {
                   // console.log('SOLVED-ON-LOOP: ' + i)

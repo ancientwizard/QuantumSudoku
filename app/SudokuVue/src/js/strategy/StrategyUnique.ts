@@ -31,7 +31,7 @@ class StrategyUnique extends aStrategyUnit
             //  looking at cells already solved isn't helpful
             const setOfUndeterminedCells: Array<CellModel> = this.getUndeterminedCellList( unit )
 
-            this.logger && this.logger.add('# (Unique) Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
+            this.logger?.add('# (Unique) Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
 
             // Everything has been solved
             if ( setOfUndeterminedCells.length < 1 ) { break UNIQUE; }
@@ -59,7 +59,7 @@ class StrategyUnique extends aStrategyUnit
                 if ( counts[i] == 1 )
                 {
                     // Solve the Cell with the unique candidate
-                    this.logger && this.logger.add('# Strategy 0 - Unique (' + cindx[i].name + ')')
+                    this.logger?.add('# Strategy 0 - Unique (' + cindx[i].name + ')')
                     cindx[i].is( CellValue.arrayFactory[ i ] ) && solved++;
                 }
             }
