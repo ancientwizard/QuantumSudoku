@@ -38,6 +38,11 @@ class MyUnit implements iUnit
     {
         return false
     }
+
+    get as_cell_array(): CellModel[]
+    {
+        return []
+    }
 }
 
 class MyStrategy extends aStrategyUnit

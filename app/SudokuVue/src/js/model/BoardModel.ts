@@ -17,7 +17,7 @@ export
 class BoardModel implements iBoard
 {
     // Composition
-    private boxunits: Array<BoxModel> = []    // 3x3 box/grid units
+    private boxunits: Array<BoxModel>   = []    // 3x3 box/grid units
     private rowunits: Array<UnitModel>  = []    //   9 row units
     private colunits: Array<UnitModel>  = []    //   9 column units
     private angunits: Array<UnitModel>  = []    //   2 diagonal units

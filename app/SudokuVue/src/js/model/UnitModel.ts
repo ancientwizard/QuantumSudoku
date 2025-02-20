@@ -195,8 +195,8 @@ class UnitModel implements iUnit
 //strategy_set_hidden_pair();
 //strategy_set_naked_triple();
 //strategy_set_naked_quad();
-////strategy_set_hidden_triple();   // never turn on in Java
-////strategy_set_hidden_quad();     // never turn on in Java
+////strategy_set_hidden_triple();   // never turned on in Java
+////strategy_set_hidden_quad();     // never turned on in Java
 //}
 
     public reset() : void

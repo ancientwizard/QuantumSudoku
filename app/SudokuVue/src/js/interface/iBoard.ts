@@ -9,6 +9,7 @@
 import type { iCellIndex        } from '@/js/interface/iCellIndex'
 import type { iObservedState    } from '@/js/interface/iObservedState'
 import type { iUnit             } from '@/js/interface/iUnit'
+import type { iBox              } from '@/js/interface/iBox';
 
 export
 interface iBoard
@@ -21,7 +22,7 @@ interface iBoard
 
     forEachRow( callback: ( row: iUnit, index: number) => void): void;
     forEachCol( callback: ( col: iUnit, index: number) => void): void;
-    forEachBox( callback: ( box: iUnit, index: number) => void): void;
+    forEachBox( callback: ( box: iBox,  index: number) => void): void;
 }
 
 

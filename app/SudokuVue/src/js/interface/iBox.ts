@@ -3,6 +3,8 @@
 //  the "BOX(3x3)" implementation of a puzzle "Unit"
 //  A Block is made of three parts of three colums and 3 parts of three rows
 
+import type { CellModel         } from '../model/CellModel'
+
 // import type { iCellIndex        } from '@/js/interface/iCellIndex'
 // import type { iObservedState    } from '@/js/interface/iObservedState'
 
@@ -16,6 +18,9 @@ interface iBox
 
     // get isSolved () : boolean;
     // get isBroken () : boolean;
+    get as_cell_array () : Array<CellModel>;
+
+    forEachCell ( callback: ( cell: CellModel, index: number) => void): void;    
 }
 
 

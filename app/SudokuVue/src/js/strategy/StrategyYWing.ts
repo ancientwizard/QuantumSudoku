@@ -4,6 +4,7 @@
 import type { iBoard      } from '@/js/interface/iBoard';
 import type { CellModel   } from '@/js/model/CellModel';
 import type { CellValue   } from '@/js/model/CellValue';
+import type { iBox        } from '@/js/interface/iBox';
 import type { iUnit       } from '@/js/interface/iUnit';
 import { aStrategyBoard   } from '@/js/abstract/aStrategyBoard';
 
@@ -27,7 +28,7 @@ class StrategyYWing extends aStrategyBoard
     //  - this is used to find the common candidates
     const peerMap = new Map<CellModel, Set<CellModel>>();
 
-    const processUnit = (unit: iUnit) => {
+    const processUnit = (unit: iUnit | iBox ) => {
 
       unit.forEachCell( cell => {
 
