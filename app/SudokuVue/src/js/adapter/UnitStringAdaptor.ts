@@ -4,8 +4,10 @@
 import type { iLine     } from '@/js/interface/iLine'
 import type { iBox      } from '@/js/interface/iBox'
 import type { CellModel } from '@/js/model/CellModel'
+import { sep } from 'path';
+// import      { CellModel } from '@/js/model/CellModel'
+// import { CellValue } from '../model/CellValue';
 
-export
 class UnitStringAdaptor
 {
   static LineString( unit: iLine ): string
@@ -45,39 +47,43 @@ class UnitStringAdaptor
     //     and so on.
     //
 
-    const is_row = unit.isRow
-    const cellStrings = [ 1, 2, 3 ].map( ri => {
+    // This is some very ugly string manipulation code
+    //   It should be refactored to use a CellArrayFormatter
+    //   and a CellFormatter; we'll get there
 
-      const sections: Array<string> = []
-      const cells = unit.as_cell_array
 
-      cells.forEach( cell => {
-
-        if ( cell.isKnown )
-        {
-          sections.push( ri == 2 ? `| [${cell.cv.label}] ` : '|     ');
-          return
-        }
-
-        const candidates = Array(9).fill(' ');
-        cell.as_candidate_array.forEach( cv => {
-          candidates[cv.value - 1] = cv.value.toString();
-        });
-
-        switch ( ri )
-        {
-          case 1: sections.push( `| ${candidates.slice(0, 3).join('')} `); break;
-          case 2: sections.push( `| ${candidates.slice(3, 6).join('')} `); break;
-          case 3: sections.push( `| ${candidates.slice(6, 9).join('')} `);
-        }
-      })
-
-      // console.log('sections:', sections.slice(0,3).join(''))
-      return [ sections.slice(0,3).join(''), sections.slice(3,6).join(''), sections.slice(6,9).join('') ].join('')
-    });
-
-    if (is_row)
+    if ( unit.isRow )
     {
+      const cellStrings = [ 1, 2, 3 ].map( ri => {
+
+        const sections: Array<string> = []
+        const cells = unit.as_cell_array
+  
+        cells.forEach( cell => {
+  
+          if ( cell.isKnown )
+          {
+            sections.push( ri == 2 ? `| [${cell.cv.label}] ` : '|     ');
+            return
+          }
+  
+          const candidates = Array(9).fill(' ');
+          cell.as_candidate_array.forEach( cv => {
+            candidates[cv.value - 1] = cv.label;
+          });
+  
+          switch ( ri )
+          {
+            case 1: sections.push( `| ${candidates.slice(0, 3).join('')} `); break;
+            case 2: sections.push( `| ${candidates.slice(3, 6).join('')} `); break;
+            case 3: sections.push( `| ${candidates.slice(6, 9).join('')} `);
+          }
+        })
+  
+        // console.log('sections:', sections.slice(0,3).join(''))
+        return [ sections.slice(0,3).join(''), sections.slice(3,6).join(''), sections.slice(6,9).join('') ].join('')
+      });
+
       const cells = unit.as_cell_array
       const rowString = cellStrings.join('|\n') + '|';
       const separator = '+-----'.repeat(cells.length) + '+';
@@ -86,17 +92,41 @@ class UnitStringAdaptor
     }
     else
     {
-      const colStrings = [];
-      for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < unit.as_cell_array.length; j++) {
-          // colStrings.push(cellStrings[j].split('|')[i + 1]);
-        }
-        colStrings.push('\n');
-      }
+      // This is JUNK but I dont't I want to fix it!
+      //   I want to use the CellArrayFormatter trim feature
+      const cells = unit.as_cell_array
+      const separator = '+-----+';
+      const colStrings: Array<string> = [];
 
-      const colString = colStrings.join('|');
-      const separator = '+-----+\n'.repeat(unit.as_cell_array.length);
-      return `${separator}${colString}${separator}`;
+      if ( cells[0].cname)
+        colStrings.push(`   ${cells[0].cname}`)
+
+      colStrings.push(separator)
+
+      cells.forEach( cell => {
+        if ( cell.isKnown )
+        {
+          colStrings.push('|     |', `| [${cell.cv.label}] | ${cell.row}`, '|     |', separator)
+          return
+        }
+
+        const candidates = Array(9).fill(' ');
+        cell.as_candidate_array.forEach( cv => {
+          candidates[cv.value - 1] = cv.label;
+        });
+
+        [ 1, 2, 3 ].forEach( ri => {
+          switch ( ri )
+          {
+            case 1: colStrings.push( `| ${candidates.slice(0, 3).join('')} |`); break;
+            case 2: colStrings.push( `| ${candidates.slice(3, 6).join('')} | ${cell.row}`); break;
+            case 3: colStrings.push( `| ${candidates.slice(6, 9).join('')} |`);
+          }
+        })
+        colStrings.push(separator)
+      });
+
+      return colStrings.join('\n') + '\n';
     }
   }
 
@@ -105,107 +135,168 @@ class UnitStringAdaptor
     // GOAL: Format the unit as a BOX string
     //   It must look like the following:
     //   When the 5th cell is a known value of 5
+
+    //      X     X     X
     //   +-----+-----+-----+
     //   | 123 | 123 | 123 |
-    //   | 4 6 | 4 6 | 4 6 |
+    //   | 4 6 | 4 6 | 4 6 | Y
     //   | 789 | 789 | 789 |
     //   +-----+-----+-----+
     //   | 123 |     | 123 |
-    //   | 4 6 | [5] | 4 6 |
+    //   | 4 6 | [5] | 4 6 | Y
     //   | 789 |     | 789 |
     //   +-----+-----+-----+
     //   | 123 | 123 | 123 |
-    //   | 4 6 | 4 6 | 4 6 |
+    //   | 4 6 | 4 6 | 4 6 | Y
     //   | 789 | 789 | 789 |
     //   +-----+-----+-----+
-    //
 
-    const separator = '+-----+-----+-----+\n'
+    // Its a step in the right direction; however we're not using CellArrayFormatter
 
-    const cellStrings = [ 1, 2, 3 ].map( ri => {
-      const sections: Array<string> = []
-      const cells = unit.as_cell_array
-      cells.forEach( cell => {
+    const separator = '+-----+-----+-----+'
+    const box_strings: string[] = []
+    const cells: Array<CellModel> = unit.as_cell_array
 
-        if ( cell.isKnown )
-        {
-          sections.push( ri == 2 ? `| [${cell.cv.label}] ` : '|     ')
-          return
-        }
-        const candidates = Array(9).fill(' ')
+    box_strings.push(cells.slice(0,3).map( cell => `   ${cell.cname}`).join('  '))
+    box_strings.push(separator)
 
-        cells.forEach( cv => {
-          candidates[cv.value - 1] = cv.value.toString()
-        })
+    const fmt_cells: Array<Array<CellFormatter>> = Array.from({ length: 3 }, () => Array.from({ length: 3 }, () => new CellFormatter()))
 
-        switch ( ri )
-        {
-          case 1: sections.push( `| ${candidates.slice(0, 3).join('')} ` ); break
-          case 2: sections.push( `| ${candidates.slice(3, 6).join('')} ` ); break
-          case 3: sections.push( `| ${candidates.slice(6, 9).join('')} ` )
-        }
-      })
-      return sections.join('')
+    // Apply the cell values to the formatter
+    unit.as_cell_array.forEach( cell => {
+      const row_idx = Math.floor((cell.row - 1) % 3)
+      const col_idx = Math.floor((cell.col - 1) % 3)
+      fmt_cells[row_idx][col_idx].apply( cell )
     })
-    const rowString = cellStrings.join('|\n') + '|'
-    const boxString = `${separator}${rowString}\n${separator}`
-    return boxString
+
+    fmt_cells.map(( row, ridx ) => {
+      const line_set: Array<Array<string>> = [[],[],[]]
+
+      row.map( cell => cell.matrix.forEach(( line, idx ) => {
+        line_set[idx].push( '| ', line.join('') + ' ')
+      }))
+
+      line_set.map(( line, cidx ) => {
+        const box_row_label_index = ridx * 3 * cidx
+        box_strings.push(line.join('') + '|' + (cidx == 1 ? ' ' + cells[box_row_label_index].row : ''))
+      })
+
+      box_strings.push(separator)
+    })
+
+    return box_strings.join('\n') + '\n'
   }
 
   private static formatCell( cell: CellModel ): string
   {
     return `Cell: ${cell.constructor.name}, Value: ${cell.cv.label}`
   }
+}
 
+class CellFormatter
+{
+  private _colLabel: string
+  private _rowLabel: string
+  private _matrix: Array<Array<string>> = Array.from({ length: 3 }, () => Array(3).fill(' '))
+
+  constructor ( colLabel = '', rowLabel = '' )
+  {
+    this._colLabel = colLabel
+    this._rowLabel = rowLabel
+  }
+
+  get colLabel(): string { return this._colLabel }
+  get rowLabel(): string { return this._rowLabel }
+  get matrix(): Array<Array<string>> { return this._matrix }
+
+  public apply( cell: CellModel ): CellFormatter
+  {
+    if ( ! this._colLabel ) this._colLabel += cell.cname
+    if ( ! this._rowLabel ) this._rowLabel += cell.row
+
+    // OOPS you have overlapped cell values by miscalculating the cell - SNAP!
+    if ( !this.isEmpty() )
+    {
+      if ( new CellFormatter().apply( cell ).toString() != this.toString() )
+        throw new Error('CellFormatter: apply() called on a non-empty cell formatter')
+      return this
+    }
+
+    if ( cell.isKnown )
+    {
+      this._matrix[1] = [ '[', cell.cv.label, ']' ]
+      return this
+    }
+
+    cell.as_candidate_array.forEach( cv => {
+      this._matrix[Math.floor((cv.value - 1) / 3)][(cv.value - 1) % 3] = cv.value.toString()
+    })
+
+    return this
+  }
+
+  public isEmpty(): boolean
+  {
+    return this._matrix.every( row => row.every( cell => cell === ' ' ) )
+  }
+
+  public toString(): string
+  {
+    const matrix = this._matrix
+    const lines: string[] = []
+
+    if ( this._colLabel ) lines.push(`   ${this._colLabel}`)
+
+    lines.push('+-----+')
+    matrix.forEach(( row, idx ) => {
+      const label = idx == 1 && this._rowLabel ? ' ' + this._rowLabel : ''
+      lines.push(`| ${row.join('')} |${label}`)
+    })
+
+    lines.push('+-----+')
+
+    return lines.join('\n') + '\n'
+  }
 }
 
 class CellArrayFormatter
 {
   // A cell's value || candivalues are displayed witin a 3x3 text array
-  private static cellDiminsion = 3
+  private static cellDiminsion = 3;
 
   // The matrix of cell values
-  private cell_matrix: Array<Array<string>> = Array.from({ length: 27 }, () => Array(27).fill(' '))
+  private cell_matrix: Array<Array<CellFormatter>> = Array.from({ length: 9 }, () => [] ) //Array(9).fill(new CellFormatter()))
 
-  // constructor()  {}
+  // The formatter should TRIM the cell ROWS and COLS that are unused.
+  private trim = false
 
-  public apply( cell: CellModel ): void
+  constructor ( trim = false )
   {
-    if ( cell.isKnown )
-    {
-      const row_idx = ( cell.row - 1 ) * CellArrayFormatter.cellDiminsion
-      const col_idx = ( cell.col - 1 ) * CellArrayFormatter.cellDiminsion
-      const matrix = this.cell_matrix
+    this.trim = trim
 
-      // Remember a cell uses three rows of text
-      // This cells is known so we place that value in the middle row
-      matrix[row_idx + 1][col_idx  ] = '['
-      matrix[row_idx + 1][col_idx+1] = cell.cv.label
-      matrix[row_idx + 1][col_idx+2] = ']'
+    const cell_matrix = this.cell_matrix
+    const col_labels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
+    const row_labels = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 
-      return
-    }
-
-    // The cell is not known so we need to apply the candidate values
-    //  to the cell matrix
-    const row_idx = ( cell.row - 1 ) * CellArrayFormatter.cellDiminsion
-    const col_idx = ( cell.col - 1 ) * CellArrayFormatter.cellDiminsion
-    const matrix = this.cell_matrix
-
-    cell.as_candidate_array.forEach( cv => {
-        switch ( cv.value )
-        {
-            case 1: matrix[row_idx  ][col_idx     ] = '1'; break;
-            case 2: matrix[row_idx  ][col_idx + 1 ] = '2'; break;
-            case 3: matrix[row_idx  ][col_idx + 2 ] = '3'; break;
-            case 4: matrix[row_idx+1][col_idx     ] = '4'; break;
-            case 5: matrix[row_idx+1][col_idx + 1 ] = '5'; break;
-            case 6: matrix[row_idx+1][col_idx + 2 ] = '6'; break;
-            case 7: matrix[row_idx+2][col_idx     ] = '7'; break;
-            case 8: matrix[row_idx+2][col_idx + 1 ] = '8'; break;
-            case 9: matrix[row_idx+2][col_idx + 2 ] = '9'; break;
-        }
+    cell_matrix.forEach(( row, ridx ) => {
+      col_labels.forEach( col_label => {
+        row.push( new CellFormatter( col_label, row_labels[ridx] ) )
+      })
     })
+  }
+
+  public apply( cell: CellModel ): CellFormatter
+  {
+    const row_idx = cell.row - 1
+    const col_idx = cell.col - 1
+    const matrix  = this.cell_matrix
+    const fmtCell = matrix[row_idx][col_idx]
+
+    fmtCell.apply( cell )
+
+    // The caller may wish to have a sniff
+    //  but dont inhale to hard, the fumes might get you!
+    return fmtCell
   }
 
   public toString(): string
@@ -214,31 +305,50 @@ class CellArrayFormatter
     const matrix = this.cell_matrix
 
     // Column labels
-    // board_strings.push(board.columnNamesAsArray().map( name => `   ${name}` ).join('  '))
+    // console.log( matrix[0].map( cell => cell.colLabel ).join(',') )
+    // console.log( matrix[0].map( cell => cell.rowLabel ).join(',') )
 
-    board_strings.push('+-----+-----+-----+-----+-----+-----+-----+-----+-----+\n')
+    // Still not right; a work in progress!!!! recall this.trim; you have no idea what I mean by that!
+    //  Now lets add the trim unused rows and columns
+    //  First the rows....
 
-    let row_idx = 0
+    board_strings.push(matrix[0].map( cell => `   ${cell.colLabel}` ).join('  '))
+    board_strings.push('+-----+-----+-----+-----+-----+-----+-----+-----+-----+') // hardcoded TRASH!
+
+    // Convert the row of cells into three rows of strings
+    //   1st row is the top of the cell
+    //   2nd row is the middle of the cell
+    //   3rd row is the bottom of the cell
 
     matrix.forEach( row => {
-      let idx = 0
-      const row_string: string[] = ['| ']
+      // we could skip a row if it's cells are empty
+      // That worked well, trimming the columns will not be so easy!
+      if ( row.every( cell => cell.isEmpty() ) ) return
 
-      row.forEach( value => {
-        idx++
-        row_string.push(value)
-        if ( idx < 27 && idx % 3 == 0 ) row_string.push(' | ')
+      const row_strings = [['| '], ['| '], ['| ']]
+
+      row.forEach( cell => {
+        const cell_matrix = cell.matrix
+
+        for ( let ri = 0 ; ri < 3; ri++ )
+        {
+          row_strings[ri].push( cell_matrix[ri].join(''))
+          row_strings[ri].push( ri < 3 ? ' | ' : ' |')
+        }
       })
-      row_string.push('|\n')
-      board_strings.push(row_string.join(''))
-      board_strings[row_idx * 4 + 3] += ' ' + (++row_idx).toString()
+
+      row_strings[1].push(' ' + row[0].rowLabel)
+      board_strings.push(row_strings[0].join(''))
+      board_strings.push(row_strings[1].join(''))
+      board_strings.push(row_strings[2].join(''))
+      board_strings.push('+-----+-----+-----+-----+-----+-----+-----+-----+-----+') // hardcoded TRASH!
     })
 
-    board_strings.push('+-----+-----+-----+-----+-----+-----+-----+-----+-----+\n')
-
-    return board_strings.join('')
+    return board_strings.join('\n') + '\n'
   }
 }
+
+export { CellFormatter, CellArrayFormatter, UnitStringAdaptor }
 
 // vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix
 // END

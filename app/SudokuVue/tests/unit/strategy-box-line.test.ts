@@ -16,6 +16,8 @@ import { StrategyBoxLine          } from '@/js/strategy/StrategyBoxLine'
 import { BoardStringAdapter       } from '@/js/adapter/BoardStringAdapter'
 import { IntersectMap             } from '@/js/model/IntersectMap'
 import { UnitStringAdaptor        } from '@/js/adapter/UnitStringAdaptor'
+import { CellArrayFormatter       } from '@/js/adapter/UnitStringAdaptor'
+import { CellFormatter            } from '@/js/adapter/UnitStringAdaptor'
 
 class StrategyBoxLineTest extends StrategyBoxLine
 {
@@ -67,8 +69,8 @@ describe('strategy/box-line', () => {
     box.is(CellIndex.FIVE, CellValue.SEVEN)
     console.log('block:\n' + box.toString())
 
-    console.log('block.reset', box.reset())
-    console.log(' cell:', + c.toString2())
+    console.log('block.reset: ', box.reset())
+    console.log(' cell:', + c.toString())
     console.log('block:\n' + box.toString())
 
     // Pointing Line
@@ -128,10 +130,129 @@ describe('strategy/box-line', () => {
     box.is(CellIndex.SEVEN, CellValue.SEVEN)
     box.is(CellIndex.EIGHT, CellValue.EIGHT)
     box.is(CellIndex.NINE, CellValue.NINE)
+
     console.log(' box:\n' + UnitStringAdaptor.BoxString(box)
            + '\n line:\n' + UnitStringAdaptor.LineString(line))
-  })
 
+    const formatter = new CellArrayFormatter()
+    box.as_cell_array.forEach( c => formatter.apply(c))
+    line.as_cell_array.forEach( c => formatter.apply(c))
+    console.log(formatter.toString())
+  })
+})
+
+describe('strategy/box-col', () => {
+
+  test('box-col/assembly', () => {
+
+    console.log(IntersectMap.iR1)
+
+    expect(StrategyBoxLine).toBeDefined()
+    expect(StrategyBoxLineTest).toBeDefined()
+
+    const members: Array<CellModel> = []
+
+    for ( let y = 1, i = 1 ; y <= 3 ; y++ )
+    for ( let x = 1 ; x <= 3 ; x++, i++ )
+    {
+        members.push(CellModel.factory(x+3, y+3, true ))
+    }
+
+    console.log('members:', members.map( c => c.name ).join(','))
+
+    const c: CellModel = members[0]
+    const box: BoxModel = new BoxModel(members)
+
+    console.log('members:', members.map( c => c.name ).join(','))
+    console.log('observers:', c.length, 'Should this be 8?')
+
+    console.log('block: is(1,5)', box.is(CellIndex.ONE, CellValue.FIVE))
+    console.log('block:\n' + box.toString())
+
+    box.is(CellIndex.FOUR, CellValue.EIGHT)
+    box.is(CellIndex.NINE, CellValue.ONE)
+    box.is(CellIndex.EIGHT, CellValue.THREE)
+    box.is(CellIndex.SIX, CellValue.NINE)
+    box.is(CellIndex.TWO, CellValue.SIX)
+    box.is(CellIndex.SEVEN, CellValue.FOUR)
+    box.is(CellIndex.FIVE, CellValue.SEVEN)
+    console.log('block:\n' + box.toString())
+
+    console.log('block.reset: ', box.reset())
+    console.log(' cell:', + c.toString())
+    console.log('block:\n' + box.toString())
+
+    // Pointing Line
+    console.log('Pointing-Line')
+
+    const line_members: Array<CellModel> = []
+    const cells = box.as_cell_array
+
+    for ( let y = 1 ; y <= 9 ; y++ )
+    {
+      if ( y < 4 || y > 6 )
+        line_members.push( CellModel.factory( 5, y, true ))
+      else
+      switch (y)
+      {
+        case 4: line_members.push( cells[1] ); break
+        case 5: line_members.push( cells[4] ); break
+        case 6: line_members.push( cells[8] ); break
+      }
+    }
+
+    const line: LineModel = new LineModel(line_members)
+    const logger = new StrategyLogger()
+    const strategy_box_line = new StrategyBoxLineTest(logger)
+
+    const bx: Array<CellIndex> = [ CellIndex.ONE, CellIndex.TWO, CellIndex.THREE, CellIndex.SEVEN, CellIndex.EIGHT, CellIndex.NINE ];
+
+    for ( const q of bx )
+    {
+        box.exclude(q, CellValue.ONE)
+        box.exclude(q, CellValue.SEVEN)
+    }
+
+    box.exclude(CellIndex.FIVE, CellValue.ONE)
+
+    console.log('block:\n' + box.toString())
+    console.log('line:\n' + line.toString())
+    console.log('block: (names)\n' + box.toStringNames()
+              , '\nline: (names)\n' + line.toStringNames())
+
+    strategy_box_line.call_strategy_box_line( box, line, IntersectMap.iR2, IntersectMap.iR1 )
+
+    // Box Line
+    for ( let i = 4 ; i <= 9 ; i++ )
+    {
+        line.exclude(CellIndex.by(i-1), CellValue.FOUR)
+        line.exclude(CellIndex.by(i-1), CellValue.EIGHT)
+    }
+
+    strategy_box_line.call_strategy_box_line( box, line, IntersectMap.iR2, IntersectMap.iR1 )
+
+    console.log('block:\n' + box.toString())
+    console.log('line:\n' + line.toString())
+    console.log('block: (names)\n' + box.toStringNames()
+              , '\nline: (names)\n' + line.toStringNames())
+
+    box.reset()
+    box.is(CellIndex.ONE, CellValue.ONE)
+    box.is(CellIndex.TWO, CellValue.TWO)
+    box.is(CellIndex.FIVE, CellValue.FIVE)
+    box.is(CellIndex.SIX, CellValue.SIX)
+    box.is(CellIndex.SEVEN, CellValue.SEVEN)
+    box.is(CellIndex.EIGHT, CellValue.EIGHT)
+    box.is(CellIndex.NINE, CellValue.NINE)
+
+    console.log(' box(I2):\n' + UnitStringAdaptor.BoxString(box)
+           + '\n line(C5):\n' + UnitStringAdaptor.LineString(line))
+
+    const formatter = new CellArrayFormatter()
+    box.as_cell_array.forEach( c => formatter.apply(c))
+    line.as_cell_array.forEach( c => formatter.apply(c))
+    console.log(formatter.toString())
+  })
 })
 
 describe('strategy/box-line/setup', () => {

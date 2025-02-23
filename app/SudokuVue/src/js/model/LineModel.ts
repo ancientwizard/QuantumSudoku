@@ -43,16 +43,6 @@ class LineModel extends UnitModel implements iLine, iUnit
     return cell1.cname == 'A' && cell1.row == 9
         && cell9.cname != 'A' && cell9.row == 1
   }
-
-  // private    is_row = true;
-
-  // get isCol(): boolean { return ! this.is_row }
-  // get isRow(): boolean { return   this.is_row }
-
-  // public toggleType(): boolean
-  // {
-  //   return this.is_row = ! this.is_row
-  // }
 }
 
 
