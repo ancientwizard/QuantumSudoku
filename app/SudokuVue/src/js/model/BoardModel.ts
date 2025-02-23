@@ -6,7 +6,7 @@
 import type { CellIndex     } from '@/js/model/CellIndex'
 import type { CellValue     } from '@/js/model/CellValue'
 import type { iBoard        } from '@/js/interface/iBoard'
-import      { UnitModel     } from '@/js/model/UnitModel'
+import      { LineModel     } from '@/js/model/LineModel'
 import      { BoxModel      } from '@/js/model/BoxModel'
 import      { CellModel     } from '@/js/model/CellModel'
 
@@ -18,11 +18,11 @@ class BoardModel implements iBoard
 {
     // Composition
     private boxunits: Array<BoxModel>   = []    // 3x3 box/grid units
-    private rowunits: Array<UnitModel>  = []    //   9 row units
-    private colunits: Array<UnitModel>  = []    //   9 column units
-    private angunits: Array<UnitModel>  = []    //   2 diagonal units
-    private diadtlbr: UnitModel | null  = null  //   1 diagional unti (top-left to bottom-right)
-    private diadbltr: UnitModel | null  = null  //   1 diagional unti (bottom-left to top-right)
+    private rowunits: Array<LineModel>  = []    //   9 row units
+    private colunits: Array<LineModel>  = []    //   9 column units
+    private angunits: Array<LineModel>  = []    //   2 diagonal units
+    private diadtlbr: LineModel | null  = null  //   1 diagional unti (top-left to bottom-right)
+    private diadbltr: LineModel | null  = null  //   1 diagional unti (bottom-left to top-right)
     private MODE: BoardMode
     private TYPE: BoardType
 
@@ -56,14 +56,14 @@ class BoardModel implements iBoard
         return this.rowunits[0].as_cell_array.map( cell => cell.cname )
     }
 
-    public forEachRow(callback: (row: UnitModel, index: number) => void): void
+    public forEachRow(callback: (row: LineModel, index: number) => void): void
     {
         this.rowunits.forEach(( row, index ) => {
             callback( row, index );
         });
     }
 
-    public forEachCol(callback: (column: UnitModel, index: number) => void): void
+    public forEachCol(callback: (column: LineModel, index: number) => void): void
     {
         this.colunits.forEach(( column, index ) => {
             callback( column, index );
@@ -77,12 +77,12 @@ class BoardModel implements iBoard
         });
     }
 
-    // public getRow ( row_index: CellIndex ): UnitModel
+    // public getRow ( row_index: CellIndex ): LineModel
     // {
     //     return this.rowunits[row_index.index]
     // }
 
-    // public getColumn ( col_index: CellIndex ): UnitModel
+    // public getColumn ( col_index: CellIndex ): LineModel
     // {
     //     return this.colunits[col_index.index]
     // }
@@ -102,7 +102,7 @@ class BoardModel implements iBoard
     private buildRowUnits(cells: Array<Array<CellModel>>): void
     {
         for ( let y = 1 ; y <= 9 ; y++ )
-            this.rowunits[y - 1] = new UnitModel(cells[y - 1])
+            this.rowunits[y - 1] = new LineModel(cells[y - 1])
     }
 
     private buildColUnits(cells: Array<Array<CellModel>>): void
@@ -113,7 +113,7 @@ class BoardModel implements iBoard
             for ( let y = 1 ; y <= 9 ; y++ )
                 columnCells.push(cells[y - 1][x - 1])
 
-            this.colunits[x - 1] = new UnitModel(columnCells)
+            this.colunits[x - 1] = new LineModel(columnCells)
         }
     }
 
@@ -143,22 +143,22 @@ class BoardModel implements iBoard
             diagonal2.push(cells[8 - i][i])
         }
 
-        this.angunits.push(this.diadtlbr = new UnitModel(diagonal1))
-        this.angunits.push(this.diadbltr = new UnitModel(diagonal2))
+        this.angunits.push(this.diadtlbr = new LineModel(diagonal1))
+        this.angunits.push(this.diadbltr = new LineModel(diagonal2))
     }
 
     // A bit of introspection
-    public get_diagonal_TL_BR(): UnitModel | null
+    public get_diagonal_TL_BR(): LineModel | null
     {
         return this.diadtlbr
     }
 
-    public get_diagonal_BL_TR(): UnitModel | null
+    public get_diagonal_BL_TR(): LineModel | null
     {
         return this.diadbltr
     }
 
-    // public diagonalUnits(): Array<UnitModel>
+    // public diagonalUnits(): Array<LineModel>
     // {
     //     return this.angunits
     // }

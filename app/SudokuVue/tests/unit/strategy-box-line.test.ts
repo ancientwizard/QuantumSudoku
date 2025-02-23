@@ -5,7 +5,7 @@
 import { describe, expect, test  } from '@jest/globals'
 
 import { BoxModel                 } from '@/js/model/BoxModel'
-import { UnitModel                } from '@/js/model/UnitModel'
+import { LineModel                } from '@/js/model/LineModel'
 import { BoardModel, BoardMode    } from '@/js/model/BoardModel'
 import { StrategyMappingFactory   } from '@/js/strategy/StrategyMappingFactory'
 import { CellIndex                } from '@/js/model/CellIndex'
@@ -15,6 +15,7 @@ import { StrategyLogger           } from '@/js/strategy/StrategyLogger'
 import { StrategyBoxLine          } from '@/js/strategy/StrategyBoxLine'
 import { BoardStringAdapter       } from '@/js/adapter/BoardStringAdapter'
 import { IntersectMap             } from '@/js/model/IntersectMap'
+import { UnitStringAdaptor        } from '@/js/adapter/UnitStringAdaptor'
 
 class StrategyBoxLineTest extends StrategyBoxLine
 {
@@ -23,7 +24,7 @@ class StrategyBoxLineTest extends StrategyBoxLine
     //     super(logger)
     // }
 
-    public call_strategy_box_line( box: BoxModel, line: UnitModel, iB: IntersectMap, iL: IntersectMap ): boolean
+    public call_strategy_box_line( box: BoxModel, line: LineModel, iB: IntersectMap, iL: IntersectMap ): boolean
     {
         return super.strategy_box_line(box, line, iB, iL)
     }
@@ -86,7 +87,7 @@ describe('strategy/box-line', () => {
 
     const logger = new StrategyLogger()
     const strategy_box_line = new StrategyBoxLineTest(logger)
-    const line: UnitModel = new UnitModel(line_members)
+    const line: LineModel = new LineModel(line_members)
 
     const bx: Array<CellIndex> = [ CellIndex.ONE, CellIndex.TWO, CellIndex.THREE, CellIndex.SEVEN, CellIndex.EIGHT, CellIndex.NINE ];
 
@@ -118,6 +119,17 @@ describe('strategy/box-line', () => {
     console.log('line:\n' + line.toString())
     console.log('block: (names)\n' + box.toStringNames()
               , '\nline: (names)\n' + line.toStringNames())
+
+    box.reset()
+    box.is(CellIndex.ONE, CellValue.ONE)
+    box.is(CellIndex.TWO, CellValue.TWO)
+    box.is(CellIndex.FIVE, CellValue.FIVE)
+    box.is(CellIndex.SIX, CellValue.SIX)
+    box.is(CellIndex.SEVEN, CellValue.SEVEN)
+    box.is(CellIndex.EIGHT, CellValue.EIGHT)
+    box.is(CellIndex.NINE, CellValue.NINE)
+    console.log(' box:\n' + UnitStringAdaptor.BoxString(box)
+           + '\n line:\n' + UnitStringAdaptor.LineString(line))
   })
 
 })
@@ -127,8 +139,8 @@ describe('strategy/box-line/setup', () => {
     const board = new BoardModel(BoardMode.SOLVE)
 
     const blks: Array<BoxModel>  = []
-    const rows: Array<UnitModel> = []
-    const cols: Array<UnitModel> = []
+    const rows: Array<LineModel> = []
+    const cols: Array<LineModel> = []
 
     // Messy but we'll refactor later; we need access to these items
     //  to play with strategy-box-line implementation for testing
