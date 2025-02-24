@@ -2,10 +2,63 @@
 // BoardAdapterString.ts
 
 import type { BoardModel    } from '@/js/model/BoardModel';
+import type { iUnit         } from '@/js/interface/iUnit';
 
 export class BoardStringAdapter
 {
-    static toString(board: BoardModel): string
+    // Col Headers (TOP   A-I)
+    // Row Headers (LEFT  1-9)
+    // ? = unknown; otherwise 1-9
+    static toStringValues( board: BoardModel ): string
+    {
+        const separator = '  +-----+-----+-----+-----+-----+-----+-----+-----+-----+'
+        const board_strings: string[] = []
+
+        board_strings.push( '  ' + board.columnNamesAsArray().map( name => `   ${name}` ).join('  '))
+        board_strings.push( separator )
+
+        board.forEachRow( row => {
+
+          let first = true
+          let line = ''
+
+          row.as_cell_array.forEach( cell => {
+              line += (first ? cell.row + ' ' : '  ') + '|  ' + cell.cv.label
+              first = false
+          })
+
+          board_strings.push( line + '  |' )
+          board_strings.push( separator )
+      })
+
+      return board_strings.join('\n') + '\n';
+    }
+
+    static toStringValuesBasic ( board: BoardModel ): string
+    {
+      let s = ''
+      board.forEachRow( row => s += row.toStringValues() + '\n' )
+      return s
+    }
+
+    static toStringNames ( board: BoardModel ): string
+    {
+        let s = ''
+        board.forEachRow( row => s += row.toStringNames() + '\n' )
+        return s
+    }
+
+    static toStringCoords ( board: BoardModel ): string
+    {
+        let s = '+-----+-----+-----+-----+-----+-----+-----+-----+-----+\n'
+        board.forEachRow( row => {
+          row.as_cell_array.forEach( cell => s += '|' + cell.coord  )
+          s += '|\n+-----+-----+-----+-----+-----+-----+-----+-----+-----+\n'
+        })
+        return s
+    }
+
+    static toStringState(board: BoardModel): string
     {
         const cellHeight = 3;
         const board_strings: string[] = []

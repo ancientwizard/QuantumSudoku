@@ -303,7 +303,7 @@ describe('strategy/box-line/setup', () => {
 
     // Apply Sudoku board box-line detection template
     const template = apply_template(board)
-    console.log(BoardStringAdapter.toString(board))
+    console.log(BoardStringAdapter.toStringState(board))
 
     const logger = new StrategyLogger()
     new StrategyBoxLine(logger).apply(board)

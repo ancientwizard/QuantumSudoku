@@ -41,12 +41,11 @@ describe('model/sudoku-board', () => {
 
   test('board/to-string-defaults', () => {
 
-    // TODO: convert all string building into adapters
     [ BoardMode.EDIT, BoardMode.PLAY, BoardMode.SOLVE ].forEach( mode => {
-      expect(new BoardModel(mode).toStringNames()).toBe(board_string_names())
-      expect(new BoardModel(mode).toStringValues()).toBe(board_string_values())
-      expect(new BoardModel(mode).toStringCoords()).toBe(board_string_coords())
-      expect(new BoardModel(mode).toString()).toBe(board_string())
+      expect(BoardStringAdapter.toStringNames(new BoardModel(mode))).toBe(board_string_names())
+      expect(BoardStringAdapter.toStringValuesBasic(new BoardModel(mode))).toBe(board_string_values())
+      expect(BoardStringAdapter.toStringCoords(new BoardModel(mode))).toBe(board_string_coords())
+      expect(BoardStringAdapter.toStringValues(new BoardModel(mode))).toBe(board_string())
     })
   })
 
@@ -66,10 +65,9 @@ describe('model/sudoku-board', () => {
     expect(board.set(CellIndex.EIGHT,CellIndex.EIGHT,CellValue.EIGHT)).toBe(true)
     expect(board.set(CellIndex.NINE,CellIndex.NINE,CellValue.NINE)).toBe(true)
 
-    expect(BoardStringAdapter.toString(board)).toBe(board_string_state())
+    expect(BoardStringAdapter.toStringState(board)).toBe(board_string_state())
 
-    // console.log(board.toString())
-    // console.log(BoardAdapterString.toString(board))
+    // console.log(BoardAdapterString.toStringState(board))
   })
 
   describe('board-diagonal/set()', () => {
@@ -100,7 +98,7 @@ describe('model/sudoku-board', () => {
     expect(board.get_diagonal_TL_BR()?.toStringValues()).toBe('1 2 3 4 5 6 7 8 9')
     expect(board.get_diagonal_BL_TR()?.toStringValues()).toBe('2 3 4 9 5 1 8 7 6')
 
-    // console.log(BoardStringAdapter.toString(board))
+    // console.log(BoardStringAdapter.toStringState(board))
   })
 
   describe('board/rows', () => {
@@ -129,21 +127,17 @@ describe('model/sudoku-board', () => {
 
   describe('board/adapters/string-text', () => {
     test('string/adapters', () => {
-      expect(1).toBe(1)
-      // BoardStringAdapter.toString(board)
-      // BoardStringAdapter.toStringFull(board)
-      // BoardStringAdapter.toStringNames(board)
-      // BoardStringAdapter.toStringValues(board)
-      // BoardStringAdapter.toStringCoords(board)
-      // BoardStringAdapter.toStringState(board)
 
-  // console.log(new BoardModel(BoardMode.EDIT).toStringValues())
-  // console.log(new BoardModel(BoardMode.EDIT).toStringNames())
-  // console.log(new BoardModel(BoardMode.EDIT).toStringCoords())
-  // console.log(new BoardModel(BoardMode.EDIT).toString())
+      expect(BoardStringAdapter.toStringNames(new BoardModel())).toBe(board_string_names())
+      expect(BoardStringAdapter.toStringValuesBasic(new BoardModel())).toBe(board_string_values())
+      expect(BoardStringAdapter.toStringCoords(new BoardModel())).toBe(board_string_coords())
+      expect(BoardStringAdapter.toStringValues(new BoardModel())).toBe(board_string())
+
+      // BoardStringAdapter.toStringFull(board)
+      // BoardStringAdapter.toStringState(board)
     })
 
-    test('board/adapter/VueJS/!!!-INCOMPLETE-!!!', () => {
+    test('board/adapter/VueJS/  !!! - INCOMPLETE - !!!', () => {
       expect(1).toBe(1)
       // BoardVueAdapter.toString(board)
     })

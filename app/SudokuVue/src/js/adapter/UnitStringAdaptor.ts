@@ -104,6 +104,7 @@ class UnitStringAdaptor
       colStrings.push(separator)
 
       cells.forEach( cell => {
+
         if ( cell.isKnown )
         {
           colStrings.push('|     |', `| [${cell.cv.label}] | ${cell.row}`, '|     |', separator)

@@ -46,11 +46,6 @@ class BoardModel implements iBoard
         return this.rowunits[y.index].is(x, value)
     }
 
-    // public getBox ( grid_index: CellIndex ): BoxModel
-    // {
-    //     return this.grdunits[grid_index.index]
-    // }
-
     public columnNamesAsArray(): Array<string>
     {
         return this.rowunits[0].as_cell_array.map( cell => cell.cname )
@@ -76,16 +71,6 @@ class BoardModel implements iBoard
             callback( block, index );
         });
     }
-
-    // public getRow ( row_index: CellIndex ): LineModel
-    // {
-    //     return this.rowunits[row_index.index]
-    // }
-
-    // public getColumn ( col_index: CellIndex ): LineModel
-    // {
-    //     return this.colunits[col_index.index]
-    // }
 
     private initializeCellsAndNames(cells: Array<Array<CellModel>> ): void
     {
@@ -205,38 +190,7 @@ class BoardModel implements iBoard
     //     this.rowunits.forEach( row => row.reset() )
     // }
 
-    // String formatting methods
-    public toString(): string
-    {
-        let s = '  '
-
-        s += this.rowunits[0].as_cell_array.map( cell => `   ${cell.cname}` ).join('  ')
-        s += '\n  +-----+-----+-----+-----+-----+-----+-----+-----+-----+\n'
-
-        this.rowunits.forEach( row => {
-            let first = true
-            row.as_cell_array.forEach( cell => {
-                s += (first ? cell.row + ' ' : '  ') + '|  ' + cell.cv.label
-                first = false
-            } )
-            s += '  |\n  +-----+-----+-----+-----+-----+-----+-----+-----+-----+\n'
-        } )
-
-        return s
-    }
-
-    public toStringCoords(): string
-    {
-        let s = '+-----+-----+-----+-----+-----+-----+-----+-----+-----+\n'
-        this.rowunits.forEach( row => {
-            row.as_cell_array.forEach( cell => s += '|' + cell.coord  )
-            s += '|\n+-----+-----+-----+-----+-----+-----+-----+-----+-----+\n'
-        } )
-
-        return s
-    }
-
-    public toStringNames(): string
+    public XtoStringNames(): string
     {
         let s = ''
         for ( let y = 1 ; y <= 9 ; y++ )
@@ -247,12 +201,6 @@ class BoardModel implements iBoard
         return s
     }
 
-    public toStringValues(): string
-    {
-        let s = ''
-        this.rowunits.forEach( row => s += row.toStringValues() + '\n' )
-        return s
-    }
 }
 
 

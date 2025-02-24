@@ -4,7 +4,7 @@
 import { describe, expect, test, beforeEach } from '@jest/globals'
 
 import { BoardModel, BoardMode  } from '@/js/model/BoardModel'
-// import { BoardStringAdapter     } from '@/js/adapter/BoardStringAdapter'
+import { BoardStringAdapter     } from '@/js/adapter/BoardStringAdapter'
 
 import { CellIndex              } from '@/js/model/CellIndex'
 import { CellValue              } from '@/js/model/CellValue'
@@ -25,7 +25,7 @@ describe('strategy/x-wing', () => {
     const xwing_template = apply_template(board)
 
     // Proof our board is set up correctly
-    expect(board.toStringValues()).toBe(template_to_string(xwing_template))
+    expect(BoardStringAdapter.toStringValuesBasic(board)).toBe(template_to_string(xwing_template))
 
     // console.log(template_to_string(template))
     // console.log(board.toStringValues())

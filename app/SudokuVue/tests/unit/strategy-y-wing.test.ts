@@ -7,9 +7,6 @@ import { BoardModel, BoardMode  } from '@/js/model/BoardModel'
 import { BoardStringAdapter     } from '@/js/adapter/BoardStringAdapter'
 import { StrategyLogger         } from '@/js/strategy/StrategyLogger'
 import { StrategyYWing          } from '@/js/strategy/StrategyYWing'
-// import { StrategyYWing          } from '@/js/strategy/StrategyYWing-II'
-// import { StrategyYWing          } from '@/js/strategy/StrategyYWing-III'
-// import { StrategyYWing          } from '@/js/strategy/StrategyYWing-IIII'
 import { CellIndex              } from '@/js/model/CellIndex'
 import { CellValue              } from '@/js/model/CellValue'
 
@@ -25,11 +22,11 @@ describe('strategy/y-wing', () => {
     const ywing_template = apply_template(board)
 
     // Proof our board is set up correctly
-    expect(board.toStringValues()).toBe(template_to_string(ywing_template))
+    expect(BoardStringAdapter.toStringValuesBasic(board)).toBe(template_to_string(ywing_template))
 
     // console.log(template_to_string(template))
     // console.log(board.toStringValues())
-    console.log(BoardStringAdapter.toString(board))
+    console.log(BoardStringAdapter.toStringState(board))
 
     {
       const logger = new StrategyLogger()
@@ -39,7 +36,7 @@ describe('strategy/y-wing', () => {
       console.log('APPLY-Y-WING:',ywing.apply(board))
 
       console.log(logger)
-      // console.log(BoardStringAdapter.toString(board))
+      // console.log(BoardStringAdapter.toStringState(board))
 
       console.log('SOLVED:',board.isSolved);
       // expect(logger.as_array.length).toBe(9)
