@@ -5,7 +5,8 @@ import { describe, expect, test } from '@jest/globals'
 
 import { LineModel } from '@/js/model/LineModel'
 import { CellModel } from '@/js/model/CellModel'
-import { UnitStringAdaptor } from '@/js/adapter/UnitStringAdaptor'
+import exp from 'constants'
+// import { UnitStringAdaptor } from '@/js/adapter/UnitStringAdaptor'
 
 
 describe('LineModel', () =>  {
@@ -18,6 +19,7 @@ describe('LineModel', () =>  {
       expect(row.isCol).toBe(false)
       expect(row.isTopLeftBotRight).toBe(false)
       expect(row.isBotLeftTopRight).toBe(false)
+      expect(row.isDiagional).toBe(false)
       // console.log(UnitStringAdaptor.LineString(row))
     }
   })
@@ -31,6 +33,7 @@ describe('LineModel', () =>  {
       expect(col.isCol).toBe(true)
       expect(col.isTopLeftBotRight).toBe(false)
       expect(col.isBotLeftTopRight).toBe(false)
+      expect(col.isDiagional).toBe(false)
     }
   })
 
@@ -41,6 +44,7 @@ describe('LineModel', () =>  {
     expect(diag.isCol).toBe(false)
     expect(diag.isTopLeftBotRight).toBe(true)
     expect(diag.isBotLeftTopRight).toBe(false)
+    expect(diag.isDiagional).toBe(true)
   })
 
   test('line.isBotLeftTopRight', () => {
@@ -50,6 +54,7 @@ describe('LineModel', () =>  {
     expect(diag.isCol).toBe(false)
     expect(diag.isTopLeftBotRight).toBe(false)
     expect(diag.isBotLeftTopRight).toBe(true)
+    expect(diag.isDiagional).toBe(true)
   })
 
 })

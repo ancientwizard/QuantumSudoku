@@ -6,7 +6,8 @@ import { describe, expect, test  } from '@jest/globals'
 
 import { BoxModel                 } from '@/js/model/BoxModel'
 import { LineModel                } from '@/js/model/LineModel'
-import { BoardModel, BoardMode    } from '@/js/model/BoardModel'
+import { BoardModel               } from '@/js/model/BoardModel'
+import { BoardMode                } from '@/js/model/BoardModel' 
 import { StrategyMappingFactory   } from '@/js/strategy/StrategyMappingFactory'
 import { CellIndex                } from '@/js/model/CellIndex'
 import { CellValue                } from '@/js/model/CellValue'
@@ -17,7 +18,7 @@ import { BoardStringAdapter       } from '@/js/adapter/BoardStringAdapter'
 import { IntersectMap             } from '@/js/model/IntersectMap'
 import { UnitStringAdaptor        } from '@/js/adapter/UnitStringAdaptor'
 import { CellArrayFormatter       } from '@/js/adapter/UnitStringAdaptor'
-import { CellFormatter            } from '@/js/adapter/UnitStringAdaptor'
+//port { CellFormatter            } from '@/js/adapter/UnitStringAdaptor'
 
 class StrategyBoxLineTest extends StrategyBoxLine
 {
@@ -34,7 +35,7 @@ class StrategyBoxLineTest extends StrategyBoxLine
 
 describe('strategy/box-line', () => {
 
-  test('box-line/assembly', () => {
+  test('/assembly', () => {
 
     console.log(IntersectMap.iR1)
 
@@ -139,11 +140,12 @@ describe('strategy/box-line', () => {
     line.as_cell_array.forEach( c => formatter.apply(c))
     console.log(formatter.toString())
   })
+
 })
 
 describe('strategy/box-col', () => {
 
-  test('box-col/assembly', () => {
+  test('/assembly', () => {
 
     console.log(IntersectMap.iR1)
 

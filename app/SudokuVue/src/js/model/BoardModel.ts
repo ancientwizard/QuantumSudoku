@@ -189,18 +189,6 @@ class BoardModel implements iBoard
     // {
     //     this.rowunits.forEach( row => row.reset() )
     // }
-
-    public XtoStringNames(): string
-    {
-        let s = ''
-        for ( let y = 1 ; y <= 9 ; y++ )
-        {
-            s += this.rowunits[y - 1].toStringNames()
-            s += '\n'
-        }
-        return s
-    }
-
 }
 
 
