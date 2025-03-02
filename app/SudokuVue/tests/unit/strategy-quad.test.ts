@@ -8,6 +8,9 @@ import { UnitModel              } from '@/js/model/UnitModel'
 import { StrategyLogger         } from '@/js/strategy/StrategyLogger'
 import { StrategyHiddenQuad     } from '@/js/strategy/StrategyHiddenQuad'
 import { StrategyNakedQuad      } from '@/js/strategy/StrategyNakedQuad'
+import { SudokuTextAdapter      } from '@/js/adapter/SudokuTextAdapter'
+
+const TF = SudokuTextAdapter.factory
 
 function mk_cells () : Array<CellModel>
 {
@@ -34,7 +37,7 @@ describe('strategy/quad', () => {
     test('naked-quad', () => {
 
         expect(unit.isSolved).toBe(false)
-        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyNakedQuad(new StrategyLogger())
 
@@ -101,13 +104,13 @@ describe('strategy/quad', () => {
 
         unit.reset();
         expect(unit.isSolved).toBe(false)
-        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
     })
 
     test('hidden-quad', () => {
 
         expect(unit.isSolved).toBe(false)
-        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyHiddenQuad(new StrategyLogger())
 
@@ -141,7 +144,7 @@ describe('strategy/quad', () => {
 
         unit.reset();
         expect(unit.isSolved).toBe(false)
-        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
     })
 })
 

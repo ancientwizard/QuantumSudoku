@@ -11,8 +11,6 @@ import type { CellModel         } from '../model/CellModel'
 export
 interface iBox
 {
-    isBox () : boolean
-
     // is      ( idx: iCellIndex, value: iObservedState ) : boolean;
     // exclude ( idx: iCellIndex, value: iObservedState ) : boolean;
 
@@ -21,7 +19,15 @@ interface iBox
     get as_cell_array () : Array<CellModel>;
 
     forEachCell ( callback: ( cell: CellModel, index: number) => void): void;    
-}
+
+    // get isBox             (): boolean
+    // get isLine            (): boolean
+    // get isRow             (): boolean
+    // get isCol             (): boolean
+    // get isDiagional       (): boolean
+    // get isTopLeftBotRight (): boolean
+    // get isBotLeftTopRight (): boolean
+  }
 
 
 // vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix

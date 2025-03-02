@@ -6,6 +6,9 @@ import { CellIndex              } from '@/js/model/CellIndex'
 import { CellValue              } from '@/js/model/CellValue'
 import { CellModel              } from '@/js/model/CellModel'
 import { UnitModel              } from '@/js/model/UnitModel'
+import { SudokuTextAdapter      } from '@/js/adapter/SudokuTextAdapter'
+
+const TF = SudokuTextAdapter.factory
 
 function mk_cells ( size = 0, autosolve = true ) : Array<CellModel>
 {
@@ -79,12 +82,12 @@ describe('model/unit-model-basic', () => {
     expect(u.is(CellIndex.ONE, CellValue.ONE)).toBe(true)
     expect(u.isSolved).toBe(false)
     expect(u.isBroken).toBe(false)
-    expect(u.toStringValues()).toBe('1 ? ? ? ? ? ? ? ?')
+    expect(TF(u).toStringValues()).toBe('1 ? ? ? ? ? ? ? ?')
 
     u.reset()
-    expect(u.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+    expect(TF(u).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
-    expect("\n" + u.toString()).toStrictEqual(`
+    expect("\n" + TF(u).toString()).toStrictEqual(`
 # A1: ? [ 1,2,3,4,5,6,7,8,9 ]
 # A2: ? [ 1,2,3,4,5,6,7,8,9 ]
 # A3: ? [ 1,2,3,4,5,6,7,8,9 ]
@@ -155,7 +158,7 @@ describe('model/unit-model-solved', () => {
     const P : string[] = [ '1', '2', '3', '4', '5', '6', '7', '8', '9' ]
 
     // console.log(u.toStringNames())
-    expect(u.toStringNames()).toBe('A1,A2,A3,A4,A5,A6,A7,A8,A9')
+    expect(TF(u).toStringNames()).toBe('A1,A2,A3,A4,A5,A6,A7,A8,A9')
 
     // Foreward
     CellIndex.arrayFactory.forEach( c => {

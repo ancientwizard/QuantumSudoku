@@ -1,8 +1,10 @@
 
 // BoardAdapterString.ts
 
-import type { BoardModel    } from '@/js/model/BoardModel';
-import type { iUnit         } from '@/js/interface/iUnit';
+import type { BoardModel        } from '@/js/model/BoardModel';
+import      { SudokuTextAdapter } from '@/js/adapter/SudokuTextAdapter';
+
+const TF = SudokuTextAdapter.factory
 
 export class BoardStringAdapter
 {
@@ -37,14 +39,14 @@ export class BoardStringAdapter
     static toStringValuesBasic ( board: BoardModel ): string
     {
       let s = ''
-      board.forEachRow( row => s += row.toStringValues() + '\n' )
+      board.forEachRow( row => s += TF(row).toStringValues() + '\n' )
       return s
     }
 
     static toStringNames ( board: BoardModel ): string
     {
         let s = ''
-        board.forEachRow( row => s += row.toStringNames() + '\n' )
+        board.forEachRow( row => s += TF(row).toStringNames() + '\n' )
         return s
     }
 

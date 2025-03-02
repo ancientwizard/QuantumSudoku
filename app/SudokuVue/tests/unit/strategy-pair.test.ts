@@ -8,6 +8,9 @@ import { UnitModel          } from '@/js/model/UnitModel'
 import { StrategyLogger     } from '@/js/strategy/StrategyLogger'
 import { StrategyHiddenPair } from '@/js/strategy/StrategyHiddenPair'
 import { StrategyNakedPair  } from '@/js/strategy/StrategyNakedPair'
+import { SudokuTextAdapter  } from '@/js/adapter/SudokuTextAdapter'
+
+const TF = SudokuTextAdapter.factory
 
 function mk_cells () : Array<CellModel>
 {
@@ -34,13 +37,13 @@ describe('strategy/pair', () => {
     test('naked-pair', () => {
 
         expect(unit.isSolved).toBe(false)
-        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyNakedPair(new StrategyLogger())
 
         // Naked pair (FIRST)
         expect(unit.is(CellIndex.NINE, CellValue.NINE)).toBe(true)
-        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? 9')
+        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? 9')
         expect(unit.as_cell_array[CellIndex.NINE.index].isKnown).toBe(true)
 
         CellValue.arrayFactory.forEach( cv => {
@@ -84,7 +87,7 @@ describe('strategy/pair', () => {
 
         unit.reset();
         expect(unit.isSolved).toBe(false)
-        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         strategy.logger && strategy.logger.reset()
     })
@@ -93,7 +96,7 @@ describe('strategy/pair', () => {
     test('hidden-pair(A)', () => {
 
         expect(unit.isSolved).toBe(false)
-        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         expect(unit.is(CellIndex.ONE,   CellValue.SEVEN)).toBe(true)
         expect(unit.is(CellIndex.FOUR,  CellValue.EIGHT)).toBe(true)
@@ -136,7 +139,7 @@ describe('strategy/pair', () => {
 
         unit.reset();
         expect(unit.isSolved).toBe(false)
-        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         strategy.logger && strategy.logger.reset()
     })
@@ -145,7 +148,7 @@ describe('strategy/pair', () => {
     test('hidden-pair(B)', () => {
 
         expect(unit.isSolved).toBe(false)
-        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         expect(unit.is(CellIndex.ONE,   CellValue.SEVEN)).toBe(true)
         expect(unit.is(CellIndex.FOUR,  CellValue.EIGHT)).toBe(true)
@@ -194,7 +197,7 @@ describe('strategy/pair', () => {
 
         unit.reset();
         expect(unit.isSolved).toBe(false)
-        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         strategy.logger && strategy.logger.reset()
     })

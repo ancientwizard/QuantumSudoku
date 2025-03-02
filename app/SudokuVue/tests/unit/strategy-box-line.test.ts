@@ -16,17 +16,16 @@ import { StrategyLogger           } from '@/js/strategy/StrategyLogger'
 import { StrategyBoxLine          } from '@/js/strategy/StrategyBoxLine'
 import { BoardStringAdapter       } from '@/js/adapter/BoardStringAdapter'
 import { IntersectMap             } from '@/js/model/IntersectMap'
-import { UnitStringAdaptor        } from '@/js/adapter/UnitStringAdaptor'
-import { CellArrayFormatter       } from '@/js/adapter/UnitStringAdaptor'
-//port { CellFormatter            } from '@/js/adapter/UnitStringAdaptor'
+import { UnitStringAdapter        } from '@/js/adapter/UnitStringAdapter'
+import { CellArrayFormatter       } from '@/js/adapter/UnitStringAdapter'
+import { SudokuTextAdapter        } from '@/js/adapter/SudokuTextAdapter'
+
+const TF = SudokuTextAdapter.factory
+
+//port { CellFormatter            } from '@/js/adapter/UnitStringAdapter'
 
 class StrategyBoxLineTest extends StrategyBoxLine
 {
-    // public constructor( logger: StrategyLogger )
-    // {
-    //     super(logger)
-    // }
-
     public call_strategy_box_line( box: BoxModel, line: LineModel, iB: IntersectMap, iL: IntersectMap ): boolean
     {
         return super.strategy_box_line(box, line, iB, iL)
@@ -59,7 +58,7 @@ describe('strategy/box-line', () => {
     console.log('observers:', c.length, 'Should this be 8?')
 
     console.log('block: is(1,5)', box.is(CellIndex.ONE, CellValue.FIVE))
-    console.log('block:\n' + box.toString())
+    console.log('block:\n' + TF(box).toString())
 
     box.is(CellIndex.FOUR, CellValue.EIGHT)
     box.is(CellIndex.NINE, CellValue.ONE)
@@ -68,11 +67,11 @@ describe('strategy/box-line', () => {
     box.is(CellIndex.TWO, CellValue.SIX)
     box.is(CellIndex.SEVEN, CellValue.FOUR)
     box.is(CellIndex.FIVE, CellValue.SEVEN)
-    console.log('block:\n' + box.toString())
 
+    console.log('block:\n' + TF(box).toString())
     console.log('block.reset: ', box.reset())
     console.log(' cell:', + c.toString())
-    console.log('block:\n' + box.toString())
+    console.log('block:\n' + TF(box).toString())
 
     // Pointing Line
     console.log('Pointing-Line')
@@ -102,10 +101,10 @@ describe('strategy/box-line', () => {
 
     box.exclude(CellIndex.FIVE, CellValue.ONE)
 
-    console.log('block:\n' + box.toString())
-    console.log('line:\n' + line.toString())
-    console.log('block: (names)\n' + box.toStringNames()
-              , '\nline: (names)\n' + line.toStringNames())
+    console.log('block:\n' + TF(box).toString())
+    console.log('line:\n' + TF(line).toString())
+    console.log('block: (names)\n' + TF(box).toStringNames()
+              , '\nline: (names)\n' + TF(line).toStringNames())
 
     strategy_box_line.call_strategy_box_line( box, line, IntersectMap.iR2, IntersectMap.iR1 )
 
@@ -118,10 +117,10 @@ describe('strategy/box-line', () => {
 
     strategy_box_line.call_strategy_box_line( box, line, IntersectMap.iR2, IntersectMap.iR1 )
 
-    console.log('block:\n' + box.toString())
-    console.log('line:\n' + line.toString())
-    console.log('block: (names)\n' + box.toStringNames()
-              , '\nline: (names)\n' + line.toStringNames())
+    console.log('block:\n' + TF(box).toString())
+    console.log('line:\n' + TF(line).toString())
+    console.log('block: (names)\n' + TF(box).toStringNames()
+              , '\nline: (names)\n' + TF(line).toStringNames())
 
     box.reset()
     box.is(CellIndex.ONE, CellValue.ONE)
@@ -132,10 +131,10 @@ describe('strategy/box-line', () => {
     box.is(CellIndex.EIGHT, CellValue.EIGHT)
     box.is(CellIndex.NINE, CellValue.NINE)
 
-    console.log(' box:\n' + UnitStringAdaptor.BoxString(box)
-           + '\n line:\n' + UnitStringAdaptor.LineString(line))
+    console.log(' box:\n' + UnitStringAdapter.BoxString(box)
+           + '\n line:\n' + UnitStringAdapter.LineString(line))
 
-    const formatter = new CellArrayFormatter()
+    const formatter = new CellArrayFormatter(true)
     box.as_cell_array.forEach( c => formatter.apply(c))
     line.as_cell_array.forEach( c => formatter.apply(c))
     console.log(formatter.toString())
@@ -169,7 +168,7 @@ describe('strategy/box-col', () => {
     console.log('observers:', c.length, 'Should this be 8?')
 
     console.log('block: is(1,5)', box.is(CellIndex.ONE, CellValue.FIVE))
-    console.log('block:\n' + box.toString())
+    console.log('block:\n' + TF(box).toString())
 
     box.is(CellIndex.FOUR, CellValue.EIGHT)
     box.is(CellIndex.NINE, CellValue.ONE)
@@ -178,11 +177,11 @@ describe('strategy/box-col', () => {
     box.is(CellIndex.TWO, CellValue.SIX)
     box.is(CellIndex.SEVEN, CellValue.FOUR)
     box.is(CellIndex.FIVE, CellValue.SEVEN)
-    console.log('block:\n' + box.toString())
+    console.log('block:\n' + TF(box).toString())
 
     console.log('block.reset: ', box.reset())
     console.log(' cell:', + c.toString())
-    console.log('block:\n' + box.toString())
+    console.log('block:\n' + TF(box).toString())
 
     // Pointing Line
     console.log('Pointing-Line')
@@ -217,10 +216,10 @@ describe('strategy/box-col', () => {
 
     box.exclude(CellIndex.FIVE, CellValue.ONE)
 
-    console.log('block:\n' + box.toString())
-    console.log('line:\n' + line.toString())
-    console.log('block: (names)\n' + box.toStringNames()
-              , '\nline: (names)\n' + line.toStringNames())
+    console.log('block:\n' + TF(box).toString())
+    console.log('line:\n' + TF(line).toString())
+    console.log('block: (names)\n' + TF(box).toStringNames()
+              , '\nline: (names)\n' + TF(line).toStringNames())
 
     strategy_box_line.call_strategy_box_line( box, line, IntersectMap.iR2, IntersectMap.iR1 )
 
@@ -233,10 +232,10 @@ describe('strategy/box-col', () => {
 
     strategy_box_line.call_strategy_box_line( box, line, IntersectMap.iR2, IntersectMap.iR1 )
 
-    console.log('block:\n' + box.toString())
-    console.log('line:\n' + line.toString())
-    console.log('block: (names)\n' + box.toStringNames()
-              , '\nline: (names)\n' + line.toStringNames())
+    console.log('block:\n' + TF(box).toString())
+    console.log('line:\n' + TF(line).toString())
+    console.log('block: (names)\n' + TF(box).toStringNames()
+              , '\nline: (names)\n' + TF(line).toStringNames())
 
     box.reset()
     box.is(CellIndex.ONE, CellValue.ONE)
@@ -247,15 +246,16 @@ describe('strategy/box-col', () => {
     box.is(CellIndex.EIGHT, CellValue.EIGHT)
     box.is(CellIndex.NINE, CellValue.NINE)
 
-    console.log(' box(I2):\n' + UnitStringAdaptor.BoxString(box)
-           + '\n line(C5):\n' + UnitStringAdaptor.LineString(line))
+    console.log(' box(I2):\n' + UnitStringAdapter.BoxString(box)
+           + '\n line(C5):\n' + UnitStringAdapter.LineString(line))
 
-    const formatter = new CellArrayFormatter()
+    const formatter = new CellArrayFormatter(true)
     box.as_cell_array.forEach( c => formatter.apply(c))
     line.as_cell_array.forEach( c => formatter.apply(c))
     console.log(formatter.toString())
   })
 })
+
 
 describe('strategy/box-line/setup', () => {
 

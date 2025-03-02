@@ -6,6 +6,12 @@ import { CellModel              } from '@/js/model/CellModel'
 import { BoxModel               } from '@/js/model/BoxModel'
 import { CellIndex              } from '@/js/model/CellIndex'
 import { CellValue              } from '@/js/model/CellValue'
+import { SudokuTextAdapter      } from '@/js/adapter/SudokuTextAdapter'
+
+const TF = SudokuTextAdapter.factory
+
+// import { UnitStringAdapter      } from '@/js/adapter/UnitStringAdapter'
+// import { BoardStringAdapter     } from '@/js/adapter/BoardStringAdapter'
 
 function mk_cells ( autosolve = true ) : Array<CellModel>
 {
@@ -75,11 +81,13 @@ describe('model/block-model/string-checks', () => {
 
   const block = mk_block()
 
-  test('toString',      () => expect(block.toString()).toBe(to_string()))
-  test('toStringBlock', () => expect(block.toStringBlock()).toBe(to_string_block()))
-  test('toStringValues',() => expect(block.toStringValues()).toBe('? ? ? ? ? ? ? ? ?'))
-  test('toStringNames', () => expect(block.toStringNames()).toBe(to_string_names()))
-  test('toStringCoords',() => expect(block.toStringCoords()).toBe(to_string_coords()))
+  test('box->toString',     () => expect(TF(block).toString()).toBe(to_string()))
+  test('box->StringBlock',  () => expect(TF(block).toStringBlock()).toBe(to_string_block()))
+  test('box->StringValues', () => expect(TF(block).toStringValues()).toBe('? ? ? ? ? ? ? ? ?'))
+  test('box->StringNames',  () => expect(TF(block).toStringNames()).toBe(to_string_names()))
+  test('box->StringCoords', () => expect(TF(block).toStringCoords()).toBe(to_string_coords()))
+
+  // console.log(TF(block).toString())
 })
 
 describe('model/block-model/string-checks-159', () => {
@@ -91,16 +99,16 @@ describe('model/block-model/string-checks-159', () => {
     expect(block.is(CellIndex.FIVE, CellValue.FIVE)).toBe(true)
     expect(block.is(CellIndex.NINE, CellValue.NINE)).toBe(true)
 
-    expect(block.toString()).toBe(to_string_159())
-    expect(block.toStringBlock()).toBe(to_string_block_159())
-    expect(block.toStringValues()).toBe('1 ? ? ? 5 ? ? ? 9')
-    expect(block.toStringCoords()).toBe(to_string_coords())
-    expect(block.toStringNames()).toBe(to_string_names())
+    expect(TF(block).toString()).toBe(to_string_159())
+    expect(TF(block).toStringBlock()).toBe(to_string_block_159())
+    expect(TF(block).toStringValues()).toBe('1 ? ? ? 5 ? ? ? 9')
+    expect(TF(block).toStringCoords()).toBe(to_string_coords())
+    expect(TF(block).toStringNames()).toBe(to_string_names())
 
     // console.log(block.toString())
     // console.log(block.toStringBlock())
     // console.log(block.toStringValue())
-    // console.log(block.toStringCoords())
+    // console.log(UnitStringAdapter.BoxStringCoords(block))
     // console.log(block.toStringNames())
   })
 })

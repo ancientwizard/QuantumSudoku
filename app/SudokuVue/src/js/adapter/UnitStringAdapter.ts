@@ -4,12 +4,16 @@
 import type { iLine     } from '@/js/interface/iLine'
 import type { iBox      } from '@/js/interface/iBox'
 import type { CellModel } from '@/js/model/CellModel'
-import { sep } from 'path';
 // import      { CellModel } from '@/js/model/CellModel'
 // import { CellValue } from '../model/CellValue';
 
-class UnitStringAdaptor
+class UnitStringAdapter
 {
+  // static toStringNames( unit: iLine | iBox ): string
+  // {
+  //   return unit.isRow
+  // }
+
   static LineString( unit: iLine ): string
   {
     // GOAL: Format the unit as a ROW (horizontal) or COLUMN (vertical) string
@@ -188,10 +192,52 @@ class UnitStringAdaptor
     return box_strings.join('\n') + '\n'
   }
 
-  private static formatCell( cell: CellModel ): string
+  // MOVED to SudoKuTextAdapter
+  static XXXBoxStringCoords( box: iBox ): string
   {
-    return `Cell: ${cell.constructor.name}, Value: ${cell.cv.label}`
+    const map : string[][] = [
+      ['  ', '  ', '  '],
+      ['  ', '  ', '  '],
+      ['  ', '  ', '  ']
+    ]
+
+    let x = 1
+    let y = 1
+
+    box.forEachCell( c => {
+      map[y-1][x-1] = c.coord
+
+      x += 1
+
+      if (x > 3)
+      {
+          x = 1
+          y += 1
+      }
+    })
+
+    let s = "+-----+-----+-----+\n"
+
+    for ( y = 0 ; y < 3 ; y++ )
+    {
+      for ( x = 0 ; x < 3 ; x++ )
+      {
+          s += '|' + map[y][x];
+          if (x == 2) s += "|\n"
+      }
+
+      s += "+-----+-----+-----+\n"
+    }
+
+    return s
   }
+
+  // static BoxStringNames( box: iBox ): string
+
+  // private static formatCell( cell: CellModel ): string
+  // {
+  //   return `Cell: ${cell.constructor.name}, Value: ${cell.cv.label}`
+  // }
 }
 
 class CellFormatter
@@ -304,17 +350,22 @@ class CellArrayFormatter
   {
     const board_strings: string[] = []
     const matrix = this.cell_matrix
+    const include_col: Array<boolean> = Array(9).fill( !this.trim )
+
+    // Compute include_col[]; assign true to each column that has a non-empty cell
+    if ( this.trim )
+      matrix.forEach( row => {
+        row.forEach( ( cell, cidx ) => {
+          if ( !cell.isEmpty() ) include_col[cidx] = true
+        })
+      })
+
+    // Row separator
+    const separator = include_col.filter(x=>x).map(()=>'+-----').join('') + '+';
 
     // Column labels
-    // console.log( matrix[0].map( cell => cell.colLabel ).join(',') )
-    // console.log( matrix[0].map( cell => cell.rowLabel ).join(',') )
-
-    // Still not right; a work in progress!!!! recall this.trim; you have no idea what I mean by that!
-    //  Now lets add the trim unused rows and columns
-    //  First the rows....
-
-    board_strings.push(matrix[0].map( cell => `   ${cell.colLabel}` ).join('  '))
-    board_strings.push('+-----+-----+-----+-----+-----+-----+-----+-----+-----+') // hardcoded TRASH!
+    board_strings.push(matrix[0].filter((cell,idx)=>include_col[idx]).map( cell => `   ${cell.colLabel}` ).join('  '))
+    board_strings.push(separator)
 
     // Convert the row of cells into three rows of strings
     //   1st row is the top of the cell
@@ -322,13 +373,18 @@ class CellArrayFormatter
     //   3rd row is the bottom of the cell
 
     matrix.forEach( row => {
-      // we could skip a row if it's cells are empty
-      // That worked well, trimming the columns will not be so easy!
-      if ( row.every( cell => cell.isEmpty() ) ) return
+      // Skip rows that contain "ALL" empty cells
+      //   EMPTY == no values has been recorded. This isn't an actual cell
+      //   its a TEXT markup, its empty until a cell's state has been applied
+      //   to the cell formatter.
+      if ( this.trim && row.every( cell => cell.isEmpty() ) ) return
 
       const row_strings = [['| '], ['| '], ['| ']]
 
-      row.forEach( cell => {
+      row.forEach(( cell, cidx ) => {
+        // Skip COLUMS that contain "ALL" empty cells
+        if ( ! include_col[cidx] ) return
+
         const cell_matrix = cell.matrix
 
         for ( let ri = 0 ; ri < 3; ri++ )
@@ -342,14 +398,14 @@ class CellArrayFormatter
       board_strings.push(row_strings[0].join(''))
       board_strings.push(row_strings[1].join(''))
       board_strings.push(row_strings[2].join(''))
-      board_strings.push('+-----+-----+-----+-----+-----+-----+-----+-----+-----+') // hardcoded TRASH!
+      board_strings.push(separator)
     })
 
     return board_strings.join('\n') + '\n'
   }
 }
 
-export { CellFormatter, CellArrayFormatter, UnitStringAdaptor }
+export { CellFormatter, CellArrayFormatter, UnitStringAdapter }
 
 // vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix
 // END

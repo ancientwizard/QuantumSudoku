@@ -188,34 +188,20 @@ class UnitModel implements iUnit
         this.cells.forEach(( cell, idx ) => { callback( cell, idx ) })
     }
 
-//public void solve()
-//{
-//strategy_unique();
-//strategy_set_naked_pair();
-//strategy_set_hidden_pair();
-//strategy_set_naked_triple();
-//strategy_set_naked_quad();
-////strategy_set_hidden_triple();   // never turned on in Java
-////strategy_set_hidden_quad();     // never turned on in Java
-//}
+  // public void solve()
+  // {
+  //   strategy_unique();
+  //   strategy_set_naked_pair();
+  //   strategy_set_hidden_pair();
+  //   strategy_set_naked_triple();
+  //   strategy_set_naked_quad();
+  //   //strategy_set_hidden_triple();   // never turned on in Java
+  //   //strategy_set_hidden_quad();     // never turned on in Java
+  // }
 
     public reset() : void
     {
         this.cells.forEach( c  => { c.reset() })
-    }
-
-    public toString () : string
-    {
-        let s  = ""
-
-        this.cells.forEach((c) => { s += c.toString2() + "\n" })
-
-        return s
-    }
-
-    public toStringValues () : string
-    {
-        return this.cells.map( m => m.cv.label ).join(' ')
     }
 
     // public toStringIII() : string
@@ -292,15 +278,6 @@ class UnitModel implements iUnit
 
 //  return s;
 //  }
-
-    // public getCellNames
-
-    public toStringNames () : string
-    {
-        const names : Array<string> = []
-        this.cells.forEach( c => names.push( c.name ))
-        return names.toString()
-    }
 
 }
 

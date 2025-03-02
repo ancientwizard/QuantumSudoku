@@ -11,7 +11,7 @@ import      { UnitModel     } from '@/js/model/UnitModel'
 export
 class BoxModel extends UnitModel implements iBox
 {
-    // Where ROWS & COLUMNS come to intersect
+    // Where ROWS & COLUMNS come to intersect the BOX
     static iC1: Array<CellIndex> = [ CellIndex.ONE,   CellIndex.FOUR,   CellIndex.SEVEN ] // Col 1
     static iC2: Array<CellIndex> = [ CellIndex.TWO,   CellIndex.FIVE,   CellIndex.EIGHT ] // Col 2
     static iC3: Array<CellIndex> = [ CellIndex.THREE, CellIndex.SIX,    CellIndex.NINE  ] // Col 3
@@ -30,162 +30,15 @@ class BoxModel extends UnitModel implements iBox
         super( member_cells )
     }
 
-    public isBox(): boolean { return true }
+    // public isBox()              : boolean { return true }
+    // public isLine()             : boolean { return false }
+    // public isRow()              : boolean { return false }
+    // public isCol()              : boolean { return false }
+    // public isDiagional()        : boolean { return false }
+    // public isTopLeftBotRight()  : boolean { return false }
+    // public isBotLeftTopRight()  : boolean { return false }
 
-    public toStringBlock(): string
-    {
-        const map : string[][] = [
-            [' ',' ',' ',' ',' ',' ',' ',' ',' ']
-        ,   [' ',' ',' ',' ',' ',' ',' ',' ',' ']
-        ,   [' ',' ',' ',' ',' ',' ',' ',' ',' ']
-        ,   [' ',' ',' ',' ',' ',' ',' ',' ',' ']
-        ,   [' ',' ',' ',' ',' ',' ',' ',' ',' ']
-        ,   [' ',' ',' ',' ',' ',' ',' ',' ',' ']
-        ,   [' ',' ',' ',' ',' ',' ',' ',' ',' ']
-        ,   [' ',' ',' ',' ',' ',' ',' ',' ',' ']
-        ,   [' ',' ',' ',' ',' ',' ',' ',' ',' ']
-        ];
-
-        let x = 1
-        let y = 1
-
-        this.cells.forEach( cell => {
-            if ( cell.isKnown )
-            {
-                map[y][x-1] = '['
-                map[y][x  ] = cell.cv.label
-                map[y][x+1] = ']'
-            }
-            else
-            {
-                cell.as_candidate_array.forEach( I => {
-                    switch ( I.value )
-                    {
-                        case 1: map[y-1][x-1] = '1'; break;
-                        case 2: map[y-1][x  ] = '2'; break;
-                        case 3: map[y-1][x+1] = '3'; break;
-                        case 4: map[y  ][x-1] = '4'; break;
-                        case 5: map[y  ][x  ] = '5'; break;
-                        case 6: map[y  ][x+1] = '6'; break;
-                        case 7: map[y+1][x-1] = '7'; break;
-                        case 8: map[y+1][x  ] = '8'; break;
-                        case 9: map[y+1][x+1] = '9'; break;
-                    }
-                })
-            }
-
-            // Next Cell alignment
-            x += 3
-
-            if ( x > 9 )
-            {
-                x = 1
-                y += 3
-            }
-        })
-
-        let s = "+-----+-----+-----+\n";
-
-        for (y = 0; y < 9; y++) {
-            for (x = 0; x < 9; x++) {
-
-                if (x == 0 || x == 3 || x == 6) {
-                    s += "| ";
-                }
-                s += map[y][x];
-                if (x == 2 || x == 5) {
-                    s += " ";
-                }
-                if (x == 8) {
-                    s += " |\n";
-                }
-            }
-
-            if (y == 2 || y == 5 || y == 8) {
-                s += "+-----+-----+-----+\n";
-            }
-        }
-
-        return s;
-    }
-
-    public toStringNames () : string
-    {
-        const map : string[][] = [
-            ['  ', '  ', '  '],
-            ['  ', '  ', '  '],
-            ['  ', '  ', '  ']
-        ]
-
-        let x = 1
-        let y = 1
-
-        this.cells.forEach( c => {
-            map[y-1][x-1] = c.name
-
-            x += 1
-
-            if (x > 3)
-            {
-                x = 1
-                y += 1
-            }
-        })
-
-        let s = "+--+--+--+\n"
-
-        for ( y = 0 ; y < 3 ; y++ )
-        {
-            for ( x = 0 ; x < 3 ; x++ )
-            {
-                s += '|' + map[y][x];
-                if (x == 2) s += "|\n"
-            }
-
-            s += "+--+--+--+\n";
-        }
-
-        return s
-    }
-
-    public toStringCoords(): string
-    {
-        const map : string[][] = [
-            ['  ', '  ', '  '],
-            ['  ', '  ', '  '],
-            ['  ', '  ', '  ']
-        ]
-
-        let x = 1
-        let y = 1
-
-        this.cells.forEach( c => {
-            map[y-1][x-1] = c.coord
-
-            x += 1
-
-            if (x > 3)
-            {
-                x = 1
-                y += 1
-            }
-        })
-
-        let s = "+-----+-----+-----+\n"
-
-        for ( y = 0 ; y < 3 ; y++ )
-        {
-            for ( x = 0 ; x < 3 ; x++ )
-            {
-                s += '|' + map[y][x];
-                if (x == 2) s += "|\n"
-            }
-
-            s += "+-----+-----+-----+\n"
-        }
-
-        return s
-    }
+    public toString(): string { throw new Error('BoxModel.toString() See: SudokuTextAdapter.factory(box)') }
 }
 
 

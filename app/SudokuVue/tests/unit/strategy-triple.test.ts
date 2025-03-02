@@ -8,6 +8,9 @@ import { UnitModel              } from '@/js/model/UnitModel'
 import { StrategyLogger         } from '@/js/strategy/StrategyLogger'
 import { StrategyHiddenTriple   } from '@/js/strategy/StrategyHiddenTriple'
 import { StrategyNakedTriple    } from '@/js/strategy/StrategyNakedTriple'
+import { SudokuTextAdapter      } from '@/js/adapter/SudokuTextAdapter'
+
+const TF = SudokuTextAdapter.factory
 
 function mk_cells () : Array<CellModel>
 {
@@ -34,13 +37,13 @@ describe('strategy/triple', () => {
     test('naked-triple', () => {
 
         expect(unit.isSolved).toBe(false)
-        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyNakedTriple(new StrategyLogger())
 
         // Naked Triple (FIRST) (A4,A5,A6)
         expect(unit.is(CellIndex.ONE, CellValue.ONE)).toBe(true)
-        expect(unit.toStringValues()).toBe('1 ? ? ? ? ? ? ? ?')
+        expect(TF(unit).toStringValues()).toBe('1 ? ? ? ? ? ? ? ?')
         expect(unit.as_cell_array[CellIndex.ONE.index].isKnown).toBe(true)
 
         CellValue.arrayFactory.forEach( cv => {
@@ -95,13 +98,13 @@ describe('strategy/triple', () => {
 
         unit.reset();
         expect(unit.isSolved).toBe(false)
-        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
     })
 
     test('hidden-triple', () => {
 
         expect(unit.isSolved).toBe(false)
-        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyHiddenTriple(new StrategyLogger())
 
@@ -132,7 +135,7 @@ describe('strategy/triple', () => {
 
         unit.reset();
         expect(unit.isSolved).toBe(false)
-        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
     })
 })
 

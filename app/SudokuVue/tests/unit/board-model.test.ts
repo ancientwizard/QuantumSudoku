@@ -6,6 +6,10 @@ import { BoardMode, BoardType, BoardModel } from '@/js/model/BoardModel'
 import { BoardStringAdapter               } from '@/js/adapter/BoardStringAdapter'
 import { CellIndex                        } from '@/js/model/CellIndex'
 import { CellValue                        } from '@/js/model/CellValue'
+import { SudokuTextAdapter                } from '@/js/adapter/SudokuTextAdapter'
+import { UnitModel                        } from '@/js/model/UnitModel'
+
+const TF = SudokuTextAdapter.factory
 
 describe('model/sudoku-board', () => {
 
@@ -95,15 +99,15 @@ describe('model/sudoku-board', () => {
     expect(board.set(CellIndex.NINE, CellIndex.ONE, CellValue.FIVE)).toBe(false)
 
 
-    expect(board.get_diagonal_TL_BR()?.toStringValues()).toBe('1 2 3 4 5 6 7 8 9')
-    expect(board.get_diagonal_BL_TR()?.toStringValues()).toBe('2 3 4 9 5 1 8 7 6')
+    expect(TF(board.get_diagonal_TL_BR()||new UnitModel([]))?.toStringValues()).toBe('1 2 3 4 5 6 7 8 9')
+    expect(TF(board.get_diagonal_BL_TR()||new UnitModel([]))?.toStringValues()).toBe('2 3 4 9 5 1 8 7 6')
 
     // console.log(BoardStringAdapter.toStringState(board))
   })
 
   describe('board/rows', () => {
     new BoardModel(BoardMode.SOLVE).forEachRow(row => {
-      expect(row.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+      expect(TF(row).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
       expect(row.isSolved).toBe(false)
       expect(row.isBroken).toBe(false)
     })
@@ -111,7 +115,7 @@ describe('model/sudoku-board', () => {
 
   describe('board/columns', () => {
     new BoardModel(BoardMode.SOLVE).forEachCol(column => {
-      expect(column.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+      expect(TF(column).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
       expect(column.isSolved).toBe(false)
       expect(column.isBroken).toBe(false)
     })
@@ -119,7 +123,7 @@ describe('model/sudoku-board', () => {
 
   describe('board/blocks', () => {
     new BoardModel(BoardMode.SOLVE).forEachBox(block => {
-      expect(block.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+      expect(TF(block).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
       expect(block.isSolved).toBe(false)
       expect(block.isBroken).toBe(false)
     })

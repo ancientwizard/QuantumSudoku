@@ -1,11 +1,11 @@
 
 // line-model.test.ts
 
-import { describe, expect, test } from '@jest/globals'
+import { describe, expect, test   } from '@jest/globals'
 
-import { LineModel } from '@/js/model/LineModel'
-import { CellModel } from '@/js/model/CellModel'
-import exp from 'constants'
+import { LineModel                } from '@/js/model/LineModel'
+import { CellModel                } from '@/js/model/CellModel'
+import { SudokuTextAdapter as Txt } from '@/js/adapter/SudokuTextAdapter'
 // import { UnitStringAdaptor } from '@/js/adapter/UnitStringAdaptor'
 
 
@@ -14,13 +14,12 @@ describe('LineModel', () =>  {
     for ( let y = 1 ; y <= 9 ; y++ )
     {
       const row = new LineModel(mk_row(y))
-      // console.log('row:', row.toStringNames())
+      // console.log('row:', Txt.factory(row).toStringNames())
       expect(row.isRow).toBe(true)
       expect(row.isCol).toBe(false)
       expect(row.isTopLeftBotRight).toBe(false)
       expect(row.isBotLeftTopRight).toBe(false)
       expect(row.isDiagional).toBe(false)
-      // console.log(UnitStringAdaptor.LineString(row))
     }
   })
 
@@ -28,7 +27,7 @@ describe('LineModel', () =>  {
     for ( let x = 1 ; x <= 9 ; x++ )
     {
       const col = new LineModel(_mk_col(x))
-      // console.log('col:', col.toStringNames())
+      // console.log('col:', Txt.factory(col).toStringNames())
       expect(col.isRow).toBe(false)
       expect(col.isCol).toBe(true)
       expect(col.isTopLeftBotRight).toBe(false)
@@ -39,7 +38,8 @@ describe('LineModel', () =>  {
 
   test('line.isTopLeftBotRight', () => {
     const diag = new LineModel(mk_diag(true))
-    // console.log('diag:', diag.toStringNames())
+    // console.log('diag:', Txt.factory(diag).toStringNames())
+    expect(Txt.factory(diag).toStringNames()).toEqual('A1,B2,C3,D4,E5,F6,G7,H8,I9')
     expect(diag.isRow).toBe(false)
     expect(diag.isCol).toBe(false)
     expect(diag.isTopLeftBotRight).toBe(true)
@@ -49,7 +49,8 @@ describe('LineModel', () =>  {
 
   test('line.isBotLeftTopRight', () => {
     const diag = new LineModel(mk_diag(false))
-    // console.log('diag:', diag.toStringNames())
+    // console.log('diag:', Txt.factory(diag).toStringNames())
+    expect(Txt.factory(diag).toStringNames()).toEqual('A9,B8,C7,D6,E5,F4,G3,H2,I1')
     expect(diag.isRow).toBe(false)
     expect(diag.isCol).toBe(false)
     expect(diag.isTopLeftBotRight).toBe(false)
