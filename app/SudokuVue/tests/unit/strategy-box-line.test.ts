@@ -20,7 +20,19 @@ import { UnitStringAdapter        } from '@/js/adapter/UnitStringAdapter'
 import { CellArrayFormatter       } from '@/js/adapter/UnitStringAdapter'
 import { SudokuTextAdapter        } from '@/js/adapter/SudokuTextAdapter'
 
-const TF = SudokuTextAdapter.factory
+class TestLineModel extends LineModel
+{
+  public toString       () : string { return SudokuTextAdapter.factory(this).toString() }
+  public toStringValues () : string { return SudokuTextAdapter.factory(this).toStringValues() }
+  public toStringNames  () : string { return SudokuTextAdapter.factory(this).toStringNames() }
+}
+
+class TestBoxModel extends BoxModel
+{
+  public toString       () : string { return SudokuTextAdapter.factory(this).toString() }
+  public toStringValues () : string { return SudokuTextAdapter.factory(this).toStringValues() }
+  public toStringNames  () : string { return SudokuTextAdapter.factory(this).toStringNames() }
+}
 
 //port { CellFormatter            } from '@/js/adapter/UnitStringAdapter'
 
@@ -52,13 +64,13 @@ describe('strategy/box-line', () => {
     console.log('members:', members.map( c => c.name ).join(','))
 
     const c: CellModel = members[0]
-    const box: BoxModel = new BoxModel(members)
+    const box: TestBoxModel = new TestBoxModel(members)
 
     console.log('members:', members.map( c => c.name ).join(','))
     console.log('observers:', c.length, 'Should this be 8?')
 
     console.log('block: is(1,5)', box.is(CellIndex.ONE, CellValue.FIVE))
-    console.log('block:\n' + TF(box).toString())
+    console.log('block:\n' + box.toString())
 
     box.is(CellIndex.FOUR, CellValue.EIGHT)
     box.is(CellIndex.NINE, CellValue.ONE)
@@ -68,10 +80,10 @@ describe('strategy/box-line', () => {
     box.is(CellIndex.SEVEN, CellValue.FOUR)
     box.is(CellIndex.FIVE, CellValue.SEVEN)
 
-    console.log('block:\n' + TF(box).toString())
+    console.log('block:\n' + box.toString())
     console.log('block.reset: ', box.reset())
     console.log(' cell:', + c.toString())
-    console.log('block:\n' + TF(box).toString())
+    console.log('block:\n' + box.toString())
 
     // Pointing Line
     console.log('Pointing-Line')
@@ -89,7 +101,7 @@ describe('strategy/box-line', () => {
 
     const logger = new StrategyLogger()
     const strategy_box_line = new StrategyBoxLineTest(logger)
-    const line: LineModel = new LineModel(line_members)
+    const line = new TestLineModel(line_members)
 
     const bx: Array<CellIndex> = [ CellIndex.ONE, CellIndex.TWO, CellIndex.THREE, CellIndex.SEVEN, CellIndex.EIGHT, CellIndex.NINE ];
 
@@ -101,10 +113,10 @@ describe('strategy/box-line', () => {
 
     box.exclude(CellIndex.FIVE, CellValue.ONE)
 
-    console.log('block:\n' + TF(box).toString())
-    console.log('line:\n' + TF(line).toString())
-    console.log('block: (names)\n' + TF(box).toStringNames()
-              , '\nline: (names)\n' + TF(line).toStringNames())
+    console.log('block:\n' + box.toString())
+    console.log('line:\n' + line.toString())
+    console.log('block: (names)\n' + box.toStringNames()
+              , '\nline: (names)\n' + line.toStringNames())
 
     strategy_box_line.call_strategy_box_line( box, line, IntersectMap.iR2, IntersectMap.iR1 )
 
@@ -117,10 +129,10 @@ describe('strategy/box-line', () => {
 
     strategy_box_line.call_strategy_box_line( box, line, IntersectMap.iR2, IntersectMap.iR1 )
 
-    console.log('block:\n' + TF(box).toString())
-    console.log('line:\n' + TF(line).toString())
-    console.log('block: (names)\n' + TF(box).toStringNames()
-              , '\nline: (names)\n' + TF(line).toStringNames())
+    console.log('block:\n' + box.toString())
+    console.log('line:\n' + line.toString())
+    console.log('block: (names)\n' + box.toStringNames()
+              , '\nline: (names)\n' + line.toStringNames())
 
     box.reset()
     box.is(CellIndex.ONE, CellValue.ONE)
@@ -162,13 +174,13 @@ describe('strategy/box-col', () => {
     console.log('members:', members.map( c => c.name ).join(','))
 
     const c: CellModel = members[0]
-    const box: BoxModel = new BoxModel(members)
+    const box: TestBoxModel = new TestBoxModel(members)
 
     console.log('members:', members.map( c => c.name ).join(','))
     console.log('observers:', c.length, 'Should this be 8?')
 
     console.log('block: is(1,5)', box.is(CellIndex.ONE, CellValue.FIVE))
-    console.log('block:\n' + TF(box).toString())
+    console.log('block:\n' + box.toString())
 
     box.is(CellIndex.FOUR, CellValue.EIGHT)
     box.is(CellIndex.NINE, CellValue.ONE)
@@ -177,11 +189,11 @@ describe('strategy/box-col', () => {
     box.is(CellIndex.TWO, CellValue.SIX)
     box.is(CellIndex.SEVEN, CellValue.FOUR)
     box.is(CellIndex.FIVE, CellValue.SEVEN)
-    console.log('block:\n' + TF(box).toString())
+    console.log('block:\n' + box.toString())
 
     console.log('block.reset: ', box.reset())
     console.log(' cell:', + c.toString())
-    console.log('block:\n' + TF(box).toString())
+    console.log('block:\n' + box.toString())
 
     // Pointing Line
     console.log('Pointing-Line')
@@ -202,7 +214,7 @@ describe('strategy/box-col', () => {
       }
     }
 
-    const line: LineModel = new LineModel(line_members)
+    const line = new TestLineModel(line_members)
     const logger = new StrategyLogger()
     const strategy_box_line = new StrategyBoxLineTest(logger)
 
@@ -216,10 +228,10 @@ describe('strategy/box-col', () => {
 
     box.exclude(CellIndex.FIVE, CellValue.ONE)
 
-    console.log('block:\n' + TF(box).toString())
-    console.log('line:\n' + TF(line).toString())
-    console.log('block: (names)\n' + TF(box).toStringNames()
-              , '\nline: (names)\n' + TF(line).toStringNames())
+    console.log('block:\n' + box.toString())
+    console.log('line:\n' + line.toString())
+    console.log('block: (names)\n' + box.toStringNames()
+              , '\nline: (names)\n' + line.toStringNames())
 
     strategy_box_line.call_strategy_box_line( box, line, IntersectMap.iR2, IntersectMap.iR1 )
 
@@ -232,10 +244,10 @@ describe('strategy/box-col', () => {
 
     strategy_box_line.call_strategy_box_line( box, line, IntersectMap.iR2, IntersectMap.iR1 )
 
-    console.log('block:\n' + TF(box).toString())
-    console.log('line:\n' + TF(line).toString())
-    console.log('block: (names)\n' + TF(box).toStringNames()
-              , '\nline: (names)\n' + TF(line).toStringNames())
+    console.log('block:\n' + box.toString())
+    console.log('line:\n' + line.toString())
+    console.log('block: (names)\n' + box.toStringNames()
+              , '\nline: (names)\n' + line.toStringNames())
 
     box.reset()
     box.is(CellIndex.ONE, CellValue.ONE)

@@ -9,7 +9,12 @@ import { StrategyLogger     } from '@/js/strategy/StrategyLogger'
 import { StrategyUnique     } from '@/js/strategy/StrategyUnique'
 import { SudokuTextAdapter  } from '@/js/adapter/SudokuTextAdapter'
 
-const TF = SudokuTextAdapter.factory
+class TestUnitModel extends UnitModel
+{
+  public toString       () : string { return SudokuTextAdapter.factory(this).toString() }
+  public toStringValues () : string { return SudokuTextAdapter.factory(this).toStringValues() }
+  public toStringNames  () : string { return SudokuTextAdapter.factory(this).toStringNames() }
+}
 
 function mk_cells () : Array<CellModel>
 {
@@ -21,22 +26,22 @@ function mk_cells () : Array<CellModel>
   return cell_set
 }
 
-function mk_unit () : UnitModel
+function mk_unit () : TestUnitModel
 {
-  return new UnitModel(mk_cells())
+  return new TestUnitModel(mk_cells())
 }
 
 
 describe('strategy/unique', () => {
 
-    let unit : UnitModel
+    let unit : TestUnitModel
 
     beforeEach(() => { unit = mk_unit() })
 
     test('unique-cell', () => {
 
         expect(unit.isSolved).toBe(false)
-        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyUnique(new StrategyLogger())
 
@@ -53,7 +58,7 @@ describe('strategy/unique', () => {
 
         expect(strategy.apply( unit )).toBe(true)
         expect(unit.as_cell_array[CellIndex.SIX.index].isKnown).toBe(true)
-        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? 5 ? ? ?')
+        expect(unit.toStringValues()).toBe('? ? ? ? ? 5 ? ? ?')
 
         // LEAVE Cell's TWO & SEVEN with a unique value (EIGHT,THREE) respectively
         //  and solve for it
@@ -75,7 +80,7 @@ describe('strategy/unique', () => {
         expect(strategy.apply( unit )).toBe(true)
         expect(unit.as_cell_array[CellIndex.TWO.index].isKnown).toBe(true)
         expect(unit.as_cell_array[CellIndex.SIX.index].isKnown).toBe(true)
-        expect(TF(unit).toStringValues()).toBe('? 8 ? ? ? 5 3 ? ?')
+        expect(unit.toStringValues()).toBe('? 8 ? ? ? 5 3 ? ?')
 
         // LEAVE Cell's THREE, FIVE, NINE as unique of (SEVEN,SIX,FOUR) respectively
         //  and solve for it
@@ -99,19 +104,19 @@ describe('strategy/unique', () => {
         expect(unit.as_cell_array[CellIndex.THREE.index].isKnown).toBe(true)
         expect(unit.as_cell_array[CellIndex.FIVE.index].isKnown).toBe(true)
         expect(unit.as_cell_array[CellIndex.NINE.index].isKnown).toBe(true)
-        expect(TF(unit).toStringValues()).toBe('? 8 7 ? 6 5 3 ? 4')
+        expect(unit.toStringValues()).toBe('? 8 7 ? 6 5 3 ? 4')
 
         // console.log(unit.toString())
 
         unit.reset()
         expect(unit.isSolved).toBe(false)
-        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
     })
 
     test('unique-cell[edges]', () => {
 
         expect(unit.isSolved).toBe(false)
-        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyUnique(new StrategyLogger())
 
@@ -128,7 +133,7 @@ describe('strategy/unique', () => {
 
         unit.reset()
         expect(unit.isSolved).toBe(false)
-        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
     })
 })
 

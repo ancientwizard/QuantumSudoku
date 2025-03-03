@@ -8,7 +8,13 @@ import { CellModel              } from '@/js/model/CellModel'
 import { UnitModel              } from '@/js/model/UnitModel'
 import { SudokuTextAdapter      } from '@/js/adapter/SudokuTextAdapter'
 
-const TF = SudokuTextAdapter.factory
+
+class TestUnitModel extends UnitModel
+{
+  public toString       () : string { return SudokuTextAdapter.factory(this).toString() }
+  public toStringValues () : string { return SudokuTextAdapter.factory(this).toStringValues() }
+  public toStringNames  () : string { return SudokuTextAdapter.factory(this).toStringNames() }
+}
 
 function mk_cells ( size = 0, autosolve = true ) : Array<CellModel>
 {
@@ -20,12 +26,12 @@ function mk_cells ( size = 0, autosolve = true ) : Array<CellModel>
   return cell_set
 }
 
-function mk_unit ( size = 0, autosolve = true ) : UnitModel
+function mk_unit ( size = 0, autosolve = true ) : TestUnitModel
 {
-  return new UnitModel(mk_cells(size, autosolve ))
+  return new TestUnitModel(mk_cells(size, autosolve ))
 }
 
-function unit (autosolve = true) : UnitModel { return mk_unit( 9, autosolve ) }
+function unit (autosolve = true) : TestUnitModel { return mk_unit( 9, autosolve ) }
 
 
 describe('mk_cells function', () => {
@@ -74,7 +80,7 @@ describe('model/unit-model-basic', () => {
   test('unit-unsolved', () => expect(unit().isBroken).toBe(false))
 
   test('unit-reset+tostring', () => {
-    const u : UnitModel = unit()
+    const u = unit()
 
     // 9 cells in a unit, each cell has 8 observers (no observing self HA-HA)
     u.as_cell_array.forEach( c => { expect(c.observers_as_array().length).toBe(8) })
@@ -82,12 +88,12 @@ describe('model/unit-model-basic', () => {
     expect(u.is(CellIndex.ONE, CellValue.ONE)).toBe(true)
     expect(u.isSolved).toBe(false)
     expect(u.isBroken).toBe(false)
-    expect(TF(u).toStringValues()).toBe('1 ? ? ? ? ? ? ? ?')
+    expect(u.toStringValues()).toBe('1 ? ? ? ? ? ? ? ?')
 
     u.reset()
-    expect(TF(u).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+    expect(u.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
-    expect("\n" + TF(u).toString()).toStrictEqual(`
+    expect("\n" + u.toString()).toStrictEqual(`
 # A1: ? [ 1,2,3,4,5,6,7,8,9 ]
 # A2: ? [ 1,2,3,4,5,6,7,8,9 ]
 # A3: ? [ 1,2,3,4,5,6,7,8,9 ]
@@ -101,11 +107,11 @@ describe('model/unit-model-basic', () => {
 })
 
 describe('model/unit-model-exceptions', () => {
-  test('unit-empty', () => expect(() => new UnitModel(mk_cells(  ))).toThrow('Content size incorrect'))
-  test('unit-small', () => expect(() => new UnitModel(mk_cells( 8))).toThrow('Content size incorrect'))
-  test('unit-large', () => expect(() => new UnitModel(mk_cells(10))).toThrow('Content size incorrect'))
-  test('unit-large', () => expect(() => new UnitModel(mk_cells(12))).toThrow('Content size incorrect'))
-  test('unit-NINE',  () => expect(() => new UnitModel(mk_cells( 9))).not.toThrow())
+  test('unit-empty', () => expect(() => new TestUnitModel(mk_cells(  ))).toThrow('Content size incorrect'))
+  test('unit-small', () => expect(() => new TestUnitModel(mk_cells( 8))).toThrow('Content size incorrect'))
+  test('unit-large', () => expect(() => new TestUnitModel(mk_cells(10))).toThrow('Content size incorrect'))
+  test('unit-large', () => expect(() => new TestUnitModel(mk_cells(12))).toThrow('Content size incorrect'))
+  test('unit-NINE',  () => expect(() => new TestUnitModel(mk_cells( 9))).not.toThrow())
 })
 
 describe('model/unit-model-forEachCell', () => {
@@ -113,7 +119,7 @@ describe('model/unit-model-forEachCell', () => {
     //  and use the unit's forEachCell() method; I smell a refactor comming!
     test('unit-forEachCell', () => {
         const cells : Array<CellModel> = []
-        const u : UnitModel = unit()
+        const u = unit()
         u.forEachCell( (cell) => { cells.push(cell) })
         expect(cells.length).toBe(9)
         expect(cells.map((c) => c.name).join(',')).toBe('A1,A2,A3,A4,A5,A6,A7,A8,A9')
@@ -123,7 +129,7 @@ describe('model/unit-model-forEachCell', () => {
 describe('model/unit-model-broken', () => {
   
     test('unit-broken', () => {
-      let u : UnitModel = unit()
+      let u = unit()
 
       expect(u.isBroken).toBe(false)
 
@@ -153,12 +159,12 @@ describe('model/unit-model-solved', () => {
 
   // IS
   test('solved-IS', () => {
-    let u : UnitModel = unit()
+    let u = unit()
     const v : Array<CellValue> = CellValue.arrayFactory
     const P : string[] = [ '1', '2', '3', '4', '5', '6', '7', '8', '9' ]
 
     // console.log(u.toStringNames())
-    expect(TF(u).toStringNames()).toBe('A1,A2,A3,A4,A5,A6,A7,A8,A9')
+    expect(u.toStringNames()).toBe('A1,A2,A3,A4,A5,A6,A7,A8,A9')
 
     // Foreward
     CellIndex.arrayFactory.forEach( c => {
@@ -182,7 +188,7 @@ describe('model/unit-model-solved', () => {
 
   // Exclude
   test('solved-EXCLUDE', () => {
-    let u : UnitModel = unit()
+    let u = unit()
     const v : Array<CellValue> = CellValue.arrayFactory
     const P : string[] = [ '1', '2', '3', '4', '5', '6', '7', '8', '9' ]
 

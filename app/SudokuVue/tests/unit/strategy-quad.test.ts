@@ -10,7 +10,12 @@ import { StrategyHiddenQuad     } from '@/js/strategy/StrategyHiddenQuad'
 import { StrategyNakedQuad      } from '@/js/strategy/StrategyNakedQuad'
 import { SudokuTextAdapter      } from '@/js/adapter/SudokuTextAdapter'
 
-const TF = SudokuTextAdapter.factory
+class TestUnitModel extends UnitModel
+{
+  public toString       () : string { return SudokuTextAdapter.factory(this).toString() }
+  public toStringValues () : string { return SudokuTextAdapter.factory(this).toStringValues() }
+  public toStringNames  () : string { return SudokuTextAdapter.factory(this).toStringNames() }
+}
 
 function mk_cells () : Array<CellModel>
 {
@@ -22,22 +27,22 @@ function mk_cells () : Array<CellModel>
   return cell_set
 }
 
-function mk_unit () : UnitModel
+function mk_unit () : TestUnitModel
 {
-  return new UnitModel(mk_cells())
+  return new TestUnitModel(mk_cells())
 }
 
 
 describe('strategy/quad', () => {
 
-    let unit : UnitModel
+    let unit : TestUnitModel
 
     beforeEach(() => { unit = mk_unit() })
 
     test('naked-quad', () => {
 
         expect(unit.isSolved).toBe(false)
-        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyNakedQuad(new StrategyLogger())
 
@@ -104,13 +109,13 @@ describe('strategy/quad', () => {
 
         unit.reset();
         expect(unit.isSolved).toBe(false)
-        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
     })
 
     test('hidden-quad', () => {
 
         expect(unit.isSolved).toBe(false)
-        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         const strategy = new StrategyHiddenQuad(new StrategyLogger())
 
@@ -144,7 +149,7 @@ describe('strategy/quad', () => {
 
         unit.reset();
         expect(unit.isSolved).toBe(false)
-        expect(TF(unit).toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
+        expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
     })
 })
 

@@ -30,6 +30,9 @@ class TextBoardAdapter
   { return this.board.constructor.name + '->toStringValues()' }
 }
 
+// Many of the UNIT types ( iUnit | iLine | iBox ) as strings format the same.
+//  They will fallback to this class. The primary difference will be the shape
+//  of the output when it matters, like in the case of a BOX, Column or Row
 class TextUnitAdapter
 {
   protected unit: iUnit
@@ -43,6 +46,7 @@ class TextUnitAdapter
   {
       let s  = ""
 
+      // TODO: move cell's.toString2() to an Adapter
       this.unit.forEachCell((c) => { s += c.toString2() + "\n" })
 
       return s
@@ -79,6 +83,9 @@ class TextLineAdapter extends TextUnitAdapter
   {
     super( line as iUnit )
   }
+
+  // TODO: When a line is a COLUMN the sting may be best formatted vertically
+  //  See: work completed in UnitStringAdapter & BoadStringAdapter
 
   // public toString(): string
   // { return this.unit.constructor.name + '->toString()' }
@@ -170,25 +177,16 @@ class TextBoxAdapter extends TextUnitAdapter
   public toStringCoords(): string
   {
     const box = this.unit as iBox
-    const map : string[][] = [
-      ['  ', '  ', '  '],
-      ['  ', '  ', '  '],
-      ['  ', '  ', '  ']
-    ]
+    const map : string[][] = [['  ', '  ', '  '], ['  ', '  ', '  '],  ['  ', '  ', '  ']]
 
     let x = 1
     let y = 1
 
     box.forEachCell( c => {
       map[y-1][x-1] = c.coord
-
-      x += 1
-
-      if (x > 3)
-      {
-          x = 1
-          y += 1
-      }
+      x++
+      if ( x <= 3 ) return
+      x = 1; y++
     })
 
     let s = "+-----+-----+-----+\n"
@@ -210,25 +208,16 @@ class TextBoxAdapter extends TextUnitAdapter
   public toStringNames () : string
   {
     const box = this.unit as iBox
-    const map : string[][] = [
-        ['  ', '  ', '  '],
-        ['  ', '  ', '  '],
-        ['  ', '  ', '  ']
-    ]
+    const map : string[][] = [['  ', '  ', '  '], ['  ', '  ', '  '], ['  ', '  ', '  ']]
 
     let x = 1
     let y = 1
 
     box.forEachCell( c => {
         map[y-1][x-1] = c.name
-
-        x += 1
-
-        if (x > 3)
-        {
-            x = 1
-            y += 1
-        }
+        x ++
+        if ( x <= 3 ) return
+        x = 1; y++
     })
 
     let s = "+--+--+--+\n"
@@ -256,7 +245,10 @@ export class SudokuTextAdapter
   static factory( unit: iBoard | iLine | iBox | iUnit )
     : TextBoardAdapter | TextLineAdapter | TextBoxAdapter | TextUnitAdapter
   {
-    switch ( unit.constructor.name )
+    const type_name   = unit.constructor.name
+    const type_match  = type_name.match(/BoardModel|LineModel|BoxModel|UnitModel/)
+
+    switch ( type_match ? type_match[0] : type_name )
     {
       case 'BoardModel':
         return new TextBoardAdapter( unit as iBoard )
@@ -267,7 +259,7 @@ export class SudokuTextAdapter
       case 'UnitModel':
         return new TextUnitAdapter( unit as iUnit )
       default:
-        throw new Error('Unknown Sudoku UNIT for SudokuTextAdapter factory')
+        throw new Error('Unknown Sudoku UNIT for SudokuTextAdapter factory - ' + unit.constructor.name )
     }
   }
 }
