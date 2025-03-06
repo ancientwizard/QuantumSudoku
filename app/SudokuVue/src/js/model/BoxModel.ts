@@ -4,7 +4,7 @@
 //
 
 import type { iBox          } from '@/js/interface/iBox'
-import type { CellModel     } from '@/js/model/CellModel'
+// import type { CellModel     } from '@/js/model/CellModel'
 import      { CellIndex     } from '@/js/model/CellIndex'
 import      { UnitModel     } from '@/js/model/UnitModel'
 
@@ -25,10 +25,13 @@ class BoxModel extends UnitModel implements iBox
     //  With the added complexity of intersecting with three Row's and Column's as three cells.
     //  Whereas a typical line-unit making up a row or column only interscts with one cell.
 
-    constructor ( member_cells: Array<CellModel> )
-    {
-        super( member_cells )
-    }
+    // HOWEVER: the board is resposible for organizing the cells into rows, columns and boxes.
+    //  It successfully does this by referencing the static arrays above.
+
+    // constructor ( member_cells: Array<CellModel> )
+    // {
+    //     super( member_cells )
+    // }
 
     // public isBox()              : boolean { return true }
     // public isLine()             : boolean { return false }

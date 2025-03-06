@@ -16,23 +16,23 @@ export
 class CellModel extends Subject implements iObserver
 {
   // Identification
-  private id: iCellIdentification
+  private           id: iCellIdentification
 
   // State
-  private cvalue: CellValue
-  private candidates: Array<CellValue>
+  private       cvalue: CellValue
+  protected candidates: Array<CellValue>
 
   // Control
   public autosolve  = false
 
   static factory ( x = 0, y = 0, solve = false )
   {
-    const cell = new CellModel(CellIdent.factory(x,y))
+    const cell = new this(CellIdent.factory(x,y))
     cell.autosolve = solve
     return cell
   }
 
-  private constructor ( location: iCellIdentification )
+  protected constructor ( location: iCellIdentification )
   {
     super()
     this.id = location
@@ -53,7 +53,6 @@ class CellModel extends Subject implements iObserver
   get col     () : number     { return this.id.col   }
   get cname   () : string     { return this.id.cname }
   get clabel  () : string     { return this.id.label }
-  // get cv_label() : string     { return this.cvalue.label }
   get value   () : number     { return this.cvalue.value }
   get cv      () : CellValue  { return this.cvalue }
 
@@ -79,21 +78,20 @@ class CellModel extends Subject implements iObserver
   {
     let changed  = false
 
-    CANDIDATE:
+    EXCLUDE_CANDIDATE:
     {
       // Our FINAL value is known
-      if ( this.isKnown ) break CANDIDATE
+      if ( this.isKnown ) break EXCLUDE_CANDIDATE
 
       // And the value is a member candidate
       // ( I.E. still a value candidate we've not already eliminated )
-      const is_candidate : boolean = this.candidates.filter( mbr_value => mbr_value === value ).length == 1;
+      const is_candidate : boolean = this.candidates.includes( value )
 
       // Remove [exclude] this candidate, leaving others
       if ( is_candidate && this.candidates.length > 1 )
       {
         changed = true
-        this.candidates =
-        this.candidates.filter( item => item !== value )
+        this.candidates = this.candidates.filter( item => item !== value )
       }
 
       // Solution Strategy:
@@ -112,8 +110,6 @@ class CellModel extends Subject implements iObserver
     this.exclude( arg )
   }
 
-  // TODO: retire the .as_candidate_array() method
-  //       and use thie method instead; I smell a refactor
   forEachValue ( callback: (value: CellValue, inedex: number) => void ) : void
   {
     this.candidates.forEach( (item,idx) => callback(item,idx))
@@ -146,17 +142,7 @@ class CellModel extends Subject implements iObserver
     return _z
   }
 
-  // TODO: RETIRE or better suited on an adapter as a TEXT formatter???
-  public toString2 () : string
-  {
-    let s : string = '# ' + this.name + ': ' +  this.cv.label + ' [ '
-
-    s += this.candidates.map( c => c.label ).join()
-    s += this.candidates.length ? ' ]' : ']'
-
-    return s;
-  }
-
+  public toString () : string { throw new Error('Use a Text Decorator!') }
 }
 
 

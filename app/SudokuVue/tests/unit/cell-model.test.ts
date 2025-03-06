@@ -1,16 +1,16 @@
 // cell-model.test.ts
 
 import { describe, expect, test } from '@jest/globals'
-import { CellModel              } from '@/js/model/CellModel'
+import { TextCellModel          } from '@/js/decorator/TextCellModel'
 import { CellValue              } from '@/js/model/CellValue'
 
 describe('model/cell-model', () => {
 
-  function _c_fac( x: number, y: number ) { return CellModel.factory(x,y); }
+  function _c_fac( x: number, y: number ) { return TextCellModel.factory(x,y); }
 
   test('(0,0).label', () => expect(_c_fac(0,0).cv.label).toBe('?'))
-  test('(0,0).toString2()', () => expect(_c_fac(0,0).toString2()).toBe('# X0: ? [ 1,2,3,4,5,6,7,8,9 ]'))
-  test('(1,1).toString2()', () => expect(_c_fac(1,1).toString2()).toBe('# A1: ? [ 1,2,3,4,5,6,7,8,9 ]'))
+  test('(0,0).toString()', () => expect(_c_fac(0,0).toString()).toBe('# X0: ? [ 1,2,3,4,5,6,7,8,9 ]'))
+  test('(1,1).toString()', () => expect(_c_fac(1,1).toString()).toBe('# A1: ? [ 1,2,3,4,5,6,7,8,9 ]'))
 
   test('(0,0).as_candidate_array()', () => expect(_c_fac(0,0).as_candidate_array.length).toBe(9))
 
@@ -27,11 +27,11 @@ describe('model/cell-model', () => {
     (v) => test('(0,0).is(' + v.label + ').<props>',
       () => {
         const _c = _c_fac(0,0)
-        expect(_c.toString2()).toBe('# X0: ? [ 1,2,3,4,5,6,7,8,9 ]')
+        expect(_c.toString()).toBe('# X0: ? [ 1,2,3,4,5,6,7,8,9 ]')
         expect(_c.isKnown).toStrictEqual(false)
         expect(_c.isUnknown).toStrictEqual(true)
         expect(_c.is(v)).toStrictEqual(true)
-        expect(_c.toString2()).toBe('# X0: '+v.label+' [ ]')
+        expect(_c.toString()).toBe('# X0: '+v.label+' [ ]')
         expect(_c.isKnown).toStrictEqual(true)
         expect(_c.isUnknown).toStrictEqual(false)
         expect(_c.value).toStrictEqual(v.value)

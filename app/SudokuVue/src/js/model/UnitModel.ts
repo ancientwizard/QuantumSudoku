@@ -10,7 +10,7 @@ import type { CellModel     } from '@/js/model/CellModel'
 
 
 export
-class UnitModel implements iUnit
+class UnitModel<TCell extends CellModel = CellModel> implements iUnit
 {
     // The Unit is the second logical layer in our implementation of the
     // Sudoku Solver. The Sudoku puzzle is made up of nine (9) 3x3 grids
@@ -19,9 +19,9 @@ class UnitModel implements iUnit
     //  - a box
     //  - a column and
     //  - a row
-    // Each of these units have Sudoku rules (logic/laws) they must
+    // Each of these units have Sudoku rules (logic-laws) they must
     // adhere too no matter how they are organized visually within a
-    // puzzle. Such rules do not care if the nine cells are in a row,
+    // puzzle. Such rules do not care if the nine cells form a row,
     // a column or a 3x3 grid. Therefore rules and hence the Strategies
     // applied to them are the same.
     //
@@ -46,43 +46,11 @@ class UnitModel implements iUnit
     //  you're eliminating possibilities more othen than saying
     //  "look that one is a 5"
     //
-    // Strategies: (Level 0)
-    //  Unique: A candidate can be found in only one of the unit's cells.
-    //          That candidate solves the "Unique" Cell. (hidden single)
-    //
-    //  Clean-up: A solved Cell tells the other cells within its influence
-    //    they can remove it's solution as a candidate. This is implemented
-    //    in the Cell however the neighbors are defined in a Unit.
-    //    Together Unit
-    //     and Cell work together to produce the cleanup. This is the observer
-    //     and observable pattern spoke of before.
-    //
-    // Strategies: (Level 1)   (Level 2)
-    //  Naked SET: Pair        Triple & Quad
-    //   A set of Cells having the same number of cells as the number of
-    //   matching set of candidates will eliminate those candidates from all
-    //   Cells not in that set matching candidates. This is called naked
-    //   because these Cells only have these candidates, making them naked!
-    //   Therefore three cells all having only candidates {5,7,9} will
-    //   safely remove those candidates from the remaining Cells in the unit.
-    //
-    // Hidden SET: Pair        Triple & Quad
-    //   A set of Cells having the same number of Cells as matching
-    //   candidates that cannot be found in any other Cell in the unit
-    //   may safely have any other candidates in the same Cell set
-    //   excluded. It's called hidden because the selected set can have
-    //   additional candidates; otherwise this would be a Naked
-    //   set as described above.
-    //   Therefore when three Cells include candidates {2,4,6} as well
-    //   as other candidates and they {2,4,6} cannot be found in any
-    //   other Cells in the remaining candidates may safely be excluded from
-    //   the Hidden candidate Cell set.
-    //
 
     // Our Cell set of nine (9) Cells
-    protected cells: Array<CellModel>
+    protected cells: Array<TCell>
 
-    constructor ( member_cells: Array<CellModel> )
+    constructor ( member_cells: Array<TCell> )
     {
         this.cells = member_cells
 
@@ -97,7 +65,7 @@ class UnitModel implements iUnit
     // Configure cell "unit members" with its observers
     // (used by the constructor)
 
-    private static setObservers ( member_cells: Array<CellModel> ) : void
+    private static setObservers<TCell extends CellModel = CellModel> ( member_cells: Array<TCell> ) : void
     {
         member_cells.forEach( subject => {
             member_cells.forEach( observer => {
@@ -106,7 +74,7 @@ class UnitModel implements iUnit
         })
     }
 
-    public get as_cell_array () : Array<CellModel> { return [...this.cells] }
+    public get as_cell_array () : Array<TCell> { return [...this.cells] }
 
     // Exclude
     public exclude ( cell: CellIndex, candidate: CellValue ) : boolean
@@ -136,7 +104,7 @@ class UnitModel implements iUnit
 
         // 1. Cells having the same known value. ->is(X)
         //  This should not be possible in a valid Sudoku puzzle
-        const distribution : Array<Array<CellModel>> = new Array(9).fill(0).map( () => new Array(0) )
+        const distribution : Array<Array<TCell>> = new Array(9).fill(0).map( () => new Array(0) )
 
         this.cells.forEach( cell => {
             if ( cell.isUnknown ) return
@@ -183,7 +151,7 @@ class UnitModel implements iUnit
         return broken;
     }
 
-    public forEachCell ( callback: (cell: CellModel, index: number) => void ) : void
+    public forEachCell ( callback: (cell: TCell, index: number) => void ) : void
     {
         this.cells.forEach(( cell, idx ) => { callback( cell, idx ) })
     }

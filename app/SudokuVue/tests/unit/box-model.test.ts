@@ -2,7 +2,7 @@
 // block-model.test.ts
 
 import { describe, expect, test } from '@jest/globals'
-import { CellModel              } from '@/js/model/CellModel'
+import { TextCellModel          } from '@/js/decorator/TextCellModel'
 import { BoxModel               } from '@/js/model/BoxModel'
 import { CellIndex              } from '@/js/model/CellIndex'
 import { CellValue              } from '@/js/model/CellValue'
@@ -17,13 +17,13 @@ class TestBoxModel extends BoxModel
   public toStringValues () : string { return SudokuTextAdapter.factory(this).toStringValues() }
 }
 
-function mk_cells ( autosolve = true ) : Array<CellModel>
+function mk_cells ( autosolve = true ) : Array<TextCellModel>
 {
-  const cell_set : Array<CellModel> = []
+  const cell_set : Array<TextCellModel> = []
 
   for ( let y = 1 ; y <= 3 ; y++ )
     for ( let x = 1 ; x <= 3 ; x++ )
-      cell_set.push(CellModel.factory(x,y,autosolve))
+      cell_set.push(TextCellModel.factory(x,y,autosolve))
 
   return cell_set
 }

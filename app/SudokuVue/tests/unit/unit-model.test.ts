@@ -4,7 +4,7 @@ import { describe, expect, test } from '@jest/globals'
 import { shuffleArray           } from '@/js/util/shuffle-array'
 import { CellIndex              } from '@/js/model/CellIndex'
 import { CellValue              } from '@/js/model/CellValue'
-import { CellModel              } from '@/js/model/CellModel'
+import { TextCellModel          } from '@/js/decorator/TextCellModel'
 import { UnitModel              } from '@/js/model/UnitModel'
 import { SudokuTextAdapter      } from '@/js/adapter/SudokuTextAdapter'
 
@@ -16,12 +16,12 @@ class TestUnitModel extends UnitModel
   public toStringNames  () : string { return SudokuTextAdapter.factory(this).toStringNames() }
 }
 
-function mk_cells ( size = 0, autosolve = true ) : Array<CellModel>
+function mk_cells ( size = 0, autosolve = true ) : Array<TextCellModel>
 {
-  const cell_set : Array<CellModel> = []
+  const cell_set : Array<TextCellModel> = []
 
   for ( let i = 1 ; i <= size ; i++ )
-      cell_set.push(CellModel.factory(size<10?1:0,size<10?i:0,autosolve))
+      cell_set.push(TextCellModel.factory(size<10?1:0,size<10?i:0,autosolve))
 
   return cell_set
 }
@@ -118,7 +118,7 @@ describe('model/unit-model-forEachCell', () => {
     // In the future I expect to use retire unit's.as_cell_array
     //  and use the unit's forEachCell() method; I smell a refactor comming!
     test('unit-forEachCell', () => {
-        const cells : Array<CellModel> = []
+        const cells : Array<TextCellModel> = []
         const u = unit()
         u.forEachCell( (cell) => { cells.push(cell) })
         expect(cells.length).toBe(9)

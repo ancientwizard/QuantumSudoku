@@ -4,7 +4,7 @@
 import      { describe, expect, test            } from '@jest/globals'
 import type { iStrategyUnit                     } from '@/js/interface/iStrategyUnit'
 import type { iStrategyBoard                    } from '@/js/interface/iStrategyBoard'
-import      { BoardMode, BoardModel, BoardType  } from '@/js/model/BoardModel'
+import      { BoardMode, BoardType              } from '@/js/model/BoardModel'
 import      { CellIndex                         } from '@/js/model/CellIndex'
 import      { CellValue                         } from '@/js/model/CellValue'
 import      { INI                               } from '@/js/util/INI'
@@ -22,6 +22,7 @@ import      { StrategyXWing                     } from '@/js/strategy/StrategyXW
 import      { StrategyYWing                     } from '@/js/strategy/StrategyYWing'
 // import      { StrategyYWing                     } from '@/js/strategy/StrategyYWing-I'
 import      { BoardStringAdapter                } from '@/js/adapter/BoardStringAdapter'
+import      { TextBoardModel as BoardModel      } from '@/js/decorator/TextBoardModel'
 
 
 describe('sudoku/library/solve', () => {

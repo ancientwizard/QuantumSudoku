@@ -5,6 +5,7 @@ import type { iBoard        } from "@/js/interface/iBoard"
 import type { iBox          } from "@/js/interface/iBox"
 import type { iLine         } from "@/js/interface/iLine"
 import type { iUnit         } from "@/js/interface/iUnit"
+import type { TextCellModel } from "../decorator/TextCellModel"
 
 class TextBoardAdapter
 {
@@ -46,8 +47,7 @@ class TextUnitAdapter
   {
       let s  = ""
 
-      // TODO: move cell's.toString2() to an Adapter
-      this.unit.forEachCell((c) => { s += c.toString2() + "\n" })
+      this.unit.forEachCell((c) => { s += c.toString() + "\n" })
 
       return s
   }

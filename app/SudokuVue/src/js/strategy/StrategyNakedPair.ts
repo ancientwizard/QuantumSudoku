@@ -69,7 +69,7 @@ class StrategyNakedPair extends aStrategyUnit
                 if ( this.logger )
                 {
                     const logger = this.logger
-                    candidate.all.forEach( c => logger.add(c.toString2()))
+                    candidate.all.forEach( c => logger.add(c.toString()))
                 }
 
                 let first_naked_shown  = false;

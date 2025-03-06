@@ -3,7 +3,7 @@
 import { describe, expect, test, beforeEach } from '@jest/globals'
 import { CellIndex              } from '@/js/model/CellIndex'
 import { CellValue              } from '@/js/model/CellValue'
-import { CellModel              } from '@/js/model/CellModel'
+import { TextCellModel          } from '@/js/decorator/TextCellModel'
 import { UnitModel              } from '@/js/model/UnitModel'
 import { StrategyLogger         } from '@/js/strategy/StrategyLogger'
 import { StrategyHiddenQuad     } from '@/js/strategy/StrategyHiddenQuad'
@@ -17,12 +17,12 @@ class TestUnitModel extends UnitModel
   public toStringNames  () : string { return SudokuTextAdapter.factory(this).toStringNames() }
 }
 
-function mk_cells () : Array<CellModel>
+function mk_cells () : Array<TextCellModel>
 {
-  const cell_set : Array<CellModel> = []
+  const cell_set : Array<TextCellModel> = []
 
   for ( let i = 1 ; i <= 9 ; i++ )
-      cell_set.push(CellModel.factory(1,i,true))
+      cell_set.push(TextCellModel.factory(1,i,true))
 
   return cell_set
 }
@@ -62,20 +62,20 @@ describe('strategy/quad', () => {
             expect(unit.exclude(CellIndex.NINE, cv)).toBe(true)
         })
 
-        expect(unit.as_cell_array[CellIndex.  ONE.index].toString2()).toBe('# A1: ? [ 1,2,3,4,5,6,7,8,9 ]')
-        expect(unit.as_cell_array[CellIndex.  TWO.index].toString2()).toBe('# A2: ? [ 4,5,7,9 ]')
-        expect(unit.as_cell_array[CellIndex.THREE.index].toString2()).toBe('# A3: ? [ 4,5,7,9 ]')
-        expect(unit.as_cell_array[CellIndex.EIGHT.index].toString2()).toBe('# A8: ? [ 4,5,7,9 ]')
-        expect(unit.as_cell_array[CellIndex. NINE.index].toString2()).toBe('# A9: ? [ 4,5,7,9 ]')
+        expect(unit.as_cell_array[CellIndex.  ONE.index].toString()).toBe('# A1: ? [ 1,2,3,4,5,6,7,8,9 ]')
+        expect(unit.as_cell_array[CellIndex.  TWO.index].toString()).toBe('# A2: ? [ 4,5,7,9 ]')
+        expect(unit.as_cell_array[CellIndex.THREE.index].toString()).toBe('# A3: ? [ 4,5,7,9 ]')
+        expect(unit.as_cell_array[CellIndex.EIGHT.index].toString()).toBe('# A8: ? [ 4,5,7,9 ]')
+        expect(unit.as_cell_array[CellIndex. NINE.index].toString()).toBe('# A9: ? [ 4,5,7,9 ]')
 
         expect(strategy.apply( unit )).toBe(true)
         strategy.logger && expect(strategy.logger.as_array.length).toBe(3)
-        expect(unit.as_cell_array[CellIndex.  ONE.index].toString2()).toBe('# A1: ? [ 1,2,3,6,8 ]')
-        expect(unit.as_cell_array[CellIndex. FOUR.index].toString2()).toBe('# A4: ? [ 1,2,3,6,8 ]')
-        expect(unit.as_cell_array[CellIndex. FIVE.index].toString2()).toBe('# A5: ? [ 1,2,3,6,8 ]')
-        expect(unit.as_cell_array[CellIndex.  SIX.index].toString2()).toBe('# A6: ? [ 1,2,3,6,8 ]')
-        expect(unit.as_cell_array[CellIndex.SEVEN.index].toString2()).toBe('# A7: ? [ 1,2,3,6,8 ]')
-        expect(unit.as_cell_array[CellIndex.  TWO.index].toString2()).toBe('# A2: ? [ 4,5,7,9 ]')
+        expect(unit.as_cell_array[CellIndex.  ONE.index].toString()).toBe('# A1: ? [ 1,2,3,6,8 ]')
+        expect(unit.as_cell_array[CellIndex. FOUR.index].toString()).toBe('# A4: ? [ 1,2,3,6,8 ]')
+        expect(unit.as_cell_array[CellIndex. FIVE.index].toString()).toBe('# A5: ? [ 1,2,3,6,8 ]')
+        expect(unit.as_cell_array[CellIndex.  SIX.index].toString()).toBe('# A6: ? [ 1,2,3,6,8 ]')
+        expect(unit.as_cell_array[CellIndex.SEVEN.index].toString()).toBe('# A7: ? [ 1,2,3,6,8 ]')
+        expect(unit.as_cell_array[CellIndex.  TWO.index].toString()).toBe('# A2: ? [ 4,5,7,9 ]')
 
         // Naked Quad (SECOND) (A4,A5,A6,A7) as (1,2,3,6)
         CellValue.arrayFactory.forEach( cv => {
@@ -94,12 +94,12 @@ describe('strategy/quad', () => {
             expect(unit.exclude(CellIndex.SEVEN, cv)).toBe(true)
         })
 
-        expect(unit.as_cell_array[CellIndex.  ONE.index].toString2()).toBe('# A1: ? [ 1,2,3,6,8 ]')
-        expect(unit.as_cell_array[CellIndex. FOUR.index].toString2()).toBe('# A4: ? [ 1,2,3,6 ]')
+        expect(unit.as_cell_array[CellIndex.  ONE.index].toString()).toBe('# A1: ? [ 1,2,3,6,8 ]')
+        expect(unit.as_cell_array[CellIndex. FOUR.index].toString()).toBe('# A4: ? [ 1,2,3,6 ]')
 
         expect(strategy.apply( unit )).toBe(true)
 
-        expect(unit.as_cell_array[CellIndex.  ONE.index].toString2()).toBe('# A1: 8 [ ]')
+        expect(unit.as_cell_array[CellIndex.  ONE.index].toString()).toBe('# A1: 8 [ ]')
         expect(unit.as_cell_array[CellIndex.  ONE.index].isKnown).toBe(true)
 
         strategy.logger && expect( strategy.logger.as_array.length ).toBe(6)
@@ -120,7 +120,7 @@ describe('strategy/quad', () => {
         const strategy = new StrategyHiddenQuad(new StrategyLogger())
 
         expect(unit.is(CellIndex.TWO, CellValue.TWO)).toBe(true)
-        expect(unit.as_cell_array[CellIndex.TWO.index].toString2()).toBe('# A2: 2 [ ]')
+        expect(unit.as_cell_array[CellIndex.TWO.index].toString()).toBe('# A2: 2 [ ]')
 
         // Hidden QUAD in (A4,A5,A8,A9) as (1,3,4,5)
         const others = [ CellIndex.ONE, CellIndex.THREE, CellIndex.SIX, CellIndex.SEVEN ]
@@ -132,15 +132,15 @@ describe('strategy/quad', () => {
             expect(unit.exclude(ci, CellValue.FIVE  )).toBe(true)
         })
 
-        expect(unit.as_cell_array[CellIndex.ONE.index ].toString2()).toBe('# A1: ? [ 6,7,8,9 ]')
-        expect(unit.as_cell_array[CellIndex.NINE.index].toString2()).toBe('# A9: ? [ 1,3,4,5,6,7,8,9 ]')
+        expect(unit.as_cell_array[CellIndex.ONE.index ].toString()).toBe('# A1: ? [ 6,7,8,9 ]')
+        expect(unit.as_cell_array[CellIndex.NINE.index].toString()).toBe('# A9: ? [ 1,3,4,5,6,7,8,9 ]')
 
         expect(strategy.apply( unit )).toBe(true)
 
-        expect(unit.as_cell_array[CellIndex. FOUR.index].toString2()).toBe('# A4: ? [ 1,3,4,5 ]')
-        expect(unit.as_cell_array[CellIndex. FIVE.index].toString2()).toBe('# A5: ? [ 1,3,4,5 ]')
-        expect(unit.as_cell_array[CellIndex.EIGHT.index].toString2()).toBe('# A8: ? [ 1,3,4,5 ]')
-        expect(unit.as_cell_array[CellIndex. NINE.index].toString2()).toBe('# A9: ? [ 1,3,4,5 ]')
+        expect(unit.as_cell_array[CellIndex. FOUR.index].toString()).toBe('# A4: ? [ 1,3,4,5 ]')
+        expect(unit.as_cell_array[CellIndex. FIVE.index].toString()).toBe('# A5: ? [ 1,3,4,5 ]')
+        expect(unit.as_cell_array[CellIndex.EIGHT.index].toString()).toBe('# A8: ? [ 1,3,4,5 ]')
+        expect(unit.as_cell_array[CellIndex. NINE.index].toString()).toBe('# A9: ? [ 1,3,4,5 ]')
 
         strategy.logger && expect( strategy.logger.as_array.length ).toBe(7)
 

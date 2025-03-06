@@ -3,7 +3,7 @@
 import { describe, expect, test, beforeEach } from '@jest/globals'
 import { CellIndex              } from '@/js/model/CellIndex'
 import { CellValue              } from '@/js/model/CellValue'
-import { CellModel              } from '@/js/model/CellModel'
+import { TextCellModel          } from '@/js/decorator/TextCellModel'
 import { UnitModel              } from '@/js/model/UnitModel'
 import { StrategyLogger         } from '@/js/strategy/StrategyLogger'
 import { StrategyHiddenTriple   } from '@/js/strategy/StrategyHiddenTriple'
@@ -17,12 +17,12 @@ class TestUnitModel extends UnitModel
   public toStringNames  () : string { return SudokuTextAdapter.factory(this).toStringNames() }
 }
 
-function mk_cells () : Array<CellModel>
+function mk_cells () : Array<TextCellModel>
 {
-  const cell_set : Array<CellModel> = []
+  const cell_set : Array<TextCellModel> = []
 
   for ( let i = 1 ; i <= 9 ; i++ )
-      cell_set.push(CellModel.factory(1,i,true))
+      cell_set.push(TextCellModel.factory(1,i,true))
 
   return cell_set
 }
@@ -61,17 +61,17 @@ describe('strategy/triple', () => {
             expect(unit.exclude(CellIndex.SIX,  cv)).toBe(true)
         })
 
-        expect(unit.as_cell_array[CellIndex.FOUR.index].toString2()).toBe('# A4: ? [ 5,7,8 ]')
-        expect(unit.as_cell_array[CellIndex.FIVE.index].toString2()).toBe('# A5: ? [ 5,7,8 ]')
-        expect(unit.as_cell_array[CellIndex. SIX.index].toString2()).toBe('# A6: ? [ 5,7,8 ]')
+        expect(unit.as_cell_array[CellIndex.FOUR.index].toString()).toBe('# A4: ? [ 5,7,8 ]')
+        expect(unit.as_cell_array[CellIndex.FIVE.index].toString()).toBe('# A5: ? [ 5,7,8 ]')
+        expect(unit.as_cell_array[CellIndex. SIX.index].toString()).toBe('# A6: ? [ 5,7,8 ]')
 
         expect(strategy.apply( unit )).toBe(true)
 
         strategy.logger && expect(strategy.logger.as_array.length).toBe(3)
 
-        expect(unit.as_cell_array[CellIndex.TWO.index  ].toString2()).toBe('# A2: ? [ 2,3,4,6,9 ]')
-        expect(unit.as_cell_array[CellIndex.THREE.index].toString2()).toBe('# A3: ? [ 2,3,4,6,9 ]')
-        expect(unit.as_cell_array[CellIndex.NINE.index ].toString2()).toBe('# A9: ? [ 2,3,4,6,9 ]')
+        expect(unit.as_cell_array[CellIndex.TWO.index  ].toString()).toBe('# A2: ? [ 2,3,4,6,9 ]')
+        expect(unit.as_cell_array[CellIndex.THREE.index].toString()).toBe('# A3: ? [ 2,3,4,6,9 ]')
+        expect(unit.as_cell_array[CellIndex.NINE.index ].toString()).toBe('# A9: ? [ 2,3,4,6,9 ]')
 
         // Naked Triple (SECOND) (A3,A8,A9)
         CellValue.arrayFactory.forEach( cv => {
@@ -87,15 +87,15 @@ describe('strategy/triple', () => {
             expect(unit.exclude(CellIndex.NINE,  cv)).toBe(true)
         })
 
-        expect(unit.as_cell_array[CellIndex.THREE.index ].toString2()).toBe('# A3: ? [ 3,4,6 ]')
-        expect(unit.as_cell_array[CellIndex.EIGHT.index ].toString2()).toBe('# A8: ? [ 3,4,6 ]')
-        expect(unit.as_cell_array[CellIndex.NINE.index  ].toString2()).toBe('# A9: ? [ 3,4,6 ]')
-        expect(unit.as_cell_array[CellIndex.TWO.index   ].toString2()).toBe('# A2: ? [ 2,3,4,6,9 ]')
-        expect(unit.as_cell_array[CellIndex.SEVEN.index ].toString2()).toBe('# A7: ? [ 2,3,4,6,9 ]')
+        expect(unit.as_cell_array[CellIndex.THREE.index ].toString()).toBe('# A3: ? [ 3,4,6 ]')
+        expect(unit.as_cell_array[CellIndex.EIGHT.index ].toString()).toBe('# A8: ? [ 3,4,6 ]')
+        expect(unit.as_cell_array[CellIndex.NINE.index  ].toString()).toBe('# A9: ? [ 3,4,6 ]')
+        expect(unit.as_cell_array[CellIndex.TWO.index   ].toString()).toBe('# A2: ? [ 2,3,4,6,9 ]')
+        expect(unit.as_cell_array[CellIndex.SEVEN.index ].toString()).toBe('# A7: ? [ 2,3,4,6,9 ]')
 
         expect(strategy.apply( unit )).toBe(true)
-        expect(unit.as_cell_array[CellIndex.TWO.index   ].toString2()).toBe('# A2: ? [ 2,9 ]')
-        expect(unit.as_cell_array[CellIndex.SEVEN.index ].toString2()).toBe('# A7: ? [ 2,9 ]')
+        expect(unit.as_cell_array[CellIndex.TWO.index   ].toString()).toBe('# A2: ? [ 2,9 ]')
+        expect(unit.as_cell_array[CellIndex.SEVEN.index ].toString()).toBe('# A7: ? [ 2,9 ]')
 
         strategy.logger && expect( strategy.logger.as_array.length ).toBe(6)
         // console.log( strategy.logger )
@@ -124,15 +124,15 @@ describe('strategy/triple', () => {
             expect(unit.exclude(ci, CellValue.THREE)).toBe(true)
         })
 
-        expect(unit.as_cell_array[CellIndex.SIX.index ].toString2()).toBe('# A6: ? [ 5,6,7,8,9 ]')
-        expect(unit.as_cell_array[CellIndex.NINE.index].toString2()).toBe('# A9: ? [ 1,2,3,5,6,7,8,9 ]')
+        expect(unit.as_cell_array[CellIndex.SIX.index ].toString()).toBe('# A6: ? [ 5,6,7,8,9 ]')
+        expect(unit.as_cell_array[CellIndex.NINE.index].toString()).toBe('# A9: ? [ 1,2,3,5,6,7,8,9 ]')
 
         expect(strategy.apply( unit )).toBe(true)
 
-        expect(unit.as_cell_array[CellIndex.SIX.index  ].toString2()).toBe('# A6: ? [ 5,6,7,8,9 ]')
-        expect(unit.as_cell_array[CellIndex.SEVEN.index].toString2()).toBe('# A7: ? [ 1,2,3 ]')
-        expect(unit.as_cell_array[CellIndex.EIGHT.index].toString2()).toBe('# A8: ? [ 1,2,3 ]')
-        expect(unit.as_cell_array[CellIndex.NINE.index ].toString2()).toBe('# A9: ? [ 1,2,3 ]')
+        expect(unit.as_cell_array[CellIndex.SIX.index  ].toString()).toBe('# A6: ? [ 5,6,7,8,9 ]')
+        expect(unit.as_cell_array[CellIndex.SEVEN.index].toString()).toBe('# A7: ? [ 1,2,3 ]')
+        expect(unit.as_cell_array[CellIndex.EIGHT.index].toString()).toBe('# A8: ? [ 1,2,3 ]')
+        expect(unit.as_cell_array[CellIndex.NINE.index ].toString()).toBe('# A9: ? [ 1,2,3 ]')
 
         strategy.logger && expect( strategy.logger.as_array.length ).toBe(6)
         // console.log( strategy.logger )
