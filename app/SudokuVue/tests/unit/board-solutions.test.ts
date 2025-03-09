@@ -21,9 +21,11 @@ import      { StrategyLogger                    } from '@/js/strategy/StrategyLo
 import      { StrategyXWing                     } from '@/js/strategy/StrategyXWing'
 import      { StrategyYWing                     } from '@/js/strategy/StrategyYWing'
 // import      { StrategyYWing                     } from '@/js/strategy/StrategyYWing-I'
-import      { BoardStringAdapter                } from '@/js/adapter/BoardStringAdapter'
+// import      { BoardStringAdapter                } from '@/js/adapter/BoardStringAdapter'
 import      { TextBoardModel as BoardModel      } from '@/js/decorator/TextBoardModel'
+import      { TextAdapter                       } from '@/js/adapter/TextAdapter'
 
+const TF = TextAdapter.factory
 
 describe('sudoku/library/solve', () => {
 
@@ -107,9 +109,9 @@ describe('sudoku/library/solve', () => {
             expect(board.isSolved).toBe(false)
 
             // expect(board.set(CellIndex.ONE, CellIndex.ONE, CellValue.ONE)).toBe(true)
-            // console.log(BoardStringAdapter.toStringValues(board))
-            // console.log(BoardStringAdapter.toStringState(board))
-            const init_state = BoardStringAdapter.toStringValues(board)
+            // console.log(TF(board).toStringValues())
+            // console.log(TF(board).toStringState())
+            const init_state = TF(board).toStringValues()
 
             // expect(board.set(CellIndex.ONE,   CellIndex.ONE,    CellValue.NINE )).toBe(true)
             // expect(board.set(CellIndex.THREE, CellIndex.ONE,    CellValue.EIGHT)).toBe(true)
@@ -172,9 +174,9 @@ describe('sudoku/library/solve', () => {
                 }
             }
 
-            expect(BoardStringAdapter.toStringValuesBasic(board)).not.toBe(init_state)
+            expect(TF(board).toStringValuesBasic()).not.toBe(init_state)
 
-            board.isSolved || console.log(BoardStringAdapter.toStringState(board))
+            board.isSolved || console.log(TF(board).toStringState())
 
             // next steps
             // - setup the strategy patterns

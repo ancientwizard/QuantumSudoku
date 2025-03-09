@@ -6,14 +6,15 @@ import { CellIndex              } from '@/js/model/CellIndex'
 import { CellValue              } from '@/js/model/CellValue'
 import { TextCellModel          } from '@/js/decorator/TextCellModel'
 import { UnitModel              } from '@/js/model/UnitModel'
-import { SudokuTextAdapter      } from '@/js/adapter/SudokuTextAdapter'
+import { TextAdapter            } from '@/js/adapter/TextAdapter'
 
+const TF = TextAdapter.factory
 
 class TestUnitModel extends UnitModel
 {
-  public toString       () : string { return SudokuTextAdapter.factory(this).toString() }
-  public toStringValues () : string { return SudokuTextAdapter.factory(this).toStringValues() }
-  public toStringNames  () : string { return SudokuTextAdapter.factory(this).toStringNames() }
+  public toString       () : string { return TF(this).toString() }
+  public toStringValues () : string { return TF(this).toStringValues() }
+  public toStringNames  () : string { return TF(this).toStringNames() }
 }
 
 function mk_cells ( size = 0, autosolve = true ) : Array<TextCellModel>
@@ -107,11 +108,11 @@ describe('model/unit-model-basic', () => {
 })
 
 describe('model/unit-model-exceptions', () => {
-  test('unit-empty', () => expect(() => new TestUnitModel(mk_cells(  ))).toThrow('Content size incorrect'))
-  test('unit-small', () => expect(() => new TestUnitModel(mk_cells( 8))).toThrow('Content size incorrect'))
-  test('unit-large', () => expect(() => new TestUnitModel(mk_cells(10))).toThrow('Content size incorrect'))
-  test('unit-large', () => expect(() => new TestUnitModel(mk_cells(12))).toThrow('Content size incorrect'))
-  test('unit-NINE',  () => expect(() => new TestUnitModel(mk_cells( 9))).not.toThrow())
+  test('unit-empty', () => expect(() => new UnitModel(mk_cells(  ))).toThrow('Content size incorrect'))
+  test('unit-small', () => expect(() => new UnitModel(mk_cells( 8))).toThrow('Content size incorrect'))
+  test('unit-large', () => expect(() => new UnitModel(mk_cells(10))).toThrow('Content size incorrect'))
+  test('unit-large', () => expect(() => new UnitModel(mk_cells(12))).toThrow('Content size incorrect'))
+  test('unit-NINE',  () => expect(() => new UnitModel(mk_cells( 9))).not.toThrow())
 })
 
 describe('model/unit-model-forEachCell', () => {

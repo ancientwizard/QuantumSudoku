@@ -4,12 +4,12 @@
 import { describe, expect, test         } from '@jest/globals'
 import { BasicMap, bigintMax, bigintMin } from '@/js/model/BasicMap'
 
-
+ 
 describe('model/sudoku/basic-map', () => {
 
     test('bigint/max+nim', () => {
-        expect(()=>{bigintMax([])}).toThrow()
-        expect(()=>{bigintMin([])}).toThrow()
+        expect(()=> bigintMax([])).toThrow()
+        expect(()=> bigintMin([])).toThrow()
         expect(bigintMax([1n,2n,3n])).toBe(3n)
         expect(bigintMin([2n,1n,3n])).toBe(1n)
         expect([5n,1n,2n,0n,3n].sort((a,b) => { return a == b ? 0 : a > b ?  1 : -1 })).toEqual([0n,1n,2n,3n,5n])
@@ -41,12 +41,22 @@ describe('model/sudoku/basic-map', () => {
         // console.log(" ---- PUZ#71 ----")
         expect(new BasicMap().decodeMapString(puzzle_71_nr()).toStringMap()).toBe(puzzle_71().toStringMap())
         expect(new BasicMap().decodeMapString(puzzle_71_rl()).toStringMap()).toBe(puzzle_71().toStringMap())
-        expect(new BasicMap(puzzle_71().get_map()).encodeMapStringRL()).toBe(puzzle_71().encodeMapStringRL());
+        expect(new BasicMap(puzzle_71().get_map()).encodeMapStringRL()).toBe(puzzle_71().encodeMapStringRL())
+        expect(new BasicMap(puzzle_71().get_map_with_zeros()).encodeMapStringRL()).toBe(puzzle_71().encodeMapStringRL())
+        expect(puzzle_71().get_map().flat().filter((v) => { return v == null }).length).toBe(62)
+        expect(puzzle_71().get_map().flat().filter((v) => { return v == 0 }).length).toBe(0)
+        expect(puzzle_71().get_map_with_zeros().flat().filter((v) => { return v == 0 }).length).toBe(62)
+        expect(puzzle_71().get_map_with_zeros().flat().filter((v) => { return v == null }).length).toBe(0)
 
         // console.log(" ---- PUZ#96 ----")
         expect(new BasicMap().decodeMapString(puzzle_96_nr()).toStringMap()).toBe(puzzle_96().toStringMap())
         expect(new BasicMap().decodeMapString(puzzle_96_rl()).toStringMap()).toBe(puzzle_96().toStringMap())
         expect(new BasicMap(puzzle_96().get_map()).encodeMapStringRL()).toBe(puzzle_96().encodeMapStringRL());
+        expect(new BasicMap(puzzle_96().get_map_with_zeros()).encodeMapStringRL()).toBe(puzzle_96().encodeMapStringRL());
+        expect(puzzle_96().get_map().flat().filter((v) => { return v == 0 }).length).toBe(0)
+        expect(puzzle_96().get_map_with_zeros().flat().filter((v) => { return v == null }).length).toBe(0)
+        expect(puzzle_96().get_map().flat().filter((v) => { return v == null }).length).toBe(64)
+        expect(puzzle_96().get_map_with_zeros().flat().filter((v) => { return v == 0 }).length).toBe(64)
     })
 
     test('basic-map/exceptions', () => {

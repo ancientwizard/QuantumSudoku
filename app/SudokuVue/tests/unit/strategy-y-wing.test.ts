@@ -4,12 +4,13 @@
 import { describe, expect, test, beforeEach } from '@jest/globals'
 
 import { BoardModel, BoardMode  } from '@/js/model/BoardModel'
-import { BoardStringAdapter     } from '@/js/adapter/BoardStringAdapter'
 import { StrategyLogger         } from '@/js/strategy/StrategyLogger'
 import { StrategyYWing          } from '@/js/strategy/StrategyYWing'
 import { CellIndex              } from '@/js/model/CellIndex'
 import { CellValue              } from '@/js/model/CellValue'
+import { TextAdapter            } from '@/js/adapter/TextAdapter'
 
+const TF = TextAdapter.factory
 
 describe('strategy/y-wing', () => {
   let board : BoardModel
@@ -22,11 +23,11 @@ describe('strategy/y-wing', () => {
     const ywing_template = apply_template(board)
 
     // Proof our board is set up correctly
-    expect(BoardStringAdapter.toStringValuesBasic(board)).toBe(template_to_string(ywing_template))
+    expect(TF(board).toStringValuesBasic()).toBe(template_to_string(ywing_template))
 
     // console.log(template_to_string(template))
     // console.log(board.toStringValues())
-    console.log(BoardStringAdapter.toStringState(board))
+    console.log(TF(board).toStringState())
 
     {
       const logger = new StrategyLogger()

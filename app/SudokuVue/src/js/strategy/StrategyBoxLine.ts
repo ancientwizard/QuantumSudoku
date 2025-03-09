@@ -139,61 +139,6 @@ class StrategyBoxLine extends aStrategyBoard
     }
 }
 
-/*
-    public boolean strategy_box_line( Unit line, IntersectMap iB, IntersectMap iL )
-    {
-        int changed = 0;
-
-        // The Intersect candidates
-        //  unique set of undetermined cell candidate values 
-        ArrayList<Integer> intersectCandidates = iL.getIntersectCandidates( line.cells );
-
-        // Line non-intersect candidates
-        //  unique set of undetermined cell candidate values
-        ArrayList<Integer> lineNonIntersectCandidates = iL.getNonIntersectCandidates( line.cells );
-
-        // Clean-able Candidates
-        //  The unique candidate set that we can exclude from non-intersected block cells
-        ArrayList<Integer> cleanerCandidateSet = new ArrayList<Integer>(intersectCandidates);
-        cleanerCandidateSet.removeAll(lineNonIntersectCandidates);
-
-        // System.out.println(iL.set);
-
-        if ( debug )
-        {
-            this.logger?.add(" Intersect: " + intersectCandidates + " - " + intersectCandidates.size());
-            System.out.println("      Line: " + lineNonIntersectCandidates +
-                " - " + lineNonIntersectCandidates.size());
-
-            // Non Intersect Line (Unit) Cells
-            System.out.println("  Cleaning: " + cleanerCandidateSet + " - " + cleanerCandidateSet.size());
-        }
-
-        // Were done if there is nothing to clean
-        if ( cleanerCandidateSet.size() > 0 )
-        {
-            // Let the cleaning begin!
-            // - Build set of non-intersect line cells
-            // - exclude cleaning candidate set.
-            ArrayList<Cell> blockNonIntersectCells = iB.getNonIntersectCells( this.cells );
-
-            //new ArrayList<Cell>(9 - iL.set.size());
-            for ( Cell c : blockNonIntersectCells )
-            {
-            // System.out.println(" Line: " + c.getName());
-                for ( Integer N : cleanerCandidateSet )
-                    if (c.exclude(N))
-                      changed++;
-            }
-        }
-
-        if ( changed > 0 && debug )
-            System.out.println( "# Strategy 1 - box_line cleaned " + changed + " candicates");
-
-        return changed > 0;
-    }
-*/
-
 
 // vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix
 // END

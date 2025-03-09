@@ -97,7 +97,7 @@ class UnitStringAdapter
     else
     {
       // This is JUNK but I dont't I want to fix it!
-      //   I want to use the CellArrayFormatter trim feature
+      //   I want to use (reuse) the CellArrayFormatter trim feature
       const cells = unit.as_cell_array
       const separator = '+-----+';
       const colStrings: Array<string> = [];
@@ -192,7 +192,7 @@ class UnitStringAdapter
     return box_strings.join('\n') + '\n'
   }
 
-  // MOVED to SudoKuTextAdapter
+  // MOVED to TextAdapter
   static XXXBoxStringCoords( box: iBox ): string
   {
     const map : string[][] = [
@@ -231,13 +231,6 @@ class UnitStringAdapter
 
     return s
   }
-
-  // static BoxStringNames( box: iBox ): string
-
-  // private static formatCell( cell: CellModel ): string
-  // {
-  //   return `Cell: ${cell.constructor.name}, Value: ${cell.cv.label}`
-  // }
 }
 
 class CellFormatter
@@ -394,10 +387,10 @@ class CellArrayFormatter
         }
       })
 
-      row_strings[1].push(' ' + row[0].rowLabel)
-      board_strings.push(row_strings[0].join(''))
-      board_strings.push(row_strings[1].join(''))
-      board_strings.push(row_strings[2].join(''))
+      row_strings[1].push(row[0].rowLabel)
+      board_strings.push(row_strings[0].join('').trim())
+      board_strings.push(row_strings[1].join('').trim())
+      board_strings.push(row_strings[2].join('').trim())
       board_strings.push(separator)
     })
 

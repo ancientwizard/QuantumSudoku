@@ -8,13 +8,15 @@ import { UnitModel              } from '@/js/model/UnitModel'
 import { StrategyLogger         } from '@/js/strategy/StrategyLogger'
 import { StrategyHiddenTriple   } from '@/js/strategy/StrategyHiddenTriple'
 import { StrategyNakedTriple    } from '@/js/strategy/StrategyNakedTriple'
-import { SudokuTextAdapter      } from '@/js/adapter/SudokuTextAdapter'
+import { TextAdapter            } from '@/js/adapter/TextAdapter'
+
+const TF = TextAdapter.factory
 
 class TestUnitModel extends UnitModel
 {
-  public toString       () : string { return SudokuTextAdapter.factory(this).toString() }
-  public toStringValues () : string { return SudokuTextAdapter.factory(this).toStringValues() }
-  public toStringNames  () : string { return SudokuTextAdapter.factory(this).toStringNames() }
+  public toString       () : string { return TF(this).toString() }
+  public toStringValues () : string { return TF(this).toStringValues() }
+  public toStringNames  () : string { return TF(this).toStringNames() }
 }
 
 function mk_cells () : Array<TextCellModel>

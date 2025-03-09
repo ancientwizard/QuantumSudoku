@@ -5,7 +5,7 @@ import { describe, expect, test   } from '@jest/globals'
 
 import { LineModel                } from '@/js/model/LineModel'
 import { CellModel                } from '@/js/model/CellModel'
-import { SudokuTextAdapter as Txt } from '@/js/adapter/SudokuTextAdapter'
+import { TextAdapter as Txt       } from '@/js/adapter/TextAdapter'
 // import { UnitStringAdaptor } from '@/js/adapter/UnitStringAdaptor'
 
 

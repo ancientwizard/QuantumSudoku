@@ -3,13 +3,12 @@
 
 import { describe, expect, test           } from '@jest/globals'
 import { BoardMode, BoardType, BoardModel } from '@/js/model/BoardModel'
-import { BoardStringAdapter               } from '@/js/adapter/BoardStringAdapter'
 import { CellIndex                        } from '@/js/model/CellIndex'
 import { CellValue                        } from '@/js/model/CellValue'
-import { SudokuTextAdapter                } from '@/js/adapter/SudokuTextAdapter'
+import { TextAdapter                      } from '@/js/adapter/TextAdapter'
 import { UnitModel                        } from '@/js/model/UnitModel'
 
-const TF = SudokuTextAdapter.factory
+const TF = TextAdapter.factory
 
 describe('model/sudoku-board', () => {
 
@@ -43,13 +42,17 @@ describe('model/sudoku-board', () => {
     })
   })
 
-  test('board/to-string-defaults', () => {
+  test('board/text-adaptor/text-defaults', () => {
 
     [ BoardMode.EDIT, BoardMode.PLAY, BoardMode.SOLVE ].forEach( mode => {
-      expect(BoardStringAdapter.toStringNames(new BoardModel(mode))).toBe(board_string_names())
-      expect(BoardStringAdapter.toStringValuesBasic(new BoardModel(mode))).toBe(board_string_values())
-      expect(BoardStringAdapter.toStringCoords(new BoardModel(mode))).toBe(board_string_coords())
-      expect(BoardStringAdapter.toStringValues(new BoardModel(mode))).toBe(board_string())
+
+      expect(TF(new BoardModel(mode)).toStringCoords()).toBe(board_coords_str())
+      expect(TF(new BoardModel(mode)).toStringNames()).toBe(board_names_str())
+      expect(TF(new BoardModel(mode)).toStringValues()).toBe(board_values_str())
+      expect(TF(new BoardModel(mode)).toStringValuesBasic()).toBe(board_values_basic_str())
+
+      // TF(board).toStringFull()
+      // TF(board).toStringState()
     })
   })
 
@@ -69,7 +72,7 @@ describe('model/sudoku-board', () => {
     expect(board.set(CellIndex.EIGHT,CellIndex.EIGHT,CellValue.EIGHT)).toBe(true)
     expect(board.set(CellIndex.NINE,CellIndex.NINE,CellValue.NINE)).toBe(true)
 
-    expect(BoardStringAdapter.toStringState(board)).toBe(board_string_state())
+    expect(TF(board).toStringState()).toBe(board_string_state())
 
     // console.log(BoardAdapterString.toStringState(board))
   })
@@ -132,10 +135,10 @@ describe('model/sudoku-board', () => {
   describe('board/adapters/string-text', () => {
     test('string/adapters', () => {
 
-      expect(BoardStringAdapter.toStringNames(new BoardModel())).toBe(board_string_names())
-      expect(BoardStringAdapter.toStringValuesBasic(new BoardModel())).toBe(board_string_values())
-      expect(BoardStringAdapter.toStringCoords(new BoardModel())).toBe(board_string_coords())
-      expect(BoardStringAdapter.toStringValues(new BoardModel())).toBe(board_string())
+      expect(TF(new BoardModel()).toStringCoords()).toBe(board_coords_str())
+      expect(TF(new BoardModel()).toStringNames()).toBe(board_names_str())
+      expect(TF(new BoardModel()).toStringValues()).toBe(board_values_str())
+      expect(TF(new BoardModel()).toStringValuesBasic()).toBe(board_values_basic_str())
 
       // BoardStringAdapter.toStringFull(board)
       // BoardStringAdapter.toStringState(board)
@@ -149,7 +152,7 @@ describe('model/sudoku-board', () => {
 
 })
 
-function board_string_names()
+function board_names_str()
 {
   return `A1,B1,C1,D1,E1,F1,G1,H1,I1
 A2,B2,C2,D2,E2,F2,G2,H2,I2
@@ -163,7 +166,7 @@ A9,B9,C9,D9,E9,F9,G9,H9,I9
 `
 }
 
-function board_string_coords()
+function board_coords_str()
 {
   return `+-----+-----+-----+-----+-----+-----+-----+-----+-----+
 |(1,1)|(2,1)|(3,1)|(4,1)|(5,1)|(6,1)|(7,1)|(8,1)|(9,1)|
@@ -187,7 +190,7 @@ function board_string_coords()
 `
 }
 
-function board_string_values()
+function board_values_basic_str()
 {
   return `? ? ? ? ? ? ? ? ?
 ? ? ? ? ? ? ? ? ?
@@ -201,7 +204,7 @@ function board_string_values()
 `
 }
 
-function board_string () : string
+function board_values_str () : string
 {
   return`     A     B     C     D     E     F     G     H     I
   +-----+-----+-----+-----+-----+-----+-----+-----+-----+

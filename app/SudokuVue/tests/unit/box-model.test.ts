@@ -6,15 +6,18 @@ import { TextCellModel          } from '@/js/decorator/TextCellModel'
 import { BoxModel               } from '@/js/model/BoxModel'
 import { CellIndex              } from '@/js/model/CellIndex'
 import { CellValue              } from '@/js/model/CellValue'
-import { SudokuTextAdapter      } from '@/js/adapter/SudokuTextAdapter'
+import { TextAdapter            } from '@/js/adapter/TextAdapter'
+
+const TF = TextAdapter.factory
 
 class TestBoxModel extends BoxModel
 {
-  public toString       () : string { return SudokuTextAdapter.factory(this).toString() }
-  public toStringBlock  () : string { return SudokuTextAdapter.factory(this).toStringBlock() }
-  public toStringCoords () : string { return SudokuTextAdapter.factory(this).toStringCoords() }
-  public toStringNames  () : string { return SudokuTextAdapter.factory(this).toStringNames() }
-  public toStringValues () : string { return SudokuTextAdapter.factory(this).toStringValues() }
+  public toString             () : string { return TF(this).toString() }
+  public toStringBox          () : string { return TF(this).toStringBox() }
+  public toStringCoords       () : string { return TF(this).toStringCoords() }
+  public toStringNames        () : string { return TF(this).toStringNames() }
+  public toStringValues       () : string { return TF(this).toStringValues() }
+  public toStringValuesBasic  () : string { return TF(this).toStringValuesBasic() }
 }
 
 function mk_cells ( autosolve = true ) : Array<TextCellModel>
@@ -86,7 +89,7 @@ describe('model/block-model/string-checks', () => {
   const block = mk_block()
 
   test('box->toString',     () => expect(block.toString()).toBe(to_string()))
-  test('box->StringBlock',  () => expect(block.toStringBlock()).toBe(to_string_block()))
+  test('box->StringBox',    () => expect(block.toStringBox()).toBe(to_string_block()))
   test('box->StringValues', () => expect(block.toStringValues()).toBe('? ? ? ? ? ? ? ? ?'))
   test('box->StringNames',  () => expect(block.toStringNames()).toBe(to_string_names()))
   test('box->StringCoords', () => expect(block.toStringCoords()).toBe(to_string_coords()))
@@ -104,15 +107,15 @@ describe('model/block-model/string-checks-159', () => {
     expect(block.is(CellIndex.NINE, CellValue.NINE)).toBe(true)
 
     expect(block.toString()).toBe(to_string_159())
-    expect(block.toStringBlock()).toBe(to_string_block_159())
+    expect(block.toStringBox()).toBe(to_string_block_159())
     expect(block.toStringValues()).toBe('1 ? ? ? 5 ? ? ? 9')
     expect(block.toStringCoords()).toBe(to_string_coords())
     expect(block.toStringNames()).toBe(to_string_names())
 
     // console.log(block.toString())
-    // console.log(block.toStringBlock())
+    // console.log(block.toStringBox())
     // console.log(block.toStringValue())
-    // console.log(UnitStringAdapter.BoxStringCoords(block))
+    // console.log(block.toStringCoords())
     // console.log(block.toStringNames())
   })
 })

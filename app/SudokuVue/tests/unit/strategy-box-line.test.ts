@@ -14,24 +14,28 @@ import { CellValue                  } from '@/js/model/CellValue'
 import { TextCellModel as CellModel } from '@/js/decorator/TextCellModel'
 import { StrategyLogger             } from '@/js/strategy/StrategyLogger'
 import { StrategyBoxLine            } from '@/js/strategy/StrategyBoxLine'
-import { BoardStringAdapter         } from '@/js/adapter/BoardStringAdapter'
 import { IntersectMap               } from '@/js/model/IntersectMap'
-import { UnitStringAdapter          } from '@/js/adapter/UnitStringAdapter'
 import { CellArrayFormatter         } from '@/js/adapter/UnitStringAdapter'
-import { SudokuTextAdapter          } from '@/js/adapter/SudokuTextAdapter'
+import { TextAdapter                } from '@/js/adapter/TextAdapter'
+
+
+// TEXT-FACTORY
+const TF = TextAdapter.factory
 
 class TestLineModel extends LineModel
 {
-  public toString       () : string { return SudokuTextAdapter.factory(this).toString() }
-  public toStringValues () : string { return SudokuTextAdapter.factory(this).toStringValues() }
-  public toStringNames  () : string { return SudokuTextAdapter.factory(this).toStringNames() }
+  public toString       () : string { return TF(this).toString() }
+  public toStringBox    () : string { return TF(this).toStringBox() }
+  public toStringState  () : string { return TF(this).toStringState() }
+  public toStringValues () : string { return TF(this).toStringValues() }
+  public toStringNames  () : string { return TF(this).toStringNames() }
 }
 
 class TestBoxModel extends BoxModel
 {
-  public toString       () : string { return SudokuTextAdapter.factory(this).toString() }
-  public toStringValues () : string { return SudokuTextAdapter.factory(this).toStringValues() }
-  public toStringNames  () : string { return SudokuTextAdapter.factory(this).toStringNames() }
+  public toString       () : string { return TF(this).toString() }
+  public toStringValues () : string { return TF(this).toStringValues() }
+  public toStringNames  () : string { return TF(this).toStringNames() }
 }
 
 //port { CellFormatter            } from '@/js/adapter/UnitStringAdapter'
@@ -44,107 +48,106 @@ class StrategyBoxLineTest extends StrategyBoxLine
     }
 }
 
-describe('strategy/box-line', () => {
+describe('strategy/box-line(row)', () => {
 
   test('/assembly', () => {
 
-    console.log(IntersectMap.iR1)
+    // console.log(IntersectMap.iR1)
 
     expect(StrategyBoxLine).toBeDefined()
     expect(StrategyBoxLineTest).toBeDefined()
 
-    const members: Array<CellModel> = []
-
-    for ( let y = 1, i = 1 ; y <= 3 ; y++ )
-    for ( let x = 1 ; x <= 3 ; x++, i++ )
-    {
-        members.push(CellModel.factory(x, y+3, true ))
-    }
-
-    console.log('members:', members.map( c => c.name ).join(','))
-
+    // Use center of Sudoku board
+    const members: Array<CellModel> = cell_set(3, 3)
     const c: CellModel = members[0]
     const box: TestBoxModel = new TestBoxModel(members)
 
-    console.log('members:', members.map( c => c.name ).join(','))
-    console.log('observers:', c.length, 'Should this be 8?')
+    // console.log('** box members: **', members.map( c => c.name ).join(','))
+    expect(members.map( c => c.name ).join(',')).toBe('D4,E4,F4,D5,E5,F5,D6,E6,F6')
 
-    console.log('block: is(1,5)', box.is(CellIndex.ONE, CellValue.FIVE))
-    console.log('block:\n' + box.toString())
+    expect(c.toString()).toBe('# D4: ? [ 1,2,3,4,5,6,7,8,9 ]')
+    expect(c.name).toBe('D4')
+    expect(c.length).toBe(9)
 
-    box.is(CellIndex.FOUR, CellValue.EIGHT)
-    box.is(CellIndex.NINE, CellValue.ONE)
-    box.is(CellIndex.EIGHT, CellValue.THREE)
-    box.is(CellIndex.SIX, CellValue.NINE)
-    box.is(CellIndex.TWO, CellValue.SIX)
-    box.is(CellIndex.SEVEN, CellValue.FOUR)
-    box.is(CellIndex.FIVE, CellValue.SEVEN)
+    // expect(box.is(CellIndex.ONE, CellValue.FIVE)).toBe(true)
+    // expect(box.is(CellIndex.FOUR, CellValue.EIGHT)).toBe(true)
+    // expect(box.is(CellIndex.NINE, CellValue.ONE)).toBe(true)
+    // expect(box.is(CellIndex.EIGHT, CellValue.THREE)).toBe(true)
+    // expect(box.is(CellIndex.SIX, CellValue.NINE)).toBe(true)
+    // expect(box.is(CellIndex.TWO, CellValue.SIX)).toBe(true)
+    // expect(box.is(CellIndex.SEVEN, CellValue.FOUR)).toBe(true)
+    // expect(box.is(CellIndex.FIVE, CellValue.SEVEN)).toBe(true)
 
-    console.log('block:\n' + box.toString())
-    console.log('block.reset: ', box.reset())
-    console.log(' cell:', + c.toString())
-    console.log('block:\n' + box.toString())
+    // console.log(' box:\n' + box.toString())
+    // expect( box.reset()).toBe(undefined)
+    // console.log(' box:\n' + box.toString())
 
-    // Pointing Line
-    console.log('Pointing-Line')
+    // BOX Line ( reuse box intersect )
+    // console.log('BOX-Line')
 
     const line_members: Array<CellModel> = []
 
-    for ( let x = 4 ; x <= 6 ; x++ )
-      line_members.push( box.as_cell_array[x-1] )
+    for ( let x = 1 ; x <= 9 ; x++ )
+    {
+      if ( x < 4 || x > 6 )
+        line_members.push( CellModel.factory( x, 5, true ))
+      else
+        line_members.push( box.as_cell_array[x-1] );
+    }
 
-    for ( let x = 4 ; x <= 6 ; x++ )
-      line_members.push( CellModel.factory(x, 5, true ))
-
-    for ( let x = 4 ; x <= 6 ; x++ )
-      line_members.push( CellModel.factory(x+3, 5, true ))
+    expect(line_members.map( c => c.name ).join(',')).toBe('A5,B5,C5,D5,E5,F5,G5,H5,I5')
 
     const logger = new StrategyLogger()
     const strategy_box_line = new StrategyBoxLineTest(logger)
     const line = new TestLineModel(line_members)
 
-    const bx: Array<CellIndex> = [ CellIndex.ONE, CellIndex.TWO, CellIndex.THREE, CellIndex.SEVEN, CellIndex.EIGHT, CellIndex.NINE ];
+    CellIndex.arrayFactory.forEach((i,x) => {
+        [3,4].includes(x) && expect(box.exclude(i, CellValue.ONE)).toBe(true)
+    })
 
-    for ( const q of bx )
-    {
-        box.exclude(q, CellValue.ONE)
-        box.exclude(q, CellValue.SEVEN)
-    }
+    // const bx: Array<CellIndex> = [ CellIndex.ONE, CellIndex.TWO, CellIndex.THREE, CellIndex.FIVE, CellIndex.SEVEN, CellIndex.EIGHT, CellIndex.NINE ];
 
-    box.exclude(CellIndex.FIVE, CellValue.ONE)
+    // for ( const q of bx )
+    // {
+    //     box.exclude(q, CellValue.ONE)
+    //     box.exclude(q, CellValue.SEVEN)
+    // }
 
-    console.log('block:\n' + box.toString())
-    console.log('line:\n' + line.toString())
-    console.log('block: (names)\n' + box.toStringNames()
-              , '\nline: (names)\n' + line.toStringNames())
+    // box.exclude(CellIndex.FIVE, CellValue.ONE)
 
-    strategy_box_line.call_strategy_box_line( box, line, IntersectMap.iR2, IntersectMap.iR1 )
+    // console.log(' box:\n' + box.toString())
+    // console.log('line:\n' + line.toString())
+    // console.log(' box: (names)\n' + box.toStringNames()
+    //         , '\nline: (names)\n' + line.toStringNames())
+// TODO; I'm here; what a mess!
+    strategy_box_line.call_strategy_box_line( box, line, IntersectMap.iR2, IntersectMap.iR2 )
+    console.log(logger)
 
-    // Box Line
-    for ( let i = 4 ; i <= 9 ; i++ )
-    {
-        line.exclude(CellIndex.by(i-1), CellValue.FOUR)
-        line.exclude(CellIndex.by(i-1), CellValue.EIGHT)
-    }
+    // // Box Line
+    // for ( let i = 4 ; i <= 9 ; i++ )
+    // {
+    //     line.exclude(CellIndex.by(i-1), CellValue.FOUR)
+    //     line.exclude(CellIndex.by(i-1), CellValue.EIGHT)
+    // }
 
-    strategy_box_line.call_strategy_box_line( box, line, IntersectMap.iR2, IntersectMap.iR1 )
+    // strategy_box_line.call_strategy_box_line( box, line, IntersectMap.iR2, IntersectMap.iR1 )
 
-    console.log('block:\n' + box.toString())
-    console.log('line:\n' + line.toString())
-    console.log('block: (names)\n' + box.toStringNames()
-              , '\nline: (names)\n' + line.toStringNames())
+    // console.log(' box:\n' + box.toString())
+    // console.log('line:\n' + line.toString())
+    // console.log(' box: (names)\n' + box.toStringNames()
+    //         , '\nline: (names)\n' + line.toStringNames())
 
-    box.reset()
-    box.is(CellIndex.ONE, CellValue.ONE)
-    box.is(CellIndex.TWO, CellValue.TWO)
-    box.is(CellIndex.FIVE, CellValue.FIVE)
-    box.is(CellIndex.SIX, CellValue.SIX)
-    box.is(CellIndex.SEVEN, CellValue.SEVEN)
-    box.is(CellIndex.EIGHT, CellValue.EIGHT)
-    box.is(CellIndex.NINE, CellValue.NINE)
+    // box.reset()
+    // box.is(CellIndex.ONE, CellValue.ONE)
+    // box.is(CellIndex.TWO, CellValue.TWO)
+    // box.is(CellIndex.FIVE, CellValue.FIVE)
+    // box.is(CellIndex.SIX, CellValue.SIX)
+    // box.is(CellIndex.SEVEN, CellValue.SEVEN)
+    // box.is(CellIndex.EIGHT, CellValue.EIGHT)
+    // box.is(CellIndex.NINE, CellValue.NINE)
 
-    console.log(' box:\n' + UnitStringAdapter.BoxString(box)
-           + '\n line:\n' + UnitStringAdapter.LineString(line))
+    // console.log(' box:\n' + TF(box).toStringState()   // UnitStringAdapter.BoxString(box)
+    //        + '\n line:\n' + TF(line).toStringState())  // UnitStringAdapter.LineString(line))
 
     const formatter = new CellArrayFormatter(true)
     box.as_cell_array.forEach( c => formatter.apply(c))
@@ -157,7 +160,7 @@ describe('strategy/box-line', () => {
 describe('strategy/box-col', () => {
 
   test('/assembly', () => {
-
+return
     console.log(IntersectMap.iR1)
 
     expect(StrategyBoxLine).toBeDefined()
@@ -179,8 +182,8 @@ describe('strategy/box-col', () => {
     console.log('members:', members.map( c => c.name ).join(','))
     console.log('observers:', c.length, 'Should this be 8?')
 
-    console.log('block: is(1,5)', box.is(CellIndex.ONE, CellValue.FIVE))
-    console.log('block:\n' + box.toString())
+    console.log('box: is(1,5)', box.is(CellIndex.ONE, CellValue.FIVE))
+    console.log('box:\n' + box.toString())
 
     box.is(CellIndex.FOUR, CellValue.EIGHT)
     box.is(CellIndex.NINE, CellValue.ONE)
@@ -189,11 +192,11 @@ describe('strategy/box-col', () => {
     box.is(CellIndex.TWO, CellValue.SIX)
     box.is(CellIndex.SEVEN, CellValue.FOUR)
     box.is(CellIndex.FIVE, CellValue.SEVEN)
-    console.log('block:\n' + box.toString())
+    console.log('box:\n' + box.toString())
 
-    console.log('block.reset: ', box.reset())
-    console.log(' cell:', + c.toString())
-    console.log('block:\n' + box.toString())
+    console.log('box.reset: ', box.reset())
+    console.log('cell:', + c.toString())
+    console.log(' box:\n' + box.toString())
 
     // Pointing Line
     console.log('Pointing-Line')
@@ -210,9 +213,24 @@ describe('strategy/box-col', () => {
       {
         case 4: line_members.push( cells[1] ); break
         case 5: line_members.push( cells[4] ); break
-        case 6: line_members.push( cells[8] ); break
+        case 6: line_members.push( cells[7] ); break
       }
     }
+
+    // for ( let y = 1 ; y <= 9 ; y++ )
+    // {
+    //   if ( y < 4 || y > 6 )
+    //     line_members.push( CellModel.factory( 5, y, true ))
+    //   else
+    //   switch (y)
+    //   {
+    //     case 4: line_members.push( box.as_cell_array[1] ); break
+    //     case 5: line_members.push( box.as_cell_array[4] ); break
+    //     case 6: line_members.push( box.as_cell_array[7] ); break
+    //   }
+    // }
+
+    // expect(line_members.map( c => c.name ).join(',')).toBe('E1,E2,E3,E4,E5,E6,E7,E8,E9')
 
     const line = new TestLineModel(line_members)
     const logger = new StrategyLogger()
@@ -228,10 +246,10 @@ describe('strategy/box-col', () => {
 
     box.exclude(CellIndex.FIVE, CellValue.ONE)
 
-    console.log('block:\n' + box.toString())
+    console.log(' box:\n' + box.toString())
     console.log('line:\n' + line.toString())
-    console.log('block: (names)\n' + box.toStringNames()
-              , '\nline: (names)\n' + line.toStringNames())
+    console.log(' box: (names)\n' + box.toStringNames()
+            , '\nline: (names)\n' + line.toStringNames())
 
     strategy_box_line.call_strategy_box_line( box, line, IntersectMap.iR2, IntersectMap.iR1 )
 
@@ -244,10 +262,10 @@ describe('strategy/box-col', () => {
 
     strategy_box_line.call_strategy_box_line( box, line, IntersectMap.iR2, IntersectMap.iR1 )
 
-    console.log('block:\n' + box.toString())
+    console.log(' box:\n' + box.toString())
     console.log('line:\n' + line.toString())
-    console.log('block: (names)\n' + box.toStringNames()
-              , '\nline: (names)\n' + line.toStringNames())
+    console.log(' box: (names)\n' + box.toStringNames()
+            , '\nline: (names)\n' + line.toStringNames())
 
     box.reset()
     box.is(CellIndex.ONE, CellValue.ONE)
@@ -258,8 +276,8 @@ describe('strategy/box-col', () => {
     box.is(CellIndex.EIGHT, CellValue.EIGHT)
     box.is(CellIndex.NINE, CellValue.NINE)
 
-    console.log(' box(I2):\n' + UnitStringAdapter.BoxString(box)
-           + '\n line(C5):\n' + UnitStringAdapter.LineString(line))
+    console.log(' box(I2):\n' + TF(box).toStringState()   //  UnitStringAdapter.BoxString(box)
+           + '\n line(C5):\n' + TF(line).toStringState()) // UnitStringAdapter.LineString(line))
 
     const formatter = new CellArrayFormatter(true)
     box.as_cell_array.forEach( c => formatter.apply(c))
@@ -269,8 +287,8 @@ describe('strategy/box-col', () => {
 })
 
 
-describe('strategy/box-line/setup', () => {
-
+describe('strategy/box-line(board)/setup', () => {
+return
     const board = new BoardModel(BoardMode.SOLVE)
 
     const blks: Array<BoxModel>  = []
@@ -316,8 +334,8 @@ describe('strategy/box-line/setup', () => {
     // })
 
     // Apply Sudoku board box-line detection template
-    const template = apply_template(board)
-    console.log(BoardStringAdapter.toStringState(board))
+    // const template = apply_template(board)
+    // console.log(TF(board).toStringState())
 
     const logger = new StrategyLogger()
     new StrategyBoxLine(logger).apply(board)
@@ -330,9 +348,9 @@ describe('strategy/box-line/setup', () => {
     //  [2] is the box intersect map
     //  [3] is the line intersect map
     // sets.forEach( set => {
-    //     const block = boxes[set[0]]
+    //     const  box = boxes[set[0]]
     //     const line  = rows[set[1]]
-    //     const block_intersect_map = set[2]
+    //     const  box_intersect_map = set[2]
     //     const line_intersect_map = set[3]
 
     //     // Apply box-line strategy to box-line mapping
@@ -341,6 +359,20 @@ describe('strategy/box-line/setup', () => {
 
 })
 
+
+function cell_set ( x_offset: number, y_offset: number ): Array<CellModel>
+{
+  const members: Array<CellModel> = []
+
+  // Use center of Sudoku board
+  for ( let y = 1 ; y <= 3 ; y++ )
+  for ( let x = 1 ; x <= 3 ; x++ )
+  {
+      members.push(CellModel.factory(x+x_offset, y+y_offset, true ))
+  }
+
+  return members
+}
 
 function apply_template( board: BoardModel, template: number[][] = get_template() ) : number[][]
 {
