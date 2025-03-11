@@ -14,12 +14,12 @@ import { CellValue                  } from '@/js/model/CellValue'
 import { TextCellModel as CellModel } from '@/js/decorator/TextCellModel'
 import { StrategyLogger             } from '@/js/strategy/StrategyLogger'
 import { StrategyBoxLine            } from '@/js/strategy/StrategyBoxLine'
-import { IntersectMap               } from '@/js/model/IntersectMap'
+import { IntersectMap as IM         } from '@/js/model/IntersectMap'
 import { CellArrayFormatter         } from '@/js/adapter/UnitStringAdapter'
 import { TextAdapter                } from '@/js/adapter/TextAdapter'
+import type { iUnit } from '@/js/interface/iUnit'
 
-
-// TEXT-FACTORY
+// ALIAS: TEXT-FACTORY
 const TF = TextAdapter.factory
 
 class TestLineModel extends LineModel
@@ -42,32 +42,86 @@ class TestBoxModel extends BoxModel
 
 class StrategyBoxLineTest extends StrategyBoxLine
 {
-    public call_strategy_box_line( box: BoxModel, line: LineModel, iB: IntersectMap, iL: IntersectMap ): boolean
+    public call_strategy_box_line( box: BoxModel, line: LineModel, iB: IM, iL: IM ): boolean
     {
         return super.strategy_box_line(box, line, iB, iL)
     }
 }
 
-describe('strategy/box-line(row)', () => {
+describe('strategy/box-line', () => {
 
-  test('/assembly', () => {
-
-    // console.log(IntersectMap.iR1)
+  test('/row@assembly+test', () => {
 
     expect(StrategyBoxLine).toBeDefined()
     expect(StrategyBoxLineTest).toBeDefined()
 
     // Use center of Sudoku board
-    const members: Array<CellModel> = cell_set(3, 3)
-    const c: CellModel = members[0]
-    const box: TestBoxModel = new TestBoxModel(members)
+    const box_cell_members: Array<CellModel> = cell_set(3, 3)
+    const lne_cell_members: Array<CellModel> = []
 
-    // console.log('** box members: **', members.map( c => c.name ).join(','))
-    expect(members.map( c => c.name ).join(',')).toBe('D4,E4,F4,D5,E5,F5,D6,E6,F6')
+    const c: CellModel = box_cell_members[0]
+    const box: TestBoxModel = new TestBoxModel(box_cell_members)
 
+    expect(box_cell_members.map( c => c.name ).join(',')).toBe('D4,E4,F4,D5,E5,F5,D6,E6,F6')
+
+    // Populate the LINE with cells and intersect with BOX (properly!)
+    for ( let x = 1 ; x <= 9 ; x++ )
+    {
+      if ( x < 4 || x > 6 )
+        lne_cell_members.push( CellModel.factory( x, 5, true ))
+      else
+        lne_cell_members.push( box.as_cell_array[x-1] );
+    }
+
+    const line: TestLineModel = new TestLineModel(lne_cell_members)
+
+    // Small Cell sanity check
     expect(c.toString()).toBe('# D4: ? [ 1,2,3,4,5,6,7,8,9 ]')
     expect(c.name).toBe('D4')
     expect(c.length).toBe(9)
+
+    // Verify BOX & LINE cell members
+    expect(IM.iR1.getIntersectCells(box.as_cell_array).map( c => c.name ).join(',')).toBe('D4,E4,F4')
+    expect(IM.iR2.getIntersectCells(box.as_cell_array).map( c => c.name ).join(',')).toBe('D5,E5,F5')
+    expect(IM.iR3.getIntersectCells(box.as_cell_array).map( c => c.name ).join(',')).toBe('D6,E6,F6')
+    expect(lne_cell_members.map( c => c.name ).join(',')).toBe('A5,B5,C5,D5,E5,F5,G5,H5,I5')
+    expect(IM.iR1.getIntersectCells(lne_cell_members).map( c => c.name ).join(',')).toBe('A5,B5,C5')
+    expect(IM.iR2.getIntersectCells(lne_cell_members).map( c => c.name ).join(',')).toBe('D5,E5,F5')
+    expect(IM.iR3.getIntersectCells(lne_cell_members).map( c => c.name ).join(',')).toBe('G5,H5,I5')
+
+    // Set up for box-line strategy
+    expect(box.is(CellIndex.ONE, CellValue.SEVEN)).toBe(true)
+    expect(box.is(CellIndex.TWO, CellValue.TWO)).toBe(true)
+    expect(box.is(CellIndex.SIX, CellValue.THREE)).toBe(true)
+    expect(box.is(CellIndex.SEVEN, CellValue.EIGHT)).toBe(true)
+    expect(line.is(CellIndex.TWO, CellValue.SEVEN)).toBe(true)
+    expect(line.is(CellIndex.SEVEN, CellValue.EIGHT)).toBe(true)
+    expect(line.is(CellIndex.EIGHT, CellValue.NINE)).toBe(true)
+    expect(line.exclude(CellIndex.ONE, CellValue.FOUR)).toBe(true)
+    expect(line.exclude(CellIndex.THREE, CellValue.FOUR)).toBe(true)
+    expect(line.exclude(CellIndex.NINE, CellValue.FOUR)).toBe(true)
+
+    // Logger & Strategy
+    const logger = new StrategyLogger()
+    const strategy_box_line = new StrategyBoxLineTest(logger)
+
+    // Apply Strategy - cleanup on isle "4"
+    expect(strategy_box_line.call_strategy_box_line( box, line, IM.iR2, IM.iR2 )).toBe(true)
+    expect(logger.as_array.length).toBe(4)
+    expect(logger.as_array.includes('  Cleaning: 1 - [4]')).toBe(true)
+    expect(logger.as_array.includes('# Strategy 1 - box_line cleaned 3 candicates')).toBe(true)
+    // console.log(logger)
+
+    // Ready for next BOX-LINE for cleanup on isle "6"
+    expect(line.exclude(CellIndex.ONE, CellValue.SIX)).toBe(true)
+    expect(line.exclude(CellIndex.THREE, CellValue.SIX)).toBe(true)
+    expect(line.exclude(CellIndex.NINE, CellValue.SIX)).toBe(true)
+
+    expect(strategy_box_line.call_strategy_box_line( box, line, IM.iR2, IM.iR2 )).toBe(true)
+    expect(logger.as_array.length).toBe(8)
+    expect(logger.as_array.includes('  Cleaning: 2 - [4,6]')).toBe(true)
+    expect(logger.as_array.filter( c => c == '# Strategy 1 - box_line cleaned 3 candicates').length).toBe(2)
+    // console.log(logger)
 
     // expect(box.is(CellIndex.ONE, CellValue.FIVE)).toBe(true)
     // expect(box.is(CellIndex.FOUR, CellValue.EIGHT)).toBe(true)
@@ -85,286 +139,116 @@ describe('strategy/box-line(row)', () => {
     // BOX Line ( reuse box intersect )
     // console.log('BOX-Line')
 
-    const line_members: Array<CellModel> = []
-
-    for ( let x = 1 ; x <= 9 ; x++ )
-    {
-      if ( x < 4 || x > 6 )
-        line_members.push( CellModel.factory( x, 5, true ))
-      else
-        line_members.push( box.as_cell_array[x-1] );
-    }
-
-    expect(line_members.map( c => c.name ).join(',')).toBe('A5,B5,C5,D5,E5,F5,G5,H5,I5')
-
-    const logger = new StrategyLogger()
-    const strategy_box_line = new StrategyBoxLineTest(logger)
-    const line = new TestLineModel(line_members)
-
-    CellIndex.arrayFactory.forEach((i,x) => {
-        [3,4].includes(x) && expect(box.exclude(i, CellValue.ONE)).toBe(true)
-    })
-
-    // const bx: Array<CellIndex> = [ CellIndex.ONE, CellIndex.TWO, CellIndex.THREE, CellIndex.FIVE, CellIndex.SEVEN, CellIndex.EIGHT, CellIndex.NINE ];
-
-    // for ( const q of bx )
-    // {
-    //     box.exclude(q, CellValue.ONE)
-    //     box.exclude(q, CellValue.SEVEN)
-    // }
-
-    // box.exclude(CellIndex.FIVE, CellValue.ONE)
-
     // console.log(' box:\n' + box.toString())
     // console.log('line:\n' + line.toString())
     // console.log(' box: (names)\n' + box.toStringNames()
     //         , '\nline: (names)\n' + line.toStringNames())
-// TODO; I'm here; what a mess!
-    strategy_box_line.call_strategy_box_line( box, line, IntersectMap.iR2, IntersectMap.iR2 )
-    console.log(logger)
-
-    // // Box Line
-    // for ( let i = 4 ; i <= 9 ; i++ )
-    // {
-    //     line.exclude(CellIndex.by(i-1), CellValue.FOUR)
-    //     line.exclude(CellIndex.by(i-1), CellValue.EIGHT)
-    // }
-
-    // strategy_box_line.call_strategy_box_line( box, line, IntersectMap.iR2, IntersectMap.iR1 )
-
-    // console.log(' box:\n' + box.toString())
-    // console.log('line:\n' + line.toString())
-    // console.log(' box: (names)\n' + box.toStringNames()
-    //         , '\nline: (names)\n' + line.toStringNames())
-
-    // box.reset()
-    // box.is(CellIndex.ONE, CellValue.ONE)
-    // box.is(CellIndex.TWO, CellValue.TWO)
-    // box.is(CellIndex.FIVE, CellValue.FIVE)
-    // box.is(CellIndex.SIX, CellValue.SIX)
-    // box.is(CellIndex.SEVEN, CellValue.SEVEN)
-    // box.is(CellIndex.EIGHT, CellValue.EIGHT)
-    // box.is(CellIndex.NINE, CellValue.NINE)
 
     // console.log(' box:\n' + TF(box).toStringState()   // UnitStringAdapter.BoxString(box)
     //        + '\n line:\n' + TF(line).toStringState())  // UnitStringAdapter.LineString(line))
 
-    const formatter = new CellArrayFormatter(true)
-    box.as_cell_array.forEach( c => formatter.apply(c))
-    line.as_cell_array.forEach( c => formatter.apply(c))
-    console.log(formatter.toString())
+    // console.log(format_units([box, line]))
   })
 
 })
 
-describe('strategy/box-col', () => {
+describe('strategy/box-line', () => {
 
-  test('/assembly', () => {
-return
-    console.log(IntersectMap.iR1)
+  test('/col@assembly+test', () => {
 
     expect(StrategyBoxLine).toBeDefined()
     expect(StrategyBoxLineTest).toBeDefined()
 
-    const members: Array<CellModel> = []
+    const box_cell_members: Array<CellModel> = cell_set(6, 0)
+    const lne_cell_members: Array<CellModel> = []
 
-    for ( let y = 1, i = 1 ; y <= 3 ; y++ )
-    for ( let x = 1 ; x <= 3 ; x++, i++ )
-    {
-        members.push(CellModel.factory(x+3, y+3, true ))
-    }
+    const c: CellModel = box_cell_members[0]
+    const box: TestBoxModel = new TestBoxModel(box_cell_members)
 
-    console.log('members:', members.map( c => c.name ).join(','))
+    // Small Cell sanity check
+    expect(c.toString()).toBe('# G1: ? [ 1,2,3,4,5,6,7,8,9 ]')
+    expect(c.name).toBe('G1')
+    expect(c.length).toBe(9)
 
-    const c: CellModel = members[0]
-    const box: TestBoxModel = new TestBoxModel(members)
+    expect(box_cell_members.map( c => c.name ).join(',')).toBe('G1,H1,I1,G2,H2,I2,G3,H3,I3')
 
-    console.log('members:', members.map( c => c.name ).join(','))
-    console.log('observers:', c.length, 'Should this be 8?')
-
-    console.log('box: is(1,5)', box.is(CellIndex.ONE, CellValue.FIVE))
-    console.log('box:\n' + box.toString())
-
-    box.is(CellIndex.FOUR, CellValue.EIGHT)
-    box.is(CellIndex.NINE, CellValue.ONE)
-    box.is(CellIndex.EIGHT, CellValue.THREE)
-    box.is(CellIndex.SIX, CellValue.NINE)
-    box.is(CellIndex.TWO, CellValue.SIX)
-    box.is(CellIndex.SEVEN, CellValue.FOUR)
-    box.is(CellIndex.FIVE, CellValue.SEVEN)
-    console.log('box:\n' + box.toString())
-
-    console.log('box.reset: ', box.reset())
-    console.log('cell:', + c.toString())
-    console.log(' box:\n' + box.toString())
-
-    // Pointing Line
-    console.log('Pointing-Line')
-
-    const line_members: Array<CellModel> = []
-    const cells = box.as_cell_array
-
+    // Populate the LINE with cells and intersect with BOX (properly!)
     for ( let y = 1 ; y <= 9 ; y++ )
     {
-      if ( y < 4 || y > 6 )
-        line_members.push( CellModel.factory( 5, y, true ))
-      else
       switch (y)
       {
-        case 4: line_members.push( cells[1] ); break
-        case 5: line_members.push( cells[4] ); break
-        case 6: line_members.push( cells[7] ); break
+        case  1: lne_cell_members.push( box.as_cell_array[0] ); break
+        case  2: lne_cell_members.push( box.as_cell_array[3] ); break
+        case  3: lne_cell_members.push( box.as_cell_array[6] ); break
+        default: lne_cell_members.push( CellModel.factory( 7, y, true ))
       }
     }
+  
+    const line: TestLineModel = new TestLineModel(lne_cell_members)
 
-    // for ( let y = 1 ; y <= 9 ; y++ )
-    // {
-    //   if ( y < 4 || y > 6 )
-    //     line_members.push( CellModel.factory( 5, y, true ))
-    //   else
-    //   switch (y)
-    //   {
-    //     case 4: line_members.push( box.as_cell_array[1] ); break
-    //     case 5: line_members.push( box.as_cell_array[4] ); break
-    //     case 6: line_members.push( box.as_cell_array[7] ); break
-    //   }
-    // }
+    // console.log(' box:\n' + box.toString())
+    // console.log('line:\n' + line.toString())
+    // console.log(' box: (names)\n' + box.toStringNames()
+    //         , '\nline: (names)\n' + line.toStringNames())
 
-    // expect(line_members.map( c => c.name ).join(',')).toBe('E1,E2,E3,E4,E5,E6,E7,E8,E9')
+    expect(format_units([box, line]).split('\n')[0].split(/\s+/).filter(m => m).join(',')).toBe('G,H,I')
+    expect(format_units([box, line]).split('\n').length).toBe(4*9+3)
 
-    const line = new TestLineModel(line_members)
+    // Verify BOX & LINE cell members
+    expect(IM.iR1.getIntersectCells(box.as_cell_array).map( c => c.name ).join(',')).toBe('G1,H1,I1')
+    expect(IM.iR2.getIntersectCells(box.as_cell_array).map( c => c.name ).join(',')).toBe('G2,H2,I2')
+    expect(IM.iR3.getIntersectCells(box.as_cell_array).map( c => c.name ).join(',')).toBe('G3,H3,I3')
+    expect(IM.iC1.getIntersectCells(box.as_cell_array).map( c => c.name ).join(',')).toBe('G1,G2,G3')
+    expect(IM.iC2.getIntersectCells(box.as_cell_array).map( c => c.name ).join(',')).toBe('H1,H2,H3')
+    expect(IM.iC3.getIntersectCells(box.as_cell_array).map( c => c.name ).join(',')).toBe('I1,I2,I3')
+    expect(line.as_cell_array.map( c => c.name ).join(',')).toBe('G1,G2,G3,G4,G5,G6,G7,G8,G9')
+    expect(IM.iR1.getIntersectCells(line.as_cell_array).map( c => c.name ).join(',')).toBe('G1,G2,G3')
+    expect(IM.iR2.getIntersectCells(line.as_cell_array).map( c => c.name ).join(',')).toBe('G4,G5,G6')
+    expect(IM.iR3.getIntersectCells(line.as_cell_array).map( c => c.name ).join(',')).toBe('G7,G8,G9')
+
+    // Set up for box-line strategy
+    expect(box.is(CellIndex.ONE, CellValue.SEVEN)).toBe(true)
+    expect(box.is(CellIndex.THREE, CellValue.ONE)).toBe(true)
+    expect(box.is(CellIndex.EIGHT, CellValue.EIGHT)).toBe(true)
+    expect(line.is(CellIndex.FOUR, CellValue.THREE)).toBe(true)
+    expect(line.is(CellIndex.SIX, CellValue.EIGHT)).toBe(true)
+    expect(line.is(CellIndex.SEVEN, CellValue.SIX)).toBe(true)
+    expect(line.is(CellIndex.EIGHT, CellValue.ONE)).toBe(true)
+    expect(line.exclude(CellIndex.FIVE, CellValue.TWO)).toBe(true)
+    expect(line.exclude(CellIndex.NINE, CellValue.TWO)).toBe(true)
+    expect(line.exclude(CellIndex.FIVE, CellValue.NINE)).toBe(true)
+    expect(line.exclude(CellIndex.NINE, CellValue.NINE)).toBe(true)
+
+    // Logger & Strategy
     const logger = new StrategyLogger()
     const strategy_box_line = new StrategyBoxLineTest(logger)
 
-    const bx: Array<CellIndex> = [ CellIndex.ONE, CellIndex.TWO, CellIndex.THREE, CellIndex.SEVEN, CellIndex.EIGHT, CellIndex.NINE ];
+    // Apply Strategy - cleanup on isle "2 & 9"
+    expect(strategy_box_line.call_strategy_box_line( box, line, IM.iC1, IM.iR1 )).toBe(true)
+    expect(logger.as_array.length).toBe(4)
+    expect(logger.as_array.includes('  Cleaning: 2 - [2,9]')).toBe(true)
+    expect(logger.as_array.includes('# Strategy 1 - box_line cleaned 8 candicates')).toBe(true)
+    // console.log(logger)
 
-    for ( const q of bx )
-    {
-        box.exclude(q, CellValue.ONE)
-        box.exclude(q, CellValue.SEVEN)
-    }
-
-    box.exclude(CellIndex.FIVE, CellValue.ONE)
-
-    console.log(' box:\n' + box.toString())
-    console.log('line:\n' + line.toString())
-    console.log(' box: (names)\n' + box.toStringNames()
-            , '\nline: (names)\n' + line.toStringNames())
-
-    strategy_box_line.call_strategy_box_line( box, line, IntersectMap.iR2, IntersectMap.iR1 )
-
-    // Box Line
-    for ( let i = 4 ; i <= 9 ; i++ )
-    {
-        line.exclude(CellIndex.by(i-1), CellValue.FOUR)
-        line.exclude(CellIndex.by(i-1), CellValue.EIGHT)
-    }
-
-    strategy_box_line.call_strategy_box_line( box, line, IntersectMap.iR2, IntersectMap.iR1 )
-
-    console.log(' box:\n' + box.toString())
-    console.log('line:\n' + line.toString())
-    console.log(' box: (names)\n' + box.toStringNames()
-            , '\nline: (names)\n' + line.toStringNames())
-
-    box.reset()
-    box.is(CellIndex.ONE, CellValue.ONE)
-    box.is(CellIndex.TWO, CellValue.TWO)
-    box.is(CellIndex.FIVE, CellValue.FIVE)
-    box.is(CellIndex.SIX, CellValue.SIX)
-    box.is(CellIndex.SEVEN, CellValue.SEVEN)
-    box.is(CellIndex.EIGHT, CellValue.EIGHT)
-    box.is(CellIndex.NINE, CellValue.NINE)
-
-    console.log(' box(I2):\n' + TF(box).toStringState()   //  UnitStringAdapter.BoxString(box)
-           + '\n line(C5):\n' + TF(line).toStringState()) // UnitStringAdapter.LineString(line))
-
-    const formatter = new CellArrayFormatter(true)
-    box.as_cell_array.forEach( c => formatter.apply(c))
-    line.as_cell_array.forEach( c => formatter.apply(c))
-    console.log(formatter.toString())
+    // console.log(format_units([box, line]))
   })
 })
 
 
-describe('strategy/box-line(board)/setup', () => {
-return
-    const board = new BoardModel(BoardMode.SOLVE)
-
-    const blks: Array<BoxModel>  = []
-    const rows: Array<LineModel> = []
-    const cols: Array<LineModel> = []
-
-    // Messy but we'll refactor later; we need access to these items
-    //  to play with strategy-box-line implementation for testing
-    //  we'll make it more elegant later
-    board.forEachBox( box => blks.push(box))
-    board.forEachRow( row => rows.push(row))
-    board.forEachCol( col => cols.push(col))
-
-    // box & Line Strategy
-    // GOAL: setup mapping for box-line strategy
-
-    const rsets = StrategyMappingFactory.createBoxRowIntercepts()
-    const csets = StrategyMappingFactory.createBoxColIntercepts()
-
-    // 54 combinations of box-line mappings
-    //  9 box's intersected with 3 rows & 3 columns each == 9 * ( 3 + 3 ) == 54
-    test('strategy/box-row/interset-map-set/length ->> ' + rsets.length, () => expect(rsets.length).toBe(27))
-    test('strategy/box-col/interset-map-set/length ->> ' + csets.length, () => expect(csets.length).toBe(27))
-
-    // Proofs that intersect maps are setup correctly by testing selected cells by name.
-    //  The single best way to idenfy a selected cell is by its location within the sudoku board.
-    //  Each cell has a NAME defined as COLS: A-I + ROWS.1-9
-    //  Each intercept returns three cells, each non-intercect returns six cells.
-    // sets.forEach(( map_pair, idx ) => {
-    //     test('strategy/box-line/intersect-map-set/sets['+idx+']', () => {
-    //         const box = boxes[map_pair[0]].as_cell_array
-    //         const line  = idx < 27 ? rows[map_pair[1]].as_cell_array : cols[map_pair[1]].as_cell_array
-    //         const blk_imap = map_pair[2]
-    //         const lne_imap = map_pair[3]
-    //         const expected_intersect_names = map_pair[4][0]
-    //         const expected_blk_non_intersect_names = map_pair[4][1]
-    //         const expected_lne_non_intersect_names = map_pair[4][2] // need to add this data above
-    //         expect(blk_imap.getIntersectCells(box).map( c => c.name ).join(',')).toBe(expected_intersect_names)
-    //         expect(lne_imap.getIntersectCells(line).map( c => c.name ).join(',')).toBe(expected_intersect_names)
-    //         expect(blk_imap.getNonIntersectCells(box).map( c => c.name ).join(',')).toBe(expected_blk_non_intersect_names)
-    //         expect(lne_imap.getNonIntersectCells(line).map( c => c.name ).join(',')).toBe(expected_lne_non_intersect_names)
-    //     })
-    // })
-
-    // Apply Sudoku board box-line detection template
-    // const template = apply_template(board)
-    // console.log(TF(board).toStringState())
-
-    const logger = new StrategyLogger()
-    new StrategyBoxLine(logger).apply(board)
-    console.log(logger)
-
-    // Use maps to apply box-line strategy to each of these set mappings
-    //  where
-    //  [0] is the box index
-    //  [1] is the line index
-    //  [2] is the box intersect map
-    //  [3] is the line intersect map
-    // sets.forEach( set => {
-    //     const  box = boxes[set[0]]
-    //     const line  = rows[set[1]]
-    //     const  box_intersect_map = set[2]
-    //     const line_intersect_map = set[3]
-
-    //     // Apply box-line strategy to box-line mapping
-    //     // strategy_box_line( box, line, box_intersect_map, line_intersect_map )
-    // })
-
-})
-
+function format_units( units: Array<iUnit> ): string
+{
+  const formatter = new CellArrayFormatter(true)
+  units.forEach( unit => unit.as_cell_array.forEach( c => formatter.apply(c)))
+  return formatter.toString()
+}
 
 function cell_set ( x_offset: number, y_offset: number ): Array<CellModel>
 {
   const members: Array<CellModel> = []
 
-  // Use center of Sudoku board
+  if ( x_offset != 0 && x_offset != 3 && x_offset != 6 ) throw new Error('x_offset must be 0, 3, or 6')
+
+  // Create a 3x3 cell set
   for ( let y = 1 ; y <= 3 ; y++ )
   for ( let x = 1 ; x <= 3 ; x++ )
   {
@@ -374,36 +258,36 @@ function cell_set ( x_offset: number, y_offset: number ): Array<CellModel>
   return members
 }
 
-function apply_template( board: BoardModel, template: number[][] = get_template() ) : number[][]
-{
-  const ci_set = CellIndex.arrayFactory
-  const cv_set = CellValue.arrayFactory
+// function apply_template( board: BoardModel, template: number[][] = get_template() ) : number[][]
+// {
+//   const ci_set = CellIndex.arrayFactory
+//   const cv_set = CellValue.arrayFactory
 
-  template.forEach((row, Yidx) => {
-    row.forEach((cv, Xidx) => {
-      if (cv === 0)
-        return
-      board.set(ci_set[Xidx], ci_set[Yidx], cv_set[cv - 1])
-    })
-  })
+//   template.forEach((row, Yidx) => {
+//     row.forEach((cv, Xidx) => {
+//       if (cv === 0)
+//         return
+//       board.set(ci_set[Xidx], ci_set[Yidx], cv_set[cv - 1])
+//     })
+//   })
 
-  return template
-}
+//   return template
+// }
 
-function get_template() : number[][]
-{
-  return [
-    [5, 6, 4, 2, 9, 1, 3, 8, 7],
-    [0, 0, 0, 5, 0, 0, 0, 0, 4],
-    [0, 0, 0, 4, 0, 8, 2, 0, 5],
-    [0, 0, 0, 0, 0, 0, 0, 2, 0],
-    [0, 0, 0, 1, 4, 0, 5, 7, 0],
-    [0, 3, 0, 7, 2, 0, 4, 0, 9],
-    [2, 7, 9, 0, 0, 4, 0, 0, 0],
-    [1, 5, 0, 0, 0, 0, 9, 4, 2],
-    [0, 0, 0, 9, 0, 2, 7, 0, 0]
- ]
-}
+// function get_template() : number[][]
+// {
+//   return [
+//     [5, 6, 4, 2, 9, 1, 3, 8, 7],
+//     [0, 0, 0, 5, 0, 0, 0, 0, 4],
+//     [0, 0, 0, 4, 0, 8, 2, 0, 5],
+//     [0, 0, 0, 0, 0, 0, 0, 2, 0],
+//     [0, 0, 0, 1, 4, 0, 5, 7, 0],
+//     [0, 3, 0, 7, 2, 0, 4, 0, 9],
+//     [2, 7, 9, 0, 0, 4, 0, 0, 0],
+//     [1, 5, 0, 0, 0, 0, 9, 4, 2],
+//     [0, 0, 0, 9, 0, 2, 7, 0, 0]
+//  ]
+// }
 
 // +-----+-----+-----+-----+-----+-----+-----+-----+-----+
 // |     |     |     |     |     |     |     |     |     |

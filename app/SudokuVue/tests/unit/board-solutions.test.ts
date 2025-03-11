@@ -24,6 +24,7 @@ import      { StrategyYWing                     } from '@/js/strategy/StrategyYW
 // import      { BoardStringAdapter                } from '@/js/adapter/BoardStringAdapter'
 import      { TextBoardModel as BoardModel      } from '@/js/decorator/TextBoardModel'
 import      { TextAdapter                       } from '@/js/adapter/TextAdapter'
+import { StrategyBoxLine } from '@/js/strategy/StrategyBoxLine'
 
 const TF = TextAdapter.factory
 
@@ -136,6 +137,7 @@ describe('sudoku/library/solve', () => {
 
             const ywing_logger = new StrategyLogger()
             const board_strategies: Array<iStrategyBoard> = [
+                new StrategyBoxLine(logger),
                 new StrategyYWing(logger), //ywing_logger),
                 new StrategyXWing(logger),
               ]

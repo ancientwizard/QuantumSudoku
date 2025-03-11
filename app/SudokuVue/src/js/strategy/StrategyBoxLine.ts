@@ -95,7 +95,7 @@ class StrategyBoxLine extends aStrategyBoard
 
         // The Intersect candidates
         //  unique set of undetermined cell candidates values
-        const intersectCandidates = iL.getUniqueNonIntersectCellValues( line.as_cell_array );
+        const intersectCandidates = iL.getUniqueIntersectCellValues( line.as_cell_array );
 
         // Line non-intersect candidates
         //  unique set of undetermined cell candidate values
