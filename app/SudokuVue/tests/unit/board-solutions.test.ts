@@ -18,13 +18,14 @@ import      { StrategyNakedTriple               } from '@/js/strategy/StrategyNa
 import      { StrategyNakedQuad                 } from '@/js/strategy/StrategyNakedQuad'
 import      { StrategyHiddenQuad                } from '@/js/strategy/StrategyHiddenQuad'
 import      { StrategyLogger                    } from '@/js/strategy/StrategyLogger'
+import      { StrategyBoxLine                   } from '@/js/strategy/StrategyBoxLine'
+import      { StrategyPointingLine              } from '@/js/strategy/StrategyPointingLine'
 import      { StrategyXWing                     } from '@/js/strategy/StrategyXWing'
 import      { StrategyYWing                     } from '@/js/strategy/StrategyYWing'
 // import      { StrategyYWing                     } from '@/js/strategy/StrategyYWing-I'
 // import      { BoardStringAdapter                } from '@/js/adapter/BoardStringAdapter'
 import      { TextBoardModel as BoardModel      } from '@/js/decorator/TextBoardModel'
 import      { TextAdapter                       } from '@/js/adapter/TextAdapter'
-import { StrategyBoxLine } from '@/js/strategy/StrategyBoxLine'
 
 const TF = TextAdapter.factory
 
@@ -138,6 +139,7 @@ describe('sudoku/library/solve', () => {
             const ywing_logger = new StrategyLogger()
             const board_strategies: Array<iStrategyBoard> = [
                 new StrategyBoxLine(logger),
+                new StrategyPointingLine(logger),
                 new StrategyYWing(logger), //ywing_logger),
                 new StrategyXWing(logger),
               ]
@@ -178,7 +180,7 @@ describe('sudoku/library/solve', () => {
 
             expect(TF(board).toStringValuesBasic()).not.toBe(init_state)
 
-            board.isSolved || console.log(TF(board).toStringState())
+            // board.isSolved || console.log(TF(board).toStringState())
 
             // next steps
             // - setup the strategy patterns

@@ -27,19 +27,30 @@ describe('strategy/y-wing', () => {
 
     // console.log(template_to_string(template))
     // console.log(board.toStringValues())
-    console.log(TF(board).toStringState())
+    // console.log(TF(board).toStringState())
 
     {
       const logger = new StrategyLogger()
       const ywing  = new StrategyYWing(logger)
 
-      console.log('APPLY-Y-WING:',ywing.apply(board))
-      console.log('APPLY-Y-WING:',ywing.apply(board))
+      expect(ywing.apply(board)).toBe(true)
+      expect(ywing.apply(board)).toBe(false)
+      expect(logger.as_array).toEqual([
+        '# YWing: Found Y-Wing with pivot B1 having pincers [C2,B9]',
+        '# YWing: ([A,B]=3,8) => ([B,C]=4,8) => ([C,A]=3,4)',
+        '# YWing: Common candidate: 4',
+        '# YWing: C8.exclude(4) true'
+      ])
 
-      console.log(logger)
+      // console.log('APPLY-Y-WING:',ywing.apply(board))
+      // console.log('APPLY-Y-WING:',ywing.apply(board))
+
+      // console.log(logger)
       // console.log(BoardStringAdapter.toStringState(board))
 
-      console.log('SOLVED:',board.isSolved);
+      // console.log('SOLVED:',board.isSolved)
+      expect(board.isSolved).toBe(false)
+
       // expect(logger.as_array.length).toBe(9)
       // expect(logger.as_array[0]).toBe('# (Y-Wing[ROW(detect)-COL(exclude)]): 3 (VALUE)')
       // expect(logger.as_array[1]).toBe('#  Include: COLS:[ 2, 5 ] => [ B3, B5, E3, E5 ]')

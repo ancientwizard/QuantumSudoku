@@ -2,13 +2,11 @@
 // strategy-box-line.test.ts
 // box & Line Strategy unit testing
 
-import { describe, expect, test  } from '@jest/globals'
+import { describe, expect, test     } from '@jest/globals'
 
+import type { iUnit                 } from '@/js/interface/iUnit'
 import { BoxModel                   } from '@/js/model/BoxModel'
 import { LineModel                  } from '@/js/model/LineModel'
-import { BoardModel                 } from '@/js/model/BoardModel'
-import { BoardMode                  } from '@/js/model/BoardModel' 
-import { StrategyMappingFactory     } from '@/js/strategy/StrategyMappingFactory'
 import { CellIndex                  } from '@/js/model/CellIndex'
 import { CellValue                  } from '@/js/model/CellValue'
 import { TextCellModel as CellModel } from '@/js/decorator/TextCellModel'
@@ -17,7 +15,6 @@ import { StrategyBoxLine            } from '@/js/strategy/StrategyBoxLine'
 import { IntersectMap as IM         } from '@/js/model/IntersectMap'
 import { CellArrayFormatter         } from '@/js/adapter/UnitStringAdapter'
 import { TextAdapter                } from '@/js/adapter/TextAdapter'
-import type { iUnit } from '@/js/interface/iUnit'
 
 // ALIAS: TEXT-FACTORY
 const TF = TextAdapter.factory
@@ -38,8 +35,6 @@ class TestBoxModel extends BoxModel
   public toStringNames  () : string { return TF(this).toStringNames() }
 }
 
-//port { CellFormatter            } from '@/js/adapter/UnitStringAdapter'
-
 class StrategyBoxLineTest extends StrategyBoxLine
 {
     public call_strategy_box_line( box: BoxModel, line: LineModel, iB: IM, iL: IM ): boolean
@@ -48,7 +43,7 @@ class StrategyBoxLineTest extends StrategyBoxLine
     }
 }
 
-describe('strategy/box-line', () => {
+describe('StrategyBoxLine', () => {
 
   test('/row@assembly+test', () => {
 
@@ -107,10 +102,10 @@ describe('strategy/box-line', () => {
 
     // Apply Strategy - cleanup on isle "4"
     expect(strategy_box_line.call_strategy_box_line( box, line, IM.iR2, IM.iR2 )).toBe(true)
-    expect(logger.as_array.length).toBe(4)
+    // console.log(logger)
+    expect(logger.as_array.length).toBe(5)
     expect(logger.as_array.includes('  Cleaning: 1 - [4]')).toBe(true)
     expect(logger.as_array.includes('# Strategy 1 - box_line cleaned 3 candicates')).toBe(true)
-    // console.log(logger)
 
     // Ready for next BOX-LINE for cleanup on isle "6"
     expect(line.exclude(CellIndex.ONE, CellValue.SIX)).toBe(true)
@@ -118,10 +113,10 @@ describe('strategy/box-line', () => {
     expect(line.exclude(CellIndex.NINE, CellValue.SIX)).toBe(true)
 
     expect(strategy_box_line.call_strategy_box_line( box, line, IM.iR2, IM.iR2 )).toBe(true)
-    expect(logger.as_array.length).toBe(8)
+    // console.log(logger)
+    expect(logger.as_array.length).toBe(10)
     expect(logger.as_array.includes('  Cleaning: 2 - [4,6]')).toBe(true)
     expect(logger.as_array.filter( c => c == '# Strategy 1 - box_line cleaned 3 candicates').length).toBe(2)
-    // console.log(logger)
 
     // expect(box.is(CellIndex.ONE, CellValue.FIVE)).toBe(true)
     // expect(box.is(CellIndex.FOUR, CellValue.EIGHT)).toBe(true)
@@ -152,7 +147,7 @@ describe('strategy/box-line', () => {
 
 })
 
-describe('strategy/box-line', () => {
+describe('StrategyBoxLine', () => {
 
   test('/col@assembly+test', () => {
 
@@ -225,7 +220,7 @@ describe('strategy/box-line', () => {
 
     // Apply Strategy - cleanup on isle "2 & 9"
     expect(strategy_box_line.call_strategy_box_line( box, line, IM.iC1, IM.iR1 )).toBe(true)
-    expect(logger.as_array.length).toBe(4)
+    expect(logger.as_array.length).toBe(5)
     expect(logger.as_array.includes('  Cleaning: 2 - [2,9]')).toBe(true)
     expect(logger.as_array.includes('# Strategy 1 - box_line cleaned 8 candicates')).toBe(true)
     // console.log(logger)

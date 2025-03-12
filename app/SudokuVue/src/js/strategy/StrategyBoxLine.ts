@@ -23,9 +23,9 @@ import { StrategyMappingFactory } from '@/js/strategy/StrategyMappingFactory'
 //  Z  Z  Z  Y  Y  Y  Y  Y  Y
 //  X  X  X
 //
-//  X = non-intersected-block
-//  Y = non-intersected-line
-//  Z = intersection
+//  X = non-intersected-block-cells
+//  Y = non-intersected-line-cells
+//  Z = intersection-cells
 //
 
 
@@ -40,14 +40,6 @@ class StrategyBoxLine extends aStrategyBoard
 
         const boxRowIntercepts = StrategyMappingFactory.createBoxRowIntercepts();
         const boxColIntercepts = StrategyMappingFactory.createBoxColIntercepts();
-
-        // console.log('Box-Row Intersect Sets:', boxRowIntercepts.length);
-        // console.log('Box-Row Intersect Sets:', boxRowIntercepts[0]);
-        // console.log('Box-Col Intersect Sets:', boxColIntercepts.length);
-        // console.log('Box-Col Intersect Sets:', boxColIntercepts[0]);
-
-        // console.log('Box-Line Intersect Sets:', sets.map( set => set[0] + ' - ' + set[1] ));
-        // console.log('Box-Line Intersect Sets:', sets.map( set => set[0] + ' - ' + set[1] ).join(','));
 
         let changed = false;
 
@@ -105,15 +97,6 @@ class StrategyBoxLine extends aStrategyBoard
         //  The unique candidate value set that we can exclude from non-intersected block cells
         const cleanerCandidateSet = intersectCandidates.filter( c => !lineNonIntersectCandidates.includes(c) );
 
-        if ( debug )
-        {
-            this.logger?.add(` Intersect: ${intersectCandidates.length} - [${intersectCandidates.map(cv => cv.value).join(',')}]`);
-            this.logger?.add(`      Line: ${lineNonIntersectCandidates.length} - [${lineNonIntersectCandidates.map(cv => cv.value).join(',')}]`);
-        }
-
-        // Non Intersect Line (Unit) Cells
-        this.logger?.add(`  Cleaning: ${cleanerCandidateSet.length} - [${cleanerCandidateSet.map(v=> v.value)}]`);
-
         // Were done if there is nothing to clean
         if ( cleanerCandidateSet.length > 0 )
         {
@@ -129,6 +112,15 @@ class StrategyBoxLine extends aStrategyBoard
                     if ( c.exclude(N) )
                         changed++;
                 }
+            }
+
+            if ( debug && changed > 0 )
+            {
+                // Non Intersect Line (Unit) Cells
+                this.logger?.add(` Intersect: ${intersectCandidates.length} - [${intersectCandidates.map(cv => cv.value).join(',')}]`);
+                this.logger?.add(`      Line: ${lineNonIntersectCandidates.length} - [${lineNonIntersectCandidates.map(cv => cv.value).join(',')}]`);
+                this.logger?.add(`     Block: ${blockNonIntersectCells.length} - [${blockNonIntersectCells.map(v=> v.name)}]`);
+                this.logger?.add(`  Cleaning: ${cleanerCandidateSet.length} - [${cleanerCandidateSet.map(v=> v.value)}]`);
             }
         }
 
