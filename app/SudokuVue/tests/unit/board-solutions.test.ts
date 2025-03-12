@@ -44,8 +44,8 @@ describe('sudoku/library/solve', () => {
             // if ( sectionKey === 'global' ) console.log(ini.as_object[sectionKey])
             if ( sectionKey === 'global' ) continue
 
-            // const source = ini.param(sectionKey, 'source')
-            // const page   = ini.param(sectionKey, 'page')
+            const source = ini.param(sectionKey, 'source')
+            const page   = ini.param(sectionKey, 'page')
             const map_encoded = ini.param(sectionKey, 'map')
             const map = new BasicMap().decodeMapString(map_encoded)
 
@@ -137,27 +137,30 @@ describe('sudoku/library/solve', () => {
             const unit_solver_chain = unit_strategies[0]
 
             const ywing_logger = new StrategyLogger()
+            const xwing_logger = new StrategyLogger()
             const board_strategies: Array<iStrategyBoard> = [
                 new StrategyBoxLine(logger),
                 new StrategyPointingLine(logger),
-                new StrategyYWing(logger), //ywing_logger),
-                new StrategyXWing(logger),
+                new StrategyYWing(ywing_logger),
+                new StrategyXWing(xwing_logger),
               ]
             const board_solver_chain = board_strategies[0]
 
             unit_strategies.reduce((prev, curr) => prev.setNext(curr));
             board_strategies.reduce((prev, curr) => prev.setNext(curr));
+            let attempts = 0
 
-            for ( let i = 0; i < 12; i++ )
+            for ( ; attempts < 50; attempts++ )
             {
+                let changed = false
+
                 // Apply UNIT based strategies
-                board.forEachRow(   row => unit_solver_chain.apply(row));
-                board.forEachCol(column => unit_solver_chain.apply(column));
-                board.forEachBox( block => unit_solver_chain.apply(block));
+                board.forEachRow(   row => changed ||= unit_solver_chain.apply(row));
+                board.forEachCol(column => changed ||= unit_solver_chain.apply(column));
+                board.forEachBox( block => changed ||= unit_solver_chain.apply(block));
 
                 // Apply BOARD based strategies
-                board_solver_chain.apply(board)
-                ywing_logger.as_array.length && console.log(ywing_logger.as_array)
+                changed ||= board_solver_chain.apply(board)
 
                 let broken = false
                 board.forEachRow( row => {
@@ -176,11 +179,18 @@ describe('sudoku/library/solve', () => {
                   solved_puzzle_count++
                   break
                 }
+
+                if ( !changed ) break
             }
 
             expect(TF(board).toStringValuesBasic()).not.toBe(init_state)
 
-            // board.isSolved || console.log(TF(board).toStringState())
+            // ywing_logger.as_array.length && console.log('Y-WING\n', ywing_logger.as_array )
+            // xwing_logger.as_array.length && console.log('X-WING\n', xwing_logger.as_array )
+
+            if ( !  board.isSolved )
+              // attempts > 20 &&
+              console.log('   SOURCE:', source, '\n     PAGE:', page, '\n ATTEMPTS:', attempts, '\n\n', TF(board).toStringState())
 
             // next steps
             // - setup the strategy patterns
