@@ -118,22 +118,6 @@ describe('StrategyBoxLine', () => {
     expect(logger.as_array.includes('  Cleaning: 2 - [4,6]')).toBe(true)
     expect(logger.as_array.filter( c => c == '# Strategy 1 - box_line cleaned 3 candicates').length).toBe(2)
 
-    // expect(box.is(CellIndex.ONE, CellValue.FIVE)).toBe(true)
-    // expect(box.is(CellIndex.FOUR, CellValue.EIGHT)).toBe(true)
-    // expect(box.is(CellIndex.NINE, CellValue.ONE)).toBe(true)
-    // expect(box.is(CellIndex.EIGHT, CellValue.THREE)).toBe(true)
-    // expect(box.is(CellIndex.SIX, CellValue.NINE)).toBe(true)
-    // expect(box.is(CellIndex.TWO, CellValue.SIX)).toBe(true)
-    // expect(box.is(CellIndex.SEVEN, CellValue.FOUR)).toBe(true)
-    // expect(box.is(CellIndex.FIVE, CellValue.SEVEN)).toBe(true)
-
-    // console.log(' box:\n' + box.toString())
-    // expect( box.reset()).toBe(undefined)
-    // console.log(' box:\n' + box.toString())
-
-    // BOX Line ( reuse box intersect )
-    // console.log('BOX-Line')
-
     // console.log(' box:\n' + box.toString())
     // console.log('line:\n' + line.toString())
     // console.log(' box: (names)\n' + box.toStringNames()
@@ -220,10 +204,10 @@ describe('StrategyBoxLine', () => {
 
     // Apply Strategy - cleanup on isle "2 & 9"
     expect(strategy_box_line.call_strategy_box_line( box, line, IM.iC1, IM.iR1 )).toBe(true)
+    // console.log(logger)
     expect(logger.as_array.length).toBe(5)
     expect(logger.as_array.includes('  Cleaning: 2 - [2,9]')).toBe(true)
     expect(logger.as_array.includes('# Strategy 1 - box_line cleaned 8 candicates')).toBe(true)
-    // console.log(logger)
 
     // console.log(format_units([box, line]))
   })
