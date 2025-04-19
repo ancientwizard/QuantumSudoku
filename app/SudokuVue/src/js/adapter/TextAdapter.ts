@@ -392,16 +392,21 @@ export class TextAdapter
     : TextBoardAdapter | TextLineAdapter | TextBoxAdapter | TextUnitAdapter
   {
     const type_name   = unit.constructor.name
-    const type_match  = type_name.match(/BoardModel|LineModel|BoxModel|UnitModel/)
 
-    switch ( type_match ? type_match[0] : type_name )
+    switch ( type_name )
     {
+      case 'TextBoardModel':
       case 'BoardModel':
         return new TextBoardAdapter( unit as iBoard )
+
       case 'LineModel':
         return new TextLineAdapter( unit as iLine )
+
+      case 'TestBoxModel':
       case 'BoxModel':
         return new TextBoxAdapter( unit as iBox )
+
+      case 'TestUnitModel':
       case 'UnitModel':
         return new TextUnitAdapter( unit as iUnit )
       default:

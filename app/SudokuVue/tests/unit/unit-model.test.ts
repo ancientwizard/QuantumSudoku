@@ -7,6 +7,8 @@ import { CellValue              } from '@/js/model/CellValue'
 import { TextCellModel          } from '@/js/decorator/TextCellModel'
 import { UnitModel              } from '@/js/model/UnitModel'
 import { TextAdapter            } from '@/js/adapter/TextAdapter'
+import type { iUnit             } from '@/js/interface/iUnit'
+import type { CellModel } from '@/js/model/CellModel'
 
 const TF = TextAdapter.factory
 
@@ -15,6 +17,19 @@ class TestUnitModel extends UnitModel
   public toString       () : string { return TF(this).toString() }
   public toStringValues () : string { return TF(this).toStringValues() }
   public toStringNames  () : string { return TF(this).toStringNames() }
+}
+
+class UnknownUnitModel implements iUnit
+{
+  private cells: Array<CellModel> = []
+  constructor(cells: Array<CellModel>) { this.cells = cells }
+  public get as_cell_array(): Array<CellModel> { return this.cells }
+  public get isSolved(): boolean { return false }
+  public get isBroken(): boolean { return false }
+  public reset(): void { this.cells.forEach(cell => cell.reset()) }
+  public exclude(ci: CellIndex, cv: CellValue): boolean { return false }
+  public is(ci: CellIndex, cv: CellValue): boolean { return false }
+  public forEachCell(callback: (cell: CellModel, index: number) => void): void { }
 }
 
 function mk_cells ( size = 0, autosolve = true ) : Array<TextCellModel>
@@ -34,6 +49,11 @@ function mk_unit ( size = 0, autosolve = true ) : TestUnitModel
 
 function unit (autosolve = true) : TestUnitModel { return mk_unit( 9, autosolve ) }
 
+describe('text-adapter-exception', () => {
+  test('Unknown Sudoku UNIT for TextAdapter factory', () => {
+    expect(()=> { TF(new UnknownUnitModel(mk_cells(9)))}).toThrow('Unknown Sudoku UNIT for TextAdapter factory - ')
+  })
+})
 
 describe('mk_cells function', () => {
   test('creates the correct number of cells', () => {
