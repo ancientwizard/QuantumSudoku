@@ -44,10 +44,27 @@ class BoardModel implements iBoard
     if ( this.TYPE == BoardType.DIAGONAL ) this.buildDiagonalUnits(cells)
   }
 
+  // There two SUDOKU puzzle operations when it comes to PLAY:
+  // 1. SET a cell value
+  // 2. EXCLUDE a cell value
+  //
+  //  Put into context:
+  //   - The typical experience would consist of buying a book of ready-made puzzles
+  //     the EDIT mode and using SET to fill in the initial cells is how we
+  //     create a puzzle here. Even if the Setting is programaticlly dine using
+  //     a generator OR saved library of puzzles.
+  //   - During PLAY mode both SET and EXCLUDE are behaviors that emulate
+  //     the experience of playing a puzzle on paper or in this case on a screen.
+
   public set ( x: CellIndex, y: CellIndex, value: CellValue ): boolean
   {
     return this.rowunits[y.index].is(x, value)
   }
+
+  // public exclude ( x: CellIndex, y: CellIndex, value: CellValue ): boolean
+  // {
+  //   return this.rowunits[y.index].exclude(x, value)
+  // }
 
   public columnNamesAsArray(): Array<string>
   {
@@ -160,7 +177,9 @@ class BoardModel implements iBoard
     // This also covers all colums, blocks and diagonals
     this.rowunits.forEach(u => u.reset())
     this.MODE = BoardMode.EDIT
-    // If we Had INIT history we'd play it in now OR our consumer would do so!
+
+    // If we Had INIT(ial) history we'd play it in now OR our consumer would do so!
+
     return this
   }
 

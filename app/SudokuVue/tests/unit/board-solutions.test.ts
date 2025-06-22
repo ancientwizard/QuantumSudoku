@@ -192,11 +192,8 @@ describe('sudoku/library/solve', () => {
               // attempts > 20 &&
               console.log('   SOURCE:', source, '\n     PAGE:', page, '\n ATTEMPTS:', attempts, '\n\n', TF(board).toStringState())
 
-            // next steps
-            // - setup the strategy patterns
-            // - use strategy patterns to solve/play the board
+            // Next Steps
             // - use strategy historyPlay to store the user(solver) moves
-            
 
             // expect(board.solve()).toBe(true)
 

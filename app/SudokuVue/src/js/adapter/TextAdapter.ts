@@ -409,8 +409,9 @@ export class TextAdapter
       case 'TestUnitModel':
       case 'UnitModel':
         return new TextUnitAdapter( unit as iUnit )
+
       default:
-        throw new Error('Unknown Sudoku UNIT for TextAdapter factory - ' + unit.constructor.name )
+        throw new Error('Unknown Sudoku UNIT for TextAdapter factory - ' + type_name )
     }
   }
 }
