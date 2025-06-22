@@ -3,7 +3,7 @@
 //  - tracks state
 //  - ensures values may be used; gotta-love-typing!
 //  - include basic features useable for computerized
-//    puzzle solving & building
+//    puzzle solving, building & playing
 //
 
 import type { iObserver             } from '@/js/interface/iObserver'

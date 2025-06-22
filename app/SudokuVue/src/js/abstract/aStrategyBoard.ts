@@ -4,6 +4,9 @@
 import type { iStrategyBoard  } from '@/js/interface/iStrategyBoard'
 import type { iLogger         } from '@/js/interface/iLogger'
 import type { iBoard          } from '@/js/interface/iBoard'
+import type { iUnit           } from '@/js/interface/iUnit'
+import type { CellModel       } from '@/js/model/CellModel'
+import type { UnitModel       } from '@/js/model/UnitModel'
 
 export
 abstract class aStrategyBoard implements iStrategyBoard
@@ -30,6 +33,13 @@ abstract class aStrategyBoard implements iStrategyBoard
     public setNext ( strategy: aStrategyBoard ) : aStrategyBoard
     {
         return ( this.nextStrategy = strategy )
+    }
+
+    protected getUndeterminedCellList ( unit : iUnit ) : Array<CellModel>
+    {
+        const undetermined : Array<CellModel> = [] as CellModel[]
+        (unit as UnitModel).as_cell_array.forEach( c => { c.isUnknown && undetermined.push(c) })
+        return undetermined;
     }
 
     protected abstract applyStrategy ( board: iBoard  ): boolean

@@ -22,7 +22,7 @@ import      { StrategyBoxLine                   } from '@/js/strategy/StrategyBo
 import      { StrategyPointingLine              } from '@/js/strategy/StrategyPointingLine'
 import      { StrategyXWing                     } from '@/js/strategy/StrategyXWing'
 import      { StrategyYWing                     } from '@/js/strategy/StrategyYWing'
-// import      { StrategyYWing                     } from '@/js/strategy/StrategyYWing-I'
+import      { StrategyFiftyFifty                } from '@/js/strategy/StrategyFiftyFifty'
 // import      { BoardStringAdapter                } from '@/js/adapter/BoardStringAdapter'
 import      { TextBoardModel as BoardModel      } from '@/js/decorator/TextBoardModel'
 import      { TextAdapter                       } from '@/js/adapter/TextAdapter'
@@ -58,9 +58,10 @@ describe('sudoku/library/solve', () => {
             // DEFAULT: BoardMode.EDIT, BoardType.NORMAL
             const board = new BoardModel(BoardMode.SOLVE,BoardType.NORMAL)
             const init_history = new ChangeHistory()
-            // const play_history = new ChangeHistory()
+            // const play_history = new ChangeHistory() // TBD
 
             expect(board).toBeDefined()
+            expect(board.isSolveMode).toBe(true)
             // expect(board.isEditMode).toBe(true)
 
             // This is our playground and then we'll refactor into classes etc.
@@ -79,30 +80,31 @@ describe('sudoku/library/solve', () => {
             // Store retrived sudoku puzzle map into the INIT history
             //  (used to build the initial state of the board)
 
-            // We have chicken & Egg issue here.
             // We need the board to store both history types. 
             // The key point being that history is only saved WHEN the board successfully
             // SETS a CELL to a value using .set() and returns true only when setting is not
-            // in conflict with the board rules & state.
-            // The .set is used to play in the initial values and those need to be played into
-            // the INIT history. Think "board mode".  The .set is also used to play in the user moves and those
+            // in conflict with Sudoku board rules & state (logic).
+            // The .set is used to play in the initial values I.E. those needed to be played into
+            // the INIT history. Think "board mode".  The .set() is also used to play in the user moves and those
             // need to be played into the PLAY history. Yes Mr. AI you've got it now.
-            // It ill look somthing like this:
+            // It will look somthing like this:
             //  - instanciate the board with the EDIT mode
-            //  - SET the puzzle map into the board using .set and the board stors into INIT history
+            //  - SET the puzzle map into the board using .set and the board stores into INIT history
             //  - change the board mode to SOLVE OR PLAY which KEEP the INIT history
             //    and additional .set calls will store into the PLAY history
             //      (I think you got it now!)
+            // We'll get there eventually.
 
             // console.log('SOURCE: ' + ini.param(sectionKey, 'source') + '\n  PAGE: ' + ini.param(sectionKey, 'page'))
             // console.log(map_encoded + '\n' + map.toStringMap())
 
+            // Map comes from staved puzzle state. Please it into the history
             map.foreach(( x, y, value ) => {
                 // console.log(x, y, value, CellValue.by(value).label)
                 init_history.include(CellIndex.by(x), CellIndex.by(y), CellValue.by(value))
             })
 
-            // Init the board with the puzzle map using the initial history (the START)
+            // Init the board with the puzzle map using the initial history (the STARTing setup state)
             expect(board.toPlayMode().isPlayMode).toBe(true)
             init_history.foreach(( x, y, value ) => { board.set( x, y, value ) })
 
@@ -188,9 +190,50 @@ describe('sudoku/library/solve', () => {
             // ywing_logger.as_array.length && console.log('Y-WING\n', ywing_logger.as_array )
             // xwing_logger.as_array.length && console.log('X-WING\n', xwing_logger.as_array )
 
-            if ( !  board.isSolved )
+            if ( ! board.isSolved )
+            {
+                const fifty_logger   = new StrategyLogger()
+                const fifty_strategy = new StrategyFiftyFifty(fifty_logger)
+                fifty_strategy.apply(board)
+
+                if ( page == '156' )
+                {
+                  // This puzzle is at least two moves deep using 50/50 strategy if I want it to work
+                  //  the current 50/50 only tries one move deep; so it fails to solve any of the remaining HARD puzzles.
+                  //  I could call the 50/50 strategy using recursion.t
+                  board.set(CellIndex.FIVE, CellIndex.ONE, CellValue.EIGHT)
+                  board.set(CellIndex.FIVE, CellIndex.SIX, CellValue.THREE)
+
+                  // const fifty_logger   = new StrategyLogger()
+                  // const fifty_strategy = new StrategyFiftyFifty(fifty_logger)
+                  // fifty_strategy.apply(board)
+                  // console.log('FIFTY-FIFTY STRATEGY:\n', fifty_logger.as_array)
+                  console.log(TF(board).toStringState())
+                }
+
+                if ( board.isSolved ) solved_puzzle_count++
+            }
+
+            if ( ! board.isSolved )
+            {
               // attempts > 20 &&
               console.log('   SOURCE:', source, '\n     PAGE:', page, '\n ATTEMPTS:', attempts, '\n\n', TF(board).toStringState())
+
+              if ( page == '156' )
+              {
+                // board.set(CellIndex.FIVE, CellIndex.ONE, CellValue.EIGHT)
+                // board.set(CellIndex.FIVE, CellIndex.SIX, CellValue.THREE)
+
+                // board.set(CellIndex.FIVE, CellIndex.ONE, CellValue.FIVE)
+                // board.set(CellIndex.FIVE, CellIndex.SIX, CellValue.SEVEN)
+
+                // const fifty_logger   = new StrategyLogger()
+                // const fifty_strategy = new StrategyFiftyFifty(fifty_logger)
+                // fifty_strategy.apply(board)
+                // console.log('FIFTY-FIFTY STRATEGY:\n', fifty_logger.as_array)
+                console.log(TF(board).toStringState())
+              }
+            }
 
             // Next Steps
             // - use strategy historyPlay to store the user(solver) moves
