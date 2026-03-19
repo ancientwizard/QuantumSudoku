@@ -1,11 +1,20 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.web.json",
   "include": ["env.d.ts", "src/**/*", "tests/**/*"],
   "compilerOptions": {
     "target": "ES2020",
-    "module": "ES2022",
-    "preserveValueImports": false,
+    "module": "ESNext",
+    "moduleResolution": "node",
     "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "types": ["vite/client", "jest", "node"],
     "outDir": "./dist",
     "rootDir": "./",
     "baseUrl": ".",
@@ -13,7 +22,6 @@
       "@/*": ["src/*"]
     }
   },
-
   "references": [
     {
       "path": "./tsconfig.config.json"

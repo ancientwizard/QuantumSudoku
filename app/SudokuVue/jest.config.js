@@ -14,7 +14,7 @@ module.exports = {
 //injectGlobals: true,
   preset: 'ts-jest',
   transform: {
-    '^.+\\.vue$': 'vue-jest',
+    '^.+\\.vue$': '@vue/vue3-jest',
     '^.+\\.tsx?$': 'ts-jest',
     '^.+\\.ts?$': 'ts-jest'
   },
@@ -27,7 +27,7 @@ module.exports = {
 //},
 
   // An array of file extensions your modules use
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  moduleFileExtensions: ['vue', 'ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   // moduleNameMapper: {},
