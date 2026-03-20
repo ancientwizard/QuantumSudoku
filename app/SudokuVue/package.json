@@ -14,7 +14,7 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit",
     "test": "jest",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
+    "lint": "eslint . --fix"
   },
   "dependencies": {
     "bootstrap": "^5.3.8",

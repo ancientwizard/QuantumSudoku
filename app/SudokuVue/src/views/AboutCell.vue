@@ -1,9 +1,9 @@
 // AboutCell.vue
 
-<script>
+<script lang="ts">
 
-import { CellValue } from '../js/model/CellValue.ts'
-import { CellModel } from '../js/model/CellModel.ts'
+import { CellValue } from '@/js/model/CellValue'
+import { CellModel } from '@/js/model/CellModel'
 
 export default {
 

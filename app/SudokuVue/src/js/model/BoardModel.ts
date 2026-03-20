@@ -27,9 +27,9 @@ class BoardModel implements iBoard
   private TYPE: BoardType
 
   constructor( mode: BoardMode = BoardMode.EDIT, type: BoardType = BoardType.NORMAL,
-    private cellConstructor: { factory: (x: number, y: number, solveMode: boolean) => CellModel } = CellModel as any,
-    private lineConstructor: { new (cells: Array<CellModel>): LineModel } = LineModel as any,
-    private  boxConstructor: { new (cells: Array<CellModel>):  BoxModel } =  BoxModel as any )
+    private cellConstructor: Pick<typeof CellModel, 'factory'> = CellModel,
+    private lineConstructor: typeof LineModel = LineModel,
+    private  boxConstructor: typeof BoxModel = BoxModel )
   {
     this.MODE = mode
     this.TYPE = type

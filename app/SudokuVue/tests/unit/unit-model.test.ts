@@ -8,7 +8,7 @@ import { TextCellModel          } from '@/js/decorator/TextCellModel'
 import { UnitModel              } from '@/js/model/UnitModel'
 import { TextAdapter            } from '@/js/adapter/TextAdapter'
 import type { iUnit             } from '@/js/interface/iUnit'
-import type { CellModel } from '@/js/model/CellModel'
+import type { CellModel         } from '@/js/model/CellModel'
 
 const TF = TextAdapter.factory
 
@@ -27,9 +27,9 @@ class UnknownUnitModel implements iUnit
   public get isSolved(): boolean { return false }
   public get isBroken(): boolean { return false }
   public reset(): void { this.cells.forEach(cell => cell.reset()) }
-  public exclude(ci: CellIndex, cv: CellValue): boolean { return false }
-  public is(ci: CellIndex, cv: CellValue): boolean { return false }
-  public forEachCell(callback: (cell: CellModel, index: number) => void): void { }
+  public exclude(ci: CellIndex, cv: CellValue): boolean { void ci; void cv; return false }
+  public is(ci: CellIndex, cv: CellValue): boolean { void ci; void cv; return false }
+  public forEachCell(callback: (cell: CellModel, index: number) => void): void { void callback }
 }
 
 function mk_cells ( size = 0, autosolve = true ) : Array<TextCellModel>

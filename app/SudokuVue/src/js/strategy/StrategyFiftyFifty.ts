@@ -14,19 +14,36 @@
 // StrategyFiftyFifty.ts
 
 // import type { CellValue         } from '@/js/model/CellValue'
+import type { iStrategyUnit         } from '@/js/interface/iStrategyUnit'
+import type { iStrategyBoard        } from '@/js/interface/iStrategyBoard'
 import type { iBoard                } from '@/js/interface/iBoard'
 import type { CellModel             } from '@/js/model/CellModel'
 import      { BoardModel            } from '@/js/model/BoardModel'
 import      { CellIndex             } from '@/js/model/CellIndex'
 import      { CellValue             } from '@/js/model/CellValue'
 import      { aStrategyBoard        } from '@/js/abstract/aStrategyBoard'
+import      { StrategyUnique        } from '@/js/strategy/StrategyUnique'
+import      { StrategyHiddenPair    } from '@/js/strategy/StrategyHiddenPair'
+import      { StrategyHiddenTriple  } from '@/js/strategy/StrategyHiddenTriple'
+import      { StrategyNakedPair     } from '@/js/strategy/StrategyNakedPair'
+import      { StrategyNakedTriple   } from '@/js/strategy/StrategyNakedTriple'
+import      { StrategyNakedQuad     } from '@/js/strategy/StrategyNakedQuad'
+import      { StrategyHiddenQuad    } from '@/js/strategy/StrategyHiddenQuad'
+import      { StrategyBoxLine       } from '@/js/strategy/StrategyBoxLine'
+import      { StrategyPointingLine  } from '@/js/strategy/StrategyPointingLine'
+import      { StrategyYWing         } from '@/js/strategy/StrategyYWing'
+import      { StrategyWWing         } from '@/js/strategy/StrategyWWing'
+import      { StrategyXYChain       } from '@/js/strategy/StrategyXYChain'
+import      { StrategyXWing         } from '@/js/strategy/StrategyXWing'
+import      { StrategySwordfish     } from '@/js/strategy/StrategySwordfish'
+import      { StrategyLogger        } from '@/js/strategy/StrategyLogger'
 
 export
 class StrategyFiftyFifty extends aStrategyBoard
 {
     protected applyStrategy ( board: iBoard ) : boolean
     {
-        return this.strategy_set_fifty_fifty( board )
+        return this.strategy_set_fifty_fifty(board)
     }
 
     // A Level 3 Strategy
@@ -34,101 +51,228 @@ class StrategyFiftyFifty extends aStrategyBoard
     //    a guess if you weill.
     private strategy_set_fifty_fifty ( board : iBoard ) : boolean
     {
-        let solved  = 0;
-        const updated : Array<string> = [] as Array<string>
+        const pivots = this.pickPivotCells(board)
 
-        // PROBLEM: unlike other strategies, the 50/50 outcome can leave the board in
-        //  a FAILED or incomplete state. Failed is unrecoverable and incomplete is, simply unknown
-        //  I.E. didn't result in a solved puzzle. We lack an undo but I have an alternative.
-        //
-        //  The plan for the time being would smell somthing like this:
-        //   1) The current state of the board would be replicated to another copy of the board.
-        //      A scratch copy we can break without worry.
-        //   2) The copy would be used to try the 50/50 solution: on success proceeed with applying that
-        //      change (the 50/50 cell value selection) to the original board and move forward.
-        //   3) on failure or success, the copy is destroyed, it's a stratch pad, so if the choice
-        //      makes a mess (board left in failed state, or incomplete, no harm).
-        //      Simply toss it away and try the using other value on a new copy of the board.
+        type TryResult = { candidate: CellValue, solved: boolean, broken: boolean, board: BoardModel }
 
-        // HINTS:
-        //  - For each naked pair cell try the first candidate value
-        //  - If the board is solved, apply the change to the original board and return
-        //  - If the board is not solved, try the second candidate value on a new
-        //    copy of the board and repeat the process.
-        //  - Repeat for all naked pair cells/values until success OR failure/uncessful
-
-        const nakedPairCells : Array<CellModel> = [] as Array<CellModel>
-
-        board.forEachRow( unit => {
-
-          // Set of undetermined cells in the unit
-          const setOfUndeterminedCells : Array<CellModel> = this.getUndeterminedCellList( unit )
-
-          // this.logger?.add('# (Fifty-Fifty) Undetermined Cells: ' + this.getCellNames(setOfUndeterminedCells))
-
-          // Cells with two candiate values; hence a 50/50 chance
-          setOfUndeterminedCells.forEach( cell => {
-              // Only interested in cells having exactly two candidate values
-              if ( cell.length == 2 )
-              {
-                nakedPairCells.push( cell )
-                this.logger?.add('# (Fifty-Fifty) Naked Pair Cell: ' + cell.name + ' with candidates: ' + cell.as_candidate_array.map(v=>v.value).join(', '));
-              }
-          })
-        })
-
-        for ( const cell of nakedPairCells )
+        for ( const pivot of pivots )
         {
-          const candidates = cell.as_candidate_array;
-          this.logger?.add('# (Fifty-Fifty) Trying Naked Pair cell: ' + cell.name + ' with candidates: ' + candidates.map(v=>v.value).join(', '))
+          const candidates = pivot.as_candidate_array
+          if ( candidates.length !== 2 ) continue
 
-          for ( const cv of candidates )
+          this.logger?.add('# (Fifty-Fifty) Pivot: ' + pivot.name + ' candidates: ' + candidates.map(v => v.label).join(', '))
+
+          const results: Array<TryResult> = []
+
+          for ( const candidate of candidates )
           {
-            // Create a replica of the board to safly try a candidate value
-            const scratchBoard = new BoardModel().toSolveMode()
-            try {
-              board.forEachRow( row => { row.forEachCell( cell => {
-                if ( cell.isUnknown ) return; // Skip unknown cells
-                // this.logger?.add('# (Fifty-Fifty) Copying cell: ' + cell.name + ' with value: ' + cell.value + ' (x,y): (' + cell.col + ',' + cell.row + ')');
-                scratchBoard.set( CellIndex.by(cell.col-1), CellIndex.by(cell.row-1), CellValue.by(cell.value))
-              })})
-            }
-            catch ( e )
+            const scratch = this.cloneBoard(board)
+
+            if ( !scratch.set(CellIndex.by(pivot.col - 1), CellIndex.by(pivot.row - 1), candidate) )
             {
-              this.logger?.add('# (Fifty-Fifty) Failed to copy board: ' + e.message );
-              continue; // Skip to the next candidate value
+              results.push({ candidate, solved: false, broken: true, board: scratch })
+              continue
             }
 
-            // Set the candidate value on the scratch board
-            if ( scratchBoard.set( CellIndex.by(cell.col-1), CellIndex.by(cell.row-1), cv ))
-            {
-              this.logger?.add('# (Fifty-Fifty) Trying candidate: ' + cv.value + ' for cell: ' + cell.name );
+            this.runDeterministicSolve(scratch)
 
-              // Check if the scratch board is solved
-              if ( scratchBoard.isSolved )
-              {
-                // Apply the change to the original board
-                board.set( CellIndex.by(cell.col), CellIndex.by(cell.row), cv );
-                updated.push( cell.name );
-                solved++;
-                this.logger?.add('# (Fifty-Fifty) Solved with candidate: ' + cv.value + ' for cell: ' + cell.name);
-                break; // Break out of the candidates loop, we found a solution
-              }
-              else
-              {
-                this.logger?.add('# (Fifty-Fifty) Failed with candidate: ' + cv.value + ' for cell: ' + cell.name);
-              }
-            }
+            results.push({
+                candidate,
+                solved: scratch.isSolved,
+                broken: this.isBroken(scratch),
+                board: scratch
+            })
           }
 
-          // if ( board.isSolved ) break;
+          const solvedBranch = results.find(result => result.solved)
+          if ( solvedBranch )
+          {
+            const changed = this.applyKnownFromBoard(board, solvedBranch.board)
+            this.logger?.add('# (Fifty-Fifty) Solved branch chosen: ' + solvedBranch.candidate.label + ' at ' + pivot.name)
+            if ( changed ) return true
+          }
+
+          const brokenBranch = results.find(result => result.broken)
+          if ( brokenBranch )
+          {
+            const changed = this.excludeCandidate(board, pivot.row, pivot.col, brokenBranch.candidate)
+            changed && this.logger?.add('# (Fifty-Fifty) Excluded broken branch candidate: ' + brokenBranch.candidate.label + ' at ' + pivot.name)
+            if ( changed ) return true
+          }
+
+          if ( results.length === 2 && !results[0].broken && !results[1].broken )
+          {
+            const changed = this.applyConsensusKnownValues(board, results[0].board, results[1].board)
+            if ( changed )
+            {
+              this.logger?.add('# (Fifty-Fifty) Applied branch consensus from pivot: ' + pivot.name)
+              return true
+            }
+          }
         }
 
-        if ( solved > 0 )
-          this.logger?.add('# Strategy 2 - 50/50 ' + solved + ' candidate values from ' + updated.length + ' cells (' + updated.join(',') + ')');
+        return false
+    }
 
-      return solved > 0;
-  }
+    private runDeterministicSolve( board: BoardModel ): void
+    {
+      const unitSolver = this.createUnitStrategyChain()
+      const boardSolver = this.createBoardStrategyChain()
+
+      for ( let attempt = 0 ; attempt < 50 ; attempt++ )
+      {
+        let changed = false
+
+        board.forEachRow(row => changed ||= unitSolver.apply(row))
+        board.forEachCol(col => changed ||= unitSolver.apply(col))
+        board.forEachBox(box => changed ||= unitSolver.apply(box))
+
+        changed ||= boardSolver.apply(board)
+
+        if ( board.isSolved || this.isBroken(board) || !changed ) break
+      }
+    }
+
+    private createUnitStrategyChain() : iStrategyUnit
+    {
+      const logger = new StrategyLogger()
+      const strategies: Array<iStrategyUnit> = [
+        new StrategyUnique(logger),
+        new StrategyNakedPair(logger),
+        new StrategyHiddenPair(logger),
+        new StrategyNakedTriple(logger),
+        new StrategyHiddenTriple(logger),
+        new StrategyNakedQuad(logger),
+        new StrategyHiddenQuad(logger)
+      ]
+
+      strategies.reduce((prev, curr) => prev.setNext(curr))
+
+      return strategies[0]
+    }
+
+    private createBoardStrategyChain() : iStrategyBoard
+    {
+      const logger = new StrategyLogger()
+      const strategies: Array<iStrategyBoard> = [
+        new StrategyBoxLine(logger),
+        new StrategyPointingLine(logger),
+        new StrategyYWing(logger),
+        new StrategyWWing(logger),
+        new StrategyXYChain(logger),
+        new StrategyXWing(logger),
+        new StrategySwordfish(logger)
+      ]
+
+      strategies.reduce((prev, curr) => prev.setNext(curr))
+
+      return strategies[0]
+    }
+
+    private cloneBoard( board: iBoard ) : BoardModel
+    {
+      const scratch = new BoardModel().toSolveMode()
+
+      board.forEachRow(row => {
+        row.forEachCell(cell => {
+          if ( cell.isUnknown ) return
+          scratch.set(CellIndex.by(cell.col - 1), CellIndex.by(cell.row - 1), CellValue.by(cell.value))
+        })
+      })
+
+      return scratch
+    }
+
+    private pickPivotCells( board: iBoard ) : Array<CellModel>
+    {
+      const pivots: Array<CellModel> = []
+      let minLength = 10
+
+      board.forEachRow(row => {
+        row.forEachCell(cell => {
+          if ( cell.isKnown ) return
+          if ( cell.length < 2 ) return
+
+          if ( cell.length < minLength )
+          {
+            minLength = cell.length
+            pivots.length = 0
+            pivots.push(cell)
+            return
+          }
+
+          if ( cell.length === minLength ) pivots.push(cell)
+        })
+      })
+
+      return pivots
+    }
+
+    private isBroken( board: iBoard ) : boolean
+    {
+      let broken = false
+
+      board.forEachRow(row => broken ||= row.isBroken)
+      board.forEachCol(col => broken ||= col.isBroken)
+      board.forEachBox(box => broken ||= box.isBroken)
+
+      return broken
+    }
+
+    private applyKnownFromBoard( target: iBoard, solved: iBoard ) : boolean
+    {
+      let changed = false
+
+      solved.forEachRow(row => {
+        row.forEachCell(cell => {
+          if ( cell.isUnknown ) return
+          changed ||= target.set(CellIndex.by(cell.col - 1), CellIndex.by(cell.row - 1), CellValue.by(cell.value))
+        })
+      })
+
+      return changed
+    }
+
+    private applyConsensusKnownValues( target: iBoard, branchA: iBoard, branchB: iBoard ) : boolean
+    {
+      let changed = false
+      const branchBKnown = new Map<string, number>()
+
+      branchB.forEachRow(row => {
+        row.forEachCell(cell => {
+          if ( cell.isUnknown ) return
+          branchBKnown.set(cell.row + ':' + cell.col, cell.value)
+        })
+      })
+
+      branchA.forEachRow(row => {
+        row.forEachCell(cell => {
+          if ( cell.isUnknown ) return
+
+          const key = cell.row + ':' + cell.col
+          const other = branchBKnown.get(key)
+          if ( other == null || other !== cell.value ) return
+
+          changed ||= target.set(CellIndex.by(cell.col - 1), CellIndex.by(cell.row - 1), CellValue.by(cell.value))
+        })
+      })
+
+      return changed
+    }
+
+    private excludeCandidate( board: iBoard, rowNumber: number, colNumber: number, candidate: CellValue ) : boolean
+    {
+      let changed = false
+
+      board.forEachRow(row => {
+        row.forEachCell(cell => {
+          if ( cell.row !== rowNumber || cell.col !== colNumber ) return
+          changed ||= cell.exclude(candidate)
+        })
+      })
+
+      return changed
+    }
 }
 
 // vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix

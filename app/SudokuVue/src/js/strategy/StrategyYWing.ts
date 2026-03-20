@@ -59,7 +59,8 @@ class StrategyYWing extends aStrategyBoard
 
     // My goal is to push y-wing triples into this array
     // TODO: store before cleanup... we'll get there
-    const yWingTriples: Array<[CellModel, CellModel, CellModel]> = [];
+    // const yWingTriples: Array<[CellModel, CellModel, CellModel]> = [];
+    // void yWingTriples
 
     // Iterate over the candidate cells to find potential Y-Wing patterns
     for (const pivot of candidateCells)

@@ -1,6 +1,6 @@
 // BoardView.vue
 
-<script>
+<script lang="ts">
 
 export default {
 

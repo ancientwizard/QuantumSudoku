@@ -1,11 +1,11 @@
 // AboutLine.vue
 
-<script>
+<script lang="ts">
 
-import { CellIndex } from '../js/model/CellIndex.ts'
-import { CellModel } from '../js/model/CellModel.ts'
-import { CellValue } from '../js/model/CellValue.ts'
-import { LineModel } from '../js/model/LineModel.ts'
+import { CellIndex } from '@/js/model/CellIndex'
+import { CellModel } from '@/js/model/CellModel'
+import { CellValue } from '@/js/model/CellValue'
+import { LineModel } from '@/js/model/LineModel'
 
 export default {
 

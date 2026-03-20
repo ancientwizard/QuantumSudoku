@@ -57,7 +57,9 @@ class MyStrategy extends aStrategyUnit
 
     protected applyStrategy ( unit: iUnit ) : boolean
     {
-        return false && ! unit.isBroken // make lint quiet
+        void unit
+        // AI says always return false
+        return false; // ! unit.isBroken // make lint quiet
     }
 }
 

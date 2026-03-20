@@ -14,8 +14,8 @@ interface iBox
     // is      ( idx: iCellIndex, value: iObservedState ) : boolean;
     // exclude ( idx: iCellIndex, value: iObservedState ) : boolean;
 
-    // get isSolved () : boolean;
-    // get isBroken () : boolean;
+    get isSolved () : boolean;
+    get isBroken () : boolean;
     get as_cell_array () : Array<CellModel>;
 
     forEachCell ( callback: ( cell: CellModel, index: number) => void): void;    

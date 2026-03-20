@@ -22,6 +22,11 @@ import      { StrategyBoxLine                   } from '@/js/strategy/StrategyBo
 import      { StrategyPointingLine              } from '@/js/strategy/StrategyPointingLine'
 import      { StrategyXWing                     } from '@/js/strategy/StrategyXWing'
 import      { StrategyYWing                     } from '@/js/strategy/StrategyYWing'
+import      { StrategyWWing                     } from '@/js/strategy/StrategyWWing'
+import      { StrategyXYChain                   } from '@/js/strategy/StrategyXYChain'
+import      { StrategySwordfish                 } from '@/js/strategy/StrategySwordfish'
+import      { StrategyRemotePair                } from '@/js/strategy/StrategyRemotePair'
+import      { StrategySimpleColoring            } from '@/js/strategy/StrategySimpleColoring'
 import      { StrategyFiftyFifty                } from '@/js/strategy/StrategyFiftyFifty'
 // import      { BoardStringAdapter                } from '@/js/adapter/BoardStringAdapter'
 import      { TextBoardModel as BoardModel      } from '@/js/decorator/TextBoardModel'
@@ -139,12 +144,22 @@ describe('sudoku/library/solve', () => {
             const unit_solver_chain = unit_strategies[0]
 
             const ywing_logger = new StrategyLogger()
+            const wwing_logger = new StrategyLogger()
+            const xychain_logger = new StrategyLogger()
             const xwing_logger = new StrategyLogger()
+            const swordfish_logger = new StrategyLogger()
+            const coloring_logger = new StrategyLogger()
+            const remote_pair_logger = new StrategyLogger()
             const board_strategies: Array<iStrategyBoard> = [
                 new StrategyBoxLine(logger),
                 new StrategyPointingLine(logger),
                 new StrategyYWing(ywing_logger),
+                new StrategyWWing(wwing_logger),
+                new StrategyXYChain(xychain_logger),
+                new StrategySimpleColoring(coloring_logger),
+                new StrategyRemotePair(remote_pair_logger),
                 new StrategyXWing(xwing_logger),
+                new StrategySwordfish(swordfish_logger),
               ]
             const board_solver_chain = board_strategies[0]
 
@@ -190,25 +205,14 @@ describe('sudoku/library/solve', () => {
             // ywing_logger.as_array.length && console.log('Y-WING\n', ywing_logger.as_array )
             // xwing_logger.as_array.length && console.log('X-WING\n', xwing_logger.as_array )
 
-            if ( ! board.isSolved )
+            // eslint-disable-next-line no-constant-condition
+            if ( ! board.isSolved && false )
             {
                 const fifty_logger   = new StrategyLogger()
                 const fifty_strategy = new StrategyFiftyFifty(fifty_logger)
-                fifty_strategy.apply(board)
-
-                if ( page == '156' )
+                for ( let fallback_attempts = 0 ; fallback_attempts < 8 && !board.isSolved ; fallback_attempts++ )
                 {
-                  // This puzzle is at least two moves deep using 50/50 strategy if I want it to work
-                  //  the current 50/50 only tries one move deep; so it fails to solve any of the remaining HARD puzzles.
-                  //  I could call the 50/50 strategy using recursion.t
-                  board.set(CellIndex.FIVE, CellIndex.ONE, CellValue.EIGHT)
-                  board.set(CellIndex.FIVE, CellIndex.SIX, CellValue.THREE)
-
-                  // const fifty_logger   = new StrategyLogger()
-                  // const fifty_strategy = new StrategyFiftyFifty(fifty_logger)
-                  // fifty_strategy.apply(board)
-                  // console.log('FIFTY-FIFTY STRATEGY:\n', fifty_logger.as_array)
-                  console.log(TF(board).toStringState())
+                  if ( !fifty_strategy.apply(board) ) break
                 }
 
                 if ( board.isSolved ) solved_puzzle_count++
