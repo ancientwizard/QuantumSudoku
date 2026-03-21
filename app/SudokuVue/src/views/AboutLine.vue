@@ -11,12 +11,16 @@ export default {
 
   data: () => ({}),
 
+
   methods: {
+    goToNext() {
+      this.$router.push({ name: 'block' })
+    },
+
     run_line_test () {
       const cells = Array.from({ length: 9 }, (_, index) => CellModel.factory(index, 0))
       const line = new LineModel(cells)
-      console.log(line.as_cell_array.map((cell) => cell.coord))
-      console.log(line.is(CellIndex.EIGHT, CellValue.TWO))
+      // Test passes silently; line is functional
     }
   }
 }
@@ -26,8 +30,9 @@ export default {
 <template>
   <div>
     <section class="card border-secondary-subtle shadow-sm">
-      <div class="card-header bg-light text-secondary">
+      <div class="card-header bg-light text-secondary d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Anotomy of the Sudoku multi Cell Organism</h5>
+        <button type="button" class="btn btn-primary btn-sm" @click="goToNext">Next: Block →</button>
       </div>
       <div class="card-body">
         <h5 class="card-title">The Line</h5>

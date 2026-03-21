@@ -62,7 +62,7 @@ class CellModel extends Subject implements iObserver
         // We must be un-known!
            this.isUnknown
         // And the value is a valid candidate
-        && this.candidates.filter( item => item === value ).length == 1;
+        && this.candidates.filter( item => item.value === value.value ).length == 1;
 
     if ( changed )
     {
@@ -85,13 +85,13 @@ class CellModel extends Subject implements iObserver
 
       // And the value is a member candidate
       // ( I.E. still a value candidate we've not already eliminated )
-      const is_candidate : boolean = this.candidates.includes( value )
+      const is_candidate : boolean = this.candidates.some( item => item.value === value.value )
 
       // Remove [exclude] this candidate, leaving others
       if ( is_candidate && this.candidates.length > 1 )
       {
         changed = true
-        this.candidates = this.candidates.filter( item => item !== value )
+        this.candidates = this.candidates.filter( item => item.value !== value.value )
       }
 
       // Solution Strategy:
@@ -103,7 +103,7 @@ class CellModel extends Subject implements iObserver
     return changed
   }
 
-  includes ( value: CellValue ) : boolean { return this.candidates.includes( value ) }
+  includes ( value: CellValue ) : boolean { return this.candidates.some( item => item.value === value.value ) }
 
   update ( subject: Subject, arg: CellValue )
   {
@@ -117,12 +117,12 @@ class CellModel extends Subject implements iObserver
 
   get isKnown () : boolean
   {
-    return this.cvalue !== CellValue.HIDDEN
+    return this.cvalue.value > 0
   }
 
   get isUnknown () : boolean
   {
-    return this.cvalue === CellValue.HIDDEN
+    return this.cvalue.value === 0
   }
 
   get length () : number
