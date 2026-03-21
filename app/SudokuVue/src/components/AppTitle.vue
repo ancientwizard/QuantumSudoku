@@ -81,7 +81,7 @@ defineProps<{
   </div>
 
   <div v-if="showEleven" class="eleven">
-    <h1>{{ title }}</h1><box><span>{{ tagline }}</span></box>
+    <h1>{{ title }}</h1><div class="tagline-box"><span>{{ tagline }}</span></div>
   </div>
 
   <div v-if="showTwelve" class="twelve">
@@ -174,11 +174,11 @@ h1 em {
   background-color: #c50000;
 }
 
-.eleven box {
+.eleven .tagline-box {
   display: block;
 }
 
-.eleven box span,
+.eleven .tagline-box span,
 .two h1 span {
   font-size: 13px;
   font-weight: 500;
@@ -189,7 +189,7 @@ h1 em {
   color: rgba(0, 0, 0, 0.4);
   padding-bottom: 10px;
 }
-.eleven box,
+.eleven .tagline-box,
 .alt-two h1 {
   text-align:center;
 }

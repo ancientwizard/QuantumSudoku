@@ -19,7 +19,7 @@ import PuzzleTitle from './components/AppTitle.vue'
           <router-link to="/about/line">Line</router-link>
           <router-link to="/about/block">Block</router-link>
           <router-link to="/about/board">Board</router-link>
-          <router-link to="/Play">Play</router-link>
+          <router-link to="/play">Play</router-link>
         </nav>
       </div>
     </header>

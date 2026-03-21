@@ -109,11 +109,10 @@ describe('sudoku/library/solve', () => {
                 init_history.include(CellIndex.by(x), CellIndex.by(y), CellValue.by(value))
             })
 
-            // Init the board with the puzzle map using the initial history (the STARTing setup state)
-            expect(board.toPlayMode().isPlayMode).toBe(true)
+            // Seed givens in solve mode so observer housekeeping is applied.
+            expect(board.isSolveMode).toBe(true)
             init_history.foreach(( x, y, value ) => { board.set( x, y, value ) })
 
-            expect(board.toPlayMode().isPlayMode).toBe(true)
             expect(board.toSolveMode().isSolveMode).toBe(true)
             expect(board.isSolved).toBe(false)
 
@@ -206,7 +205,7 @@ describe('sudoku/library/solve', () => {
             // xwing_logger.as_array.length && console.log('X-WING\n', xwing_logger.as_array )
 
             // eslint-disable-next-line no-constant-condition
-            if ( ! board.isSolved && false )
+            if ( ! board.isSolved ) //&& false )
             {
                 const fifty_logger   = new StrategyLogger()
                 const fifty_strategy = new StrategyFiftyFifty(fifty_logger)
@@ -223,7 +222,8 @@ describe('sudoku/library/solve', () => {
               // attempts > 20 &&
               console.log('   SOURCE:', source, '\n     PAGE:', page, '\n ATTEMPTS:', attempts, '\n\n', TF(board).toStringState())
 
-              if ( page == '156' )
+              // eslint-disable-next-line no-constant-condition
+              if ( page == '156' && false)
               {
                 // board.set(CellIndex.FIVE, CellIndex.ONE, CellValue.EIGHT)
                 // board.set(CellIndex.FIVE, CellIndex.SIX, CellValue.THREE)

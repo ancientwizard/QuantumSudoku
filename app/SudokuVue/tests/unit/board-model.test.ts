@@ -32,6 +32,24 @@ describe('model/sudoku-board', () => {
     expect(new BoardModel(BoardMode.SOLVE).restart().isEditMode).toBe(true)
   })
 
+  test('board/mode-switch-updates-cell-autosolve', () => {
+    const board = new BoardModel(BoardMode.PLAY)
+    let topLeft = null as null | { autosolve: boolean }
+
+    board.forEachRow((row, index) => {
+      if (index !== 0) return
+      topLeft = row.as_cell_array[0]
+    })
+
+    expect(topLeft?.autosolve).toBe(false)
+
+    board.toSolveMode()
+    expect(topLeft?.autosolve).toBe(true)
+
+    board.toPlayMode()
+    expect(topLeft?.autosolve).toBe(false)
+  })
+
   test('board/types', () => {
     expect(BoardType.NORMAL).toBe(0);
     expect(BoardType.DIAGONAL).toBe(1); // line terminator saves next line from being miss read

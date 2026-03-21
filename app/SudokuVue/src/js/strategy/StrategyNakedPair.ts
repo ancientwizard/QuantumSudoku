@@ -11,6 +11,13 @@ import      { containsAll       } from '@/js/util/contains-all'
 export
 class StrategyNakedPair extends aStrategyUnit
 {
+    private describeCell ( cell: CellModel ) : string
+    {
+        const value = cell.isKnown ? cell.cv.label : '?'
+        const candidates = cell.as_label_array.join(',')
+        return '# ' + cell.name + ': ' + value + ' [ ' + candidates + ' ]'
+    }
+
     protected applyStrategy ( unit: iUnit ) : boolean
     {
         return this.strategy_set_naked_pair( unit )
@@ -69,7 +76,7 @@ class StrategyNakedPair extends aStrategyUnit
                 if ( this.logger )
                 {
                     const logger = this.logger
-                    candidate.all.forEach( c => logger.add(c.toString()))
+                    candidate.all.forEach( c => logger.add(this.describeCell(c)))
                 }
 
                 let first_naked_shown  = false;

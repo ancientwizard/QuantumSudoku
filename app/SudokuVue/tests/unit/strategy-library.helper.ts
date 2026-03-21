@@ -42,7 +42,7 @@ export async function loadBoardByPage(page: string): Promise<BoardModel>
       initHistory.include(CellIndex.by(x), CellIndex.by(y), CellValue.by(value))
     })
 
-    board.toPlayMode()
+    // Seed givens in solve mode so candidate housekeeping matches the runtime solver setup.
     initHistory.foreach((x, y, value) => { board.set(x, y, value) })
     board.toSolveMode()
 

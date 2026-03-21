@@ -185,12 +185,14 @@ class BoardModel implements iBoard
 
   public toPlayMode()
   {
+    this.rowunits.forEach(unit => unit.forEachCell(cell => { cell.autosolve = false }))
     this.MODE = BoardMode.PLAY
     return this
   }
 
   public toSolveMode()
   {
+    this.rowunits.forEach(unit => unit.forEachCell(cell => { cell.autosolve = true }))
     this.MODE = BoardMode.SOLVE
     return this
   }

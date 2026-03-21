@@ -2,6 +2,7 @@
 
 import { describe, expect, test, beforeEach } from '@jest/globals'
 import { CellIndex          } from '@/js/model/CellIndex'
+import { CellModel          } from '@/js/model/CellModel'
 import { CellValue          } from '@/js/model/CellValue'
 import { TextCellModel      } from '@/js/decorator/TextCellModel'
 import { UnitModel          } from '@/js/model/UnitModel'
@@ -32,6 +33,16 @@ function mk_cells () : Array<TextCellModel>
 function mk_unit () : TestUnitModel
 {
   return new TestUnitModel(mk_cells())
+}
+
+function mk_plain_unit () : UnitModel<CellModel>
+{
+    const cell_set : Array<CellModel> = []
+
+    for ( let i = 1 ; i <= 9 ; i++ )
+            cell_set.push(CellModel.factory(1,i,true))
+
+    return new UnitModel(cell_set)
 }
 
 
@@ -97,6 +108,23 @@ describe('strategy/pair', () => {
         expect(unit.toStringValues()).toBe('? ? ? ? ? ? ? ? ?')
 
         strategy.logger && strategy.logger.reset()
+    })
+
+    test('naked-pair logger does not require text-decorated cells', () => {
+        const unit = mk_plain_unit()
+        const strategy = new StrategyNakedPair(new StrategyLogger())
+
+        expect(unit.is(CellIndex.NINE, CellValue.NINE)).toBe(true)
+
+        CellValue.arrayFactory.forEach( cv => {
+            if ( cv === CellValue.SEVEN ) return
+            if ( cv === CellValue.EIGHT ) return
+            if ( cv === CellValue.NINE  ) return
+            expect(unit.exclude(CellIndex.FOUR, cv)).toBe(true)
+            expect(unit.exclude(CellIndex.FIVE, cv)).toBe(true)
+        })
+
+        expect(() => strategy.apply(unit)).not.toThrow()
     })
 
 

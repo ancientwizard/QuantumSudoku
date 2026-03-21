@@ -123,11 +123,21 @@ class StrategyFiftyFifty extends aStrategyBoard
       {
         let changed = false
 
-        board.forEachRow(row => changed ||= unitSolver.apply(row))
-        board.forEachCol(col => changed ||= unitSolver.apply(col))
-        board.forEachBox(box => changed ||= unitSolver.apply(box))
+        board.forEachRow(row => {
+          const rowChanged = unitSolver.apply(row)
+          changed = rowChanged || changed
+        })
+        board.forEachCol(col => {
+          const colChanged = unitSolver.apply(col)
+          changed = colChanged || changed
+        })
+        board.forEachBox(box => {
+          const boxChanged = unitSolver.apply(box)
+          changed = boxChanged || changed
+        })
 
-        changed ||= boardSolver.apply(board)
+        const boardChanged = boardSolver.apply(board)
+        changed = boardChanged || changed
 
         if ( board.isSolved || this.isBroken(board) || !changed ) break
       }
