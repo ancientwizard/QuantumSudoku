@@ -1,0 +1,215 @@
+
+//
+// Sudoku Board Model
+//
+
+import type { iBoard        } from '@/js/interface/iBoard'
+import type { CellIndex     } from '@/js/model/CellIndex'
+import type { CellValue     } from '@/js/model/CellValue'
+import      { BoxModel      } from '@/js/model/BoxModel'
+import      { CellModel     } from '@/js/model/CellModel'
+import      { LineModel     } from '@/js/model/LineModel'
+
+export enum BoardMode { EDIT, PLAY, SOLVE }
+export enum BoardType { NORMAL, DIAGONAL }
+
+export
+class BoardModel implements iBoard
+{
+  // Composition
+  private boxunits: Array<BoxModel>   = []    // 3x3 box/grid units
+  private rowunits: Array<LineModel>  = []    //   9 row units
+  private colunits: Array<LineModel>  = []    //   9 column units
+  private angunits: Array<LineModel>  = []    //   2 diagonal units
+  private diadtlbr: LineModel | null  = null  //   1 diagional unti (top-left to bottom-right)
+  private diadbltr: LineModel | null  = null  //   1 diagional unti (bottom-left to top-right)
+  private MODE: BoardMode
+  private TYPE: BoardType
+
+  constructor( mode: BoardMode = BoardMode.EDIT, type: BoardType = BoardType.NORMAL,
+    private cellConstructor: Pick<typeof CellModel, 'factory'> = CellModel,
+    private lineConstructor: typeof LineModel = LineModel,
+    private  boxConstructor: typeof BoxModel = BoxModel )
+  {
+    this.MODE = mode
+    this.TYPE = type
+
+    const cells: Array<Array<CellModel>> = []
+
+    this.initializeCellsAndNames(cells)
+    this.buildRowUnits(cells)
+    this.buildColUnits(cells)
+    this.buildBoxUnits(cells)
+
+    if ( this.TYPE == BoardType.DIAGONAL ) this.buildDiagonalUnits(cells)
+  }
+
+  // There two SUDOKU puzzle operations when it comes to PLAY:
+  // 1. SET a cell value
+  // 2. EXCLUDE a cell value
+  //
+  //  Put into context:
+  //   - The typical experience would consist of buying a book of ready-made puzzles
+  //     the EDIT mode and using SET to fill in the initial cells is how we
+  //     create a puzzle here. Even if the Setting is programaticlly dine using
+  //     a generator OR saved library of puzzles.
+  //   - During PLAY mode both SET and EXCLUDE are behaviors that emulate
+  //     the experience of playing a puzzle on paper or in this case on a screen.
+
+  public set ( x: CellIndex, y: CellIndex, value: CellValue ): boolean
+  {
+    return this.rowunits[y.index].is(x, value)
+  }
+
+  // public exclude ( x: CellIndex, y: CellIndex, value: CellValue ): boolean
+  // {
+  //   return this.rowunits[y.index].exclude(x, value)
+  // }
+
+  public columnNamesAsArray(): Array<string>
+  {
+    return this.rowunits[0].as_cell_array.map( cell => cell.cname )
+  }
+
+  public forEachRow(callback: (row: LineModel, index: number) => void): void
+  {
+    this.rowunits.forEach(( row, index ) => {
+        callback( row, index );
+    });
+  }
+
+  public forEachCol(callback: (column: LineModel, index: number) => void): void
+  {
+    this.colunits.forEach(( column, index ) => {
+      callback( column, index );
+    });
+  }
+
+  public forEachBox(callback: (block: BoxModel, index: number) => void): void
+  {
+    this.boxunits.forEach(( block, index ) => {
+      callback( block, index );
+    });
+  }
+
+  private initializeCellsAndNames(cells: Array<Array<CellModel>> ): void
+  {
+    for (let y = 1; y <= 9; y++)
+    {
+      cells[y - 1] = [];
+      for ( let x = 1 ; x <= 9 ; x++ )
+      {
+        cells[y - 1][x - 1] = this.cellConstructor.factory(x, y, this.MODE == BoardMode.SOLVE )
+      }
+    }
+  }
+
+  private buildRowUnits(cells: Array<Array<CellModel>>): void
+  {
+    for ( let y = 1 ; y <= 9 ; y++ )
+      this.rowunits[y - 1] = new this.lineConstructor(cells[y - 1])
+  }
+
+  private buildColUnits(cells: Array<Array<CellModel>>): void
+  {
+    for ( let x = 1 ; x <= 9 ; x++ )
+    {
+      const columnCells: Array<CellModel> = []
+      for ( let y = 1 ; y <= 9 ; y++ )
+        columnCells.push(cells[y - 1][x - 1])
+
+      this.colunits[x - 1] = new this.lineConstructor(columnCells)
+    }
+  }
+
+  private buildBoxUnits(cells: Array<Array<CellModel>>): void
+  {
+    for ( let blockY = 0 ; blockY < 3 ; blockY++ )
+      for ( let blockX = 0 ; blockX < 3 ; blockX++ )
+      {
+        const blockCells: Array<CellModel> = []
+
+        for ( let y = 0 ; y < 3 ; y++ )
+          for (let x = 0 ; x < 3 ; x++ )
+            blockCells.push(cells[blockY * 3 + y][blockX * 3 + x])
+
+        this.boxunits.push(new this.boxConstructor(blockCells));
+      }
+  }
+
+  private buildDiagonalUnits(cells: Array<Array<CellModel>>): void
+  {
+    const diagonal1: Array<CellModel> = []
+    const diagonal2: Array<CellModel> = []
+
+    for (let i = 0; i < 9; i++) {
+      diagonal1.push(cells[i][i])
+      // interesting; make the order from bottom-left to top-right
+      diagonal2.push(cells[8 - i][i])
+    }
+
+    this.angunits.push(this.diadtlbr = new this.lineConstructor(diagonal1))
+    this.angunits.push(this.diadbltr = new this.lineConstructor(diagonal2))
+  }
+
+  // A bit of introspection
+  public get_diagonal_TL_BR(): LineModel | null
+  {
+    return this.diadtlbr
+  }
+
+  public get_diagonal_BL_TR(): LineModel | null
+  {
+    return this.diadbltr
+  }
+
+  public get isEditMode()     : boolean { return this.MODE == BoardMode.EDIT }
+  public get isPlayMode()     : boolean { return this.MODE == BoardMode.PLAY }
+  public get isSolveMode()    : boolean { return this.MODE == BoardMode.SOLVE}
+
+  public get isNormalType()   : boolean { return this.TYPE == BoardType.NORMAL }
+  public get isDiagonalType() : boolean { return this.TYPE == BoardType.DIAGONAL }
+
+  // CHANGE MODE(s)
+  public toEditMode()
+  {
+    // We're resetting cell values by using all-rows.
+    // This also covers all colums, blocks and diagonals
+    this.rowunits.forEach(u => u.reset())
+    this.MODE = BoardMode.EDIT
+
+    // If we Had INIT(ial) history we'd play it in now OR our consumer would do so!
+
+    return this
+  }
+
+  public toPlayMode()
+  {
+    this.rowunits.forEach(unit => unit.forEachCell(cell => { cell.autosolve = false }))
+    this.MODE = BoardMode.PLAY
+    return this
+  }
+
+  public toSolveMode()
+  {
+    this.rowunits.forEach(unit => unit.forEachCell(cell => { cell.autosolve = true }))
+    this.MODE = BoardMode.SOLVE
+    return this
+  }
+
+  public restart() { return this.toEditMode() }
+
+  public get isSolved(): boolean
+  {
+    return ! this.rowunits.some( row => ! row.isSolved );
+  }
+
+  // public reset(): void
+  // {
+  //     this.rowunits.forEach( row => row.reset() )
+  // }
+}
+
+
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix
+// END
