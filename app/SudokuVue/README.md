@@ -1,75 +1,65 @@
-# Sudoku Solver
+# Sudoku Playground
 
-## An example Sudoku "SOLVER" using Vue 3 in Vite.
+## An Explorization Sudoku "SOLVER" using Vue 3 in Vite.
 
-I'm Exploring SUDOKU as a problem to solve not necessarily as a game
-to play but as tool to explore the techbologies below. This code is based
-on a Java solution I have tinkered with, though the Java is far more indepth.
-    
-- includes unused code ( a work in progress )
-- unfinished code
-- VueJS to simply UI modeling within a browser
-- Using typescript for the first time so excuse the mistakes
-  (I used knowledge of other languages and docs to make
-   educated guesses about syntax)
-- Lint is enabled (see README.md)
-- Cypress is included (see README.md)
-  ( not configured to do anything yet useful yet! )
-- Jest is included for unit testing (all typescript)
-- Hints on how to run/build (See below)
+Vue 3 + TypeScript + Vite app for exploring Sudoku board models and developing
+strategies for solving Sukoku in a CLI and browser format.
 
-## Recommended IDE Setup
+## What is here
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+- Interactive play screen with puzzle selection and solve-assist mode
+- Reference views for core Sudoku concepts: cell, unit, line, block, and board
+- Puzzle library loaded from `public/puzzles/test-map-1.ini`
+- Jest unit tests for the Sudoku model and strategy code
+- Cypress component test setup for UI work (unused)
 
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
-
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
+## Quick start
 
 ```sh
 npm install
+npm run dev
 ```
 
-### Compile and Hot-Reload for Development
+Open the local Vite URL, then use the `Play` route to load a puzzle and interact with the board.
+
+## Commands
 
 ```sh
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+Starts the Vite dev server.
 
 ```sh
 npm run build
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+Runs `vue-tsc --noEmit` and then builds the production bundle into `dist/`.
 
 ```sh
-npm run lint
+npm run preview
 ```
 
-### Start Cypress
-
-```sh
-npx cypress open
-```
-
-### Run Tests (Jest)
+Serves the production build locally on port `4173`.
 
 ```sh
 npm test
 ```
 
+Runs the Jest suite and writes coverage output to `coverage/`.
+
+```sh
+npm run lint
+```
+
+Runs ESLint with `--fix`, so it may modify files.
+
+```sh
+npx cypress open
+```
+
+Opens Cypress for component testing. The project currently includes the Cypress setup and a starter component spec.
+
+## Recommended editor setup
+
+Use VS Code with Volar. If Vetur is installed, disable it for this workspace.

@@ -3,7 +3,8 @@ export type PuzzleLibraryEntry = {
   title: string
   difficulty: 'easy' | 'medium' | 'hard'
   map: string
-  page?: number
+  comment?: string
+  page?: string
   credits?: string
   email?: string
   source?: string
@@ -15,6 +16,16 @@ type IniSection = {
 
 type IniObject = {
   [section: string]: IniSection
+}
+
+export type PuzzleLibraryMeta = {
+  filename?: string
+  name?: string
+}
+
+export type PuzzleLibraryDocument = {
+  entries: PuzzleLibraryEntry[]
+  meta: PuzzleLibraryMeta
 }
 
 // Fallback when INI is unavailable.
@@ -109,6 +120,11 @@ function decodeMapString(encodedMap: string): string {
   throw new Error('InvalidMapDefinition')
 }
 
+function encodeMapString(map: string): string {
+  if (!/^\d{81}$/.test(map)) throw new Error('InvalidMapDefinition')
+  return `MAP:NR:A:${map}`
+}
+
 function inferDifficulty(givenCount: number): 'easy' | 'medium' | 'hard' {
   if (givenCount >= 36) return 'easy'
   if (givenCount >= 30) return 'medium'
@@ -120,7 +136,15 @@ export async function loadPuzzleLibraryFromIni(iniPath = '/puzzles/test-map-1.in
   if (!response.ok) throw new Error(`Unable to load puzzle INI (${response.status})`)
 
   const iniData = await response.text()
+  return parsePuzzleLibraryIniDocument(iniData).entries
+}
+
+export function parsePuzzleLibraryIniDocument(iniData: string): PuzzleLibraryDocument {
   const parsed = parseIni(iniData)
+  const globalSection = parsed.global ?? {}
+  const meta: PuzzleLibraryMeta = {
+    name: globalSection.name
+  }
 
   const entries = Object.keys(parsed)
     .filter((section) => section !== 'global')
@@ -128,14 +152,16 @@ export async function loadPuzzleLibraryFromIni(iniPath = '/puzzles/test-map-1.in
       const p = parsed[section]
       const map = decodeMapString(p.map ?? '')
       const givens = map.split('').filter((ch) => ch !== '0').length
+      const parsedTitle = p.title?.trim()
 
       return {
         id: p.uuid ?? section,
-        title: `${p.source ?? 'Sudoku'} p.${p.page ?? '?'}`,
+        title: parsedTitle || 'Untitled Puzzle',
         difficulty: inferDifficulty(givens),
         map,
+        comment: p.comment,
         source: p.source,
-        page: Number.parseInt(p.page ?? '0', 10) || undefined,
+        page: p.page?.trim() || undefined,
         credits: p.credits,
         email: p.email
       } satisfies PuzzleLibraryEntry
@@ -143,8 +169,46 @@ export async function loadPuzzleLibraryFromIni(iniPath = '/puzzles/test-map-1.in
     .sort((a, b) => {
       const sourceCmp = (a.source ?? '').localeCompare(b.source ?? '')
       if (sourceCmp !== 0) return sourceCmp
-      return (a.page ?? 0) - (b.page ?? 0)
+      return (a.page ?? '').localeCompare(b.page ?? '', undefined, { numeric: true, sensitivity: 'base' })
     })
 
-  return entries
+  return { entries, meta }
+}
+
+export function parsePuzzleLibraryIniText(iniData: string): PuzzleLibraryEntry[] {
+  return parsePuzzleLibraryIniDocument(iniData).entries
+}
+
+export function serializePuzzleLibraryIniText(
+  entries: PuzzleLibraryEntry[],
+  meta: PuzzleLibraryMeta = {}
+): string {
+  const lines: string[] = []
+  const filename = meta.filename ?? 'sudoku-library.sudoku'
+  const libraryName = meta.name ?? 'Sudoku Library'
+  lines.push(`# ${filename}`)
+  lines.push('# version 0.1')
+  lines.push(`# ${new Date().toISOString()}`)
+  lines.push('')
+  lines.push('[global]')
+  lines.push(`name=${libraryName}`)
+  lines.push('')
+
+  entries.forEach((entry, index) => {
+    const section = entry.id || `entry-${index + 1}`
+    lines.push(`[${section}]`)
+    lines.push(`uuid=${entry.id}`)
+    lines.push(`title=${entry.title ?? 'Untitled Puzzle'}`)
+    lines.push(`comment=${entry.comment ?? ''}`)
+    lines.push(`source=${entry.source ?? 'Custom'}`)
+    lines.push(`page=${entry.page ?? ''}`)
+    lines.push(`credits=${entry.credits ?? ''}`)
+    lines.push(`email=${entry.email ?? ''}`)
+    lines.push(`map=${encodeMapString(entry.map)}`)
+    lines.push('')
+  })
+
+  lines.push('## END')
+  lines.push('')
+  return lines.join('\n')
 }

@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import 'bootstrap/dist/css/bootstrap.css'
+import './assets/bootstrap-override.scss'
 
 import App from './App.vue'
 import router from './router'

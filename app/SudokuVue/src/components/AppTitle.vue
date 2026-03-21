@@ -13,9 +13,9 @@ const showSeven    = false
 const showEight    = false
 const showNine     = false
 const showTen      = false
-const showEleven   = false // FAVE
+const showEleven   = false  // FAVE
 const showTwelve   = false
-const showThirteen = false // Yuck
+const showThirteen = false  // Yuck
 
 defineProps<{
   title: string,
@@ -479,15 +479,16 @@ text-align: center;
 /* ------- Helper Styles -------------*/
 
 .outer div {
-  position: relative;
+  position: xsrelative;
   background: #f8f8f8;
-  width: 90%;
-  min-width: 600px;
-  width: 900px;
-  padding: 2em;
-  margin: 1.5em auto;
+  width: 99%;
+  min-width: 500px;
+  x-width: 1100px;
+  padding: 1em;
+  margin-top: 1.25em;
+  margin-bottom: 0.55em;
   border: 1px solid rgba(0, 0, 0, 0.18);
-  border-radius: 0.85rem;
+  border-radius: 0.95rem;
 }
 
 h1:before,

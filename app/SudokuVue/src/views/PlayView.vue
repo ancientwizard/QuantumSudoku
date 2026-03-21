@@ -97,10 +97,17 @@ onMounted(async () => {
   libraryError.value = ''
 
   try {
-    const loaded = await loadPuzzleLibraryFromIni('/puzzles/test-map-1.ini')
+    let loaded: PuzzleLibraryEntry[] = []
+
+    try {
+      loaded = await loadPuzzleLibraryFromIni('/puzzles/test-map-1.sudoku')
+    } catch {
+      loaded = await loadPuzzleLibraryFromIni('/puzzles/test-map-1.ini')
+    }
+
     puzzleLibrary.value = loaded.length > 0 ? loaded : PUZZLE_LIBRARY_FALLBACK
   } catch {
-    libraryError.value = 'Could not load INI library, using starter list.'
+    libraryError.value = 'Could not load puzzle library file, using starter list.'
     puzzleLibrary.value = PUZZLE_LIBRARY_FALLBACK
   }
 
@@ -571,7 +578,7 @@ function cellClass(cell: UiCell): Record<string, boolean> {
   <main class="play-view">
     <section v-if="stage === 'choose'" class="chooser card-shell">
       <h2>Play Sudoku</h2>
-      <p class="muted">Pick a puzzle from the INI library and press Go.</p>
+      <p class="muted">Pick a puzzle from the library file and press Go.</p>
       <p v-if="loadingLibrary" class="muted">Loading library...</p>
       <p v-if="libraryError" class="warn">{{ libraryError }}</p>
 

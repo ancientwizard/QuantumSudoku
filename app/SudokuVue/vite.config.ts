@@ -13,6 +13,15 @@ export default defineConfig({
       additionalLegacyPolyfills: ['regenerator-runtime/runtime']
     })
   ],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        // Bootstrap 5 uses legacy Dart Sass APIs that are deprecated in Sass 1.x.
+        // Silence these until Bootstrap ships an update.
+        silenceDeprecations: ['color-functions', 'global-builtin', 'import', 'if-function']
+      }
+    }
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

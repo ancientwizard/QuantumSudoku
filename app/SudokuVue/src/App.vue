@@ -4,22 +4,19 @@ import PuzzleTitle from './components/AppTitle.vue'
 
 <template>
   <div id="app">
+    <puzzle-title title="Sudoku Playground" tagline="A Programming Development Exercise" />
+
     <header>
-<!-- TODO: exchange with a Sudoku puzzle logo -->
-<!--  <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" /> -->
-
       <div class="wrapper">
-        <puzzle-title title="Sudoku Playground" tagline="A Program Development Exercise" />
-
         <nav>
           <router-link to="/home">Home</router-link>
-     <!-- <router-link to="/about">About</router-link> -->
           <router-link to="/about/cell">Cell</router-link>
           <router-link to="/about/unit">Unit</router-link>
           <router-link to="/about/line">Line</router-link>
           <router-link to="/about/block">Block</router-link>
           <router-link to="/about/board">Board</router-link>
           <router-link to="/play">Play</router-link>
+          <router-link to="/create">Create</router-link>
         </nav>
       </div>
     </header>
@@ -51,7 +48,10 @@ nav {
 }
 
 nav a.router-link-exact-active {
-  color: var(--color-text);
+  color: var(--sudoku-primary-dark, #23436b);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.4rem;
 }
 
 nav a.router-link-exact-active:hover {
@@ -62,6 +62,16 @@ nav a {
   display: inline-block;
   padding: 0 1.2rem;
   border-left: 1px solid var(--color-border);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+nav a:hover {
+  border-left-color: var(--sudoku-primary-dark, #23436b);
+  background-color: rgba(30, 79, 134, 0.08);
+}
+
+nav a:hover + a {
+  border-left-color: var(--sudoku-primary-dark, #23436b);
 }
 
 nav a:first-of-type {
@@ -69,8 +79,8 @@ nav a:first-of-type {
 }
 
 .content {
-  width: 900px;
-  max-width: 900px;
+  min-width: 900px;
+  max-width: 1200px;
   border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: 10px;
@@ -78,7 +88,7 @@ nav a:first-of-type {
   background: #f8f8f8;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1824px) {
 
   header {
     display: flex;

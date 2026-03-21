@@ -19,10 +19,30 @@ export default {
   }),
 
   methods: {
+    onCardAuxClick (event: MouseEvent) {
+      if (event.button === 1) {
+        event.preventDefault()
+        this.cell_reset()
+        this.showNotice('Cell: ' + this.single_cell.coord + ' reset using M2.', 'info')
+      }
+    },
+
+    onCardContextMenu (event: MouseEvent) {
+      event.preventDefault()
+      this.cell_reset()
+      this.showNotice('Cell: ' + this.single_cell.coord + ' reset using M2.', 'info')
+    },
+
+    onGlobalKeydown (event: KeyboardEvent) {
+      if (this.show_story && event.key === 'Escape') {
+        this.closeStory()
+      }
+    },
+
     update_status () {
       this.cell_status = this.single_cell.isKnown
-        ? 'is-known'
-        : 'is-unknown, having ' + this.single_cell.as_candidate_array.length + ' choices'
+        ? 'known (value ' + this.single_cell.value + ')'
+        : 'unknown, having ' + this.single_cell.as_candidate_array.length + ' choices'
     },
 
     cell_reset () {
@@ -33,6 +53,7 @@ export default {
     cell_is (_value) {
       if (Array.isArray(_value)) {
         this.cell_value = _value
+        this.update_status()
         return
       }
 
@@ -45,15 +66,15 @@ export default {
       }
     },
 
-    cell_one () { this.cell_is(CellValue.ONE) },
-    cell_two () { this.cell_is(CellValue.TWO) },
-    cell_three () { this.cell_is(CellValue.THREE) },
-    cell_four () { this.cell_is(CellValue.FOUR) },
-    cell_five () { this.cell_is(CellValue.FIVE) },
-    cell_six () { this.cell_is(CellValue.SIX) },
-    cell_seven () { this.cell_is(CellValue.SEVEN) },
-    cell_eight () { this.cell_is(CellValue.EIGHT) },
-    cell_nine () { this.cell_is(CellValue.NINE) },
+    cell_one    () { this.cell_is(CellValue.ONE)   },
+    cell_two    () { this.cell_is(CellValue.TWO)   },
+    cell_three  () { this.cell_is(CellValue.THREE) },
+    cell_four   () { this.cell_is(CellValue.FOUR)  },
+    cell_five   () { this.cell_is(CellValue.FIVE)  },
+    cell_six    () { this.cell_is(CellValue.SIX)   },
+    cell_seven  () { this.cell_is(CellValue.SEVEN) },
+    cell_eight  () { this.cell_is(CellValue.EIGHT) },
+    cell_nine   () { this.cell_is(CellValue.NINE)  },
 
     cell_exclude (_value) {
       const cell = this.single_cell
@@ -62,7 +83,20 @@ export default {
         this.cell_is(cell.isKnown ? cell.value : cell.as_label_array)
         this.showNotice('Cell: ' + cell.coord + ' Exclude: "' + _value.value + '"')
         this.update_status()
+        return
       }
+
+      if (cell.isKnown) {
+        this.showNotice('Cell: ' + cell.coord + ' is known (' + cell.value + '). Reset to exclude candidates.', 'info')
+        return
+      }
+
+      if (cell.includes(_value) && cell.length === 1) {
+        this.showNotice('Cell: ' + cell.coord + ' cannot exclude "' + _value.value + '" because it is the last remaining candidate.', 'info')
+        return
+      }
+
+      this.showNotice('Cell: ' + cell.coord + ' already excludes "' + _value.value + '".', 'info')
     },
 
     cell_ex_one () { this.cell_exclude(CellValue.ONE) },
@@ -90,11 +124,20 @@ export default {
 
     closeStory () {
       this.show_story = false
+    },
+
+    goToNext () {
+      this.$router.push({ name: 'unit' })
     }
   },
 
   mounted () {
+    window.addEventListener('keydown', this.onGlobalKeydown)
     this.cell_reset()
+  },
+
+  beforeUnmount () {
+    window.removeEventListener('keydown', this.onGlobalKeydown)
   }
 
 }
@@ -103,31 +146,44 @@ export default {
 
 <template>
   <div>
-    <section class="card m-2 border-secondary-subtle shadow-sm">
-      <div class="card-header bg-light text-secondary">
+    <section
+      class="card m-2 border-secondary-subtle shadow-sm"
+      @auxclick="onCardAuxClick"
+      @contextmenu="onCardContextMenu"
+      @mousedown.middle.prevent
+    >
+      <div class="card-header bg-light text-secondary d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Anotomy of the Sudoku Single Cell Organism</h5>
+        <button type="button" class="btn btn-primary btn-sm" @click="goToNext">Next: Unit →</button>
       </div>
       <div class="card-body">
-        <div v-if="notice.message" :class="['alert', 'alert-' + notice.variant, 'alert-dismissible', 'fade', 'show']" role="alert">
-          {{ notice.message }}
-          <button type="button" class="btn-close" aria-label="Close" @click="clearNotice"></button>
-        </div>
-
-        <button type="button" class="btn btn-warning m-1" @click="openStory">Tell a "Cell" story</button>
+        <button
+          type="button"
+          class="btn btn-warning btn-sm px-3 py-1 m-1 shadow-sm"
+          @click="openStory"
+        >
+          Tell a "Cell" Story
+        </button>
 
         <div class="p-2 text-primary">
           <h5>A Sudoku Cell:
             <span class="text-secondary h6">({{ cell_status }})</span>
           </h5>
+
           <div class="h1">
             <span class="badge rounded-pill text-bg-danger" id="single-cell">{{ cell_value }}</span>
+          </div>
+
+          <div v-if="notice.message" :class="['alert', 'alert-' + notice.variant, 'alert-dismissible', 'fade', 'show']" role="alert">
+            {{ notice.message }}
+            <button type="button" class="btn-close" aria-label="Close" @click="clearNotice"></button>
           </div>
         </div>
 
         <div class="p-2 text-primary">
           <h5 class="d-flex align-items-center gap-2">
             <span>Exclude:</span>
-            <span class="badge text-bg-secondary info-chip" title="Many Sudoku logic strategies involve eliminating values until only one is remaining. The exclude(N) method removes one of the possibilities.">Info</span>
+            <span class="badge text-bg-secondary" title="Many Sudoku logic strategies involve eliminating values until only one is remaining. The exclude(N) method removes one of the possibilities.">Info</span>
           </h5>
           <button type="button" class="btn btn-outline-primary rounded-pill m-1" @click="cell_ex_one">One</button>
           <button type="button" class="btn btn-outline-primary rounded-pill m-1" @click="cell_ex_two">Two</button>
@@ -143,7 +199,7 @@ export default {
         <div class="p-2 text-primary">
           <h5 class="d-flex align-items-center gap-2">
             <span>Set:</span>
-            <span class="badge text-bg-secondary info-chip" title="A cell is set to a value, changing its state to known. The is(N) method sets the Cell to the known state of N when that value has not been excluded.">Info</span>
+            <span class="badge text-bg-secondary" title="A cell is set to a value, changing its state to known. The is(N) method sets the Cell to the known state of N when that value has not been excluded.">Info</span>
           </h5>
           <button type="button" class="btn btn-primary rounded-pill m-1" @click="cell_one">One</button>
           <button type="button" class="btn btn-primary rounded-pill m-1" @click="cell_two">Two</button>
@@ -159,14 +215,21 @@ export default {
         <div class="p-2 text-primary">
           <h5 class="d-flex align-items-center gap-2">
             <span>Reset:</span>
-            <span class="badge text-bg-secondary info-chip" title="A cell is reset to its initial state using its reset() method.">Info</span>
+            <span class="badge text-bg-secondary" title="A cell is reset to its initial state using its reset() method.">Info</span>
           </h5>
-          <button type="button" class="btn btn-outline-secondary rounded-pill m-1" @click="cell_reset">Reset</button>
+          <button type="button" class="btn btn-secondary rounded-pill m-1" @click="cell_reset">Reset</button>
         </div>
       </div>
     </section>
 
-    <div v-if="show_story" class="modal-backdrop-local" @click.self="closeStory">
+    <div
+      v-if="show_story"
+      class="modal fade show d-block"
+      tabindex="-1"
+      aria-modal="true"
+      role="dialog"
+      @click.self="closeStory"
+    >
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header bg-primary text-white">
@@ -198,27 +261,9 @@ export default {
         </div>
       </div>
     </div>
+    <div v-if="show_story" class="modal-backdrop fade show" @click="closeStory"></div>
   </div>
 </template>
-
-<style scoped>
-
-.info-chip {
-  cursor: help;
-}
-
-.modal-backdrop-local {
-  position: fixed;
-  inset: 0;
-  z-index: 1050;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.45);
-}
-
-</style>
 
 // vim: expandtab tabstop=2 number
 // END

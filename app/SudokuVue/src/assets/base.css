@@ -30,6 +30,14 @@
   --color-border: var(--vt-c-divider-light-2);
   --color-border-hover: var(--vt-c-divider-light-1);
 
+  /* Sudoku theme colors */
+  --sudoku-primary: #1e4f86;
+  --sudoku-primary-dark: #23436b;
+  --sudoku-primary-light: #2968ab;
+  --sudoku-primary-disabled: #6d839f;
+  --sudoku-primary-border-disabled: #627790;
+  --sudoku-focus-outline: #0f2741;
+
 /*
   --color-heading: var(--vt-c-text-light-1);
   --color-text: var(--vt-c-text-light-1);
