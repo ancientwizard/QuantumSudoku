@@ -204,7 +204,7 @@ describe('sudoku/library/solve', () => {
             // ywing_logger.as_array.length && console.log('Y-WING\n', ywing_logger.as_array )
             // xwing_logger.as_array.length && console.log('X-WING\n', xwing_logger.as_array )
 
-            // eslint-disable-next-line no-constant-condition
+             
             if ( ! board.isSolved ) //&& false )
             {
                 const fifty_logger   = new StrategyLogger()

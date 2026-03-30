@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, shallowRef, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
 import { BoardMode, BoardModel } from '@/js/model/BoardModel'
 import { CellIndex } from '@/js/model/CellIndex'
@@ -35,6 +35,9 @@ type UiCell = {
   value: number
   candidates: number[]
 }
+
+type LibraryState = 'no-library' | 'library-clean' | 'library-dirty'
+type PuzzleState = 'no-selection' | 'selected-unchanged' | 'selected-changed'
 
 type FsWritableFileStreamRef = {
   write: (data: Blob | string) => Promise<void>
@@ -100,7 +103,6 @@ const loadedLibraryFileName = ref<string>('')
 const libraryName = ref<string>('Sudoku Library')
 const libraryFileHandle = shallowRef<FsFileHandleRef | null>(null)
 const libraryMessage = ref<string>('Choose File or New Library to begin editing.')
-const draftTitle = ref<string>('Custom Puzzle')
 const draftSource = ref<string>('Custom')
 const draftComment = ref<string>('')
 const draftPage = ref<string>('')
@@ -110,6 +112,8 @@ const fileInput = ref<HTMLInputElement | null>(null)
 const DEFAULT_LIBRARY_FILENAME = 'new-library.sudoku'
 const libraryInitialized = ref<boolean>(false)
 const libraryDirty = ref<boolean>(false)
+const selectedPuzzleBaseline = ref<string>('')
+const hydratingSelection = ref<boolean>(false)
 const openFold = ref<'library' | 'puzzles'>('library')
 const FILE_PICKER_TYPES: FsPickerAcceptType[] = [
   {
@@ -127,8 +131,20 @@ const canNewPuzzle = computed<boolean>(() => libraryInitialized.value)
 const selectedPuzzle = computed<PuzzleLibraryEntry | null>(() => {
   return libraryEntries.value.find((item) => item.id === selectedPuzzleId.value) ?? null
 })
-const activePuzzleTitle = computed<string>(() => {
-  return selectedPuzzle.value?.title ?? (draftTitle.value.trim() || 'Untitled Puzzle')
+const libraryState = computed<LibraryState>(() => {
+  if (!libraryInitialized.value) return 'no-library'
+  return libraryDirty.value ? 'library-dirty' : 'library-clean'
+})
+const puzzleState = computed<PuzzleState>(() => {
+  if (!libraryInitialized.value) return 'no-selection'
+  const current = selectedPuzzle.value
+  if (!current) return 'no-selection'
+  return puzzleSignature(current) === selectedPuzzleBaseline.value
+    ? 'selected-unchanged'
+    : 'selected-changed'
+})
+const activePuzzlePage = computed<string>(() => {
+  return selectedPuzzle.value?.page ?? (draftPage.value.trim() || 'UnPaged Puzzle')
 })
 
 function keyOf(row: number, col: number): string {
@@ -146,6 +162,29 @@ function currentMapString(): string {
   })
 
   return ordered.map((cell) => (cell.value > 0 ? String(cell.value) : '0')).join('')
+}
+
+function mapIndex(row: number, col: number): number {
+  return (row - 1) * 9 + (col - 1)
+}
+
+function mapWithCellValue(map: string, row: number, col: number, value: number): string {
+  if (!/^\d{81}$/.test(map)) return map
+  const idx = mapIndex(row, col)
+  if (idx < 0 || idx >= 81) return map
+  return `${map.slice(0, idx)}${value}${map.slice(idx + 1)}`
+}
+
+function puzzleSignature(entry: PuzzleLibraryEntry): string {
+  return JSON.stringify({
+    source: entry.source ?? '',
+    comment: entry.comment ?? '',
+    page: entry.page ?? '',
+    credits: entry.credits ?? '',
+    email: entry.email ?? '',
+    map: entry.map,
+    difficulty: entry.difficulty
+  })
 }
 
 function takeSnapshot(): BoardSnapshot {
@@ -340,7 +379,6 @@ function initializeBlank(): void {
 }
 
 function clearDraftFields(): void {
-  draftTitle.value = ''
   draftSource.value = ''
   draftComment.value = ''
   draftPage.value = ''
@@ -349,7 +387,6 @@ function clearDraftFields(): void {
 }
 
 function fillDraftFields(entry: PuzzleLibraryEntry): void {
-  draftTitle.value = entry.title
   draftSource.value = entry.source ?? ''
   draftComment.value = entry.comment ?? ''
   draftPage.value = entry.page ?? ''
@@ -367,13 +404,55 @@ function syncSelectedPuzzleState(): void {
 
   const entry = selectedPuzzle.value
   if (!entry) {
+    selectedPuzzleBaseline.value = ''
     prepareBlankPuzzle()
     return
   }
 
+  hydratingSelection.value = true
+  selectedPuzzleBaseline.value = puzzleSignature(entry)
   fillDraftFields(entry)
   loadFromMap(entry.map)
-  lastAction.value = `selected ${entry.title}`
+  void nextTick(() => {
+    hydratingSelection.value = false
+  })
+  lastAction.value = `selected ${entry.page}`
+}
+
+function updateSelectionBaselineToCurrent(): void {
+  const current = selectedPuzzle.value
+  selectedPuzzleBaseline.value = current ? puzzleSignature(current) : ''
+}
+
+function confirmReplaceCurrentLibrary(): boolean {
+  if (!libraryInitialized.value) return true
+  if (!libraryDirty.value) return true
+
+  return window.confirm(
+    'Loading a library will replace the current unsaved library in memory. Continue?'
+  )
+}
+
+function onCreateViewKeydown(event: KeyboardEvent): void {
+  const usesCtrl = event.ctrlKey || event.metaKey
+  if (!usesCtrl) return
+
+  const key = event.key.toLowerCase()
+  if (key === 'l') {
+    event.preventDefault()
+    void chooseLibraryFile()
+    return
+  }
+
+  if (key === 's') {
+    event.preventDefault()
+    if (event.shiftKey) {
+      void saveLibraryAsFile()
+      return
+    }
+
+    void saveLibraryFile()
+  }
 }
 
 function supportsFileSystemAccess(): boolean {
@@ -425,9 +504,15 @@ async function loadLibraryFromFile(file: File, handle: FsFileHandleRef | null = 
     prepareBlankPuzzle()
     lastAction.value = 'library ready (empty)'
   }
+
+  void nextTick(() => {
+    updateSelectionBaselineToCurrent()
+    libraryDirty.value = false
+  })
 }
 
 function syncSelectedEntryFromForm(): void {
+  if (hydratingSelection.value) return
   if (!libraryInitialized.value) return
   if (!selectedPuzzleId.value) return
 
@@ -438,7 +523,6 @@ function syncSelectedEntryFromForm(): void {
   const map = /^\d{81}$/.test(currentMapString()) ? currentMapString() : current.map
   const updated: PuzzleLibraryEntry = {
     ...current,
-    title: draftTitle.value.trim() || current.title,
     source: draftSource.value.trim() || undefined,
     comment: draftComment.value.trim() || undefined,
     page: draftPage.value.trim() || undefined,
@@ -449,7 +533,6 @@ function syncSelectedEntryFromForm(): void {
   }
 
   const changed =
-    updated.title !== current.title ||
     updated.source !== current.source ||
     updated.comment !== current.comment ||
     updated.page !== current.page ||
@@ -520,6 +603,21 @@ function placeValue(cell: UiCell, value: number): void {
   }
 }
 
+function setOrClearCellValueByClick(cell: UiCell, value: number): void {
+  if (!libraryInitialized.value) return
+  const map = currentMapString()
+  if (!/^\d{81}$/.test(map)) return
+
+  const nextValue = cell.value === value ? 0 : value
+  const nextMap = mapWithCellValue(map, cell.row, cell.col, nextValue)
+  loadFromMap(nextMap)
+  history.value.push(takeSnapshot())
+  syncSelectedEntryFromForm()
+  lastAction.value = nextValue === 0
+    ? `clear r${cell.row}c${cell.col}`
+    : `set r${cell.row}c${cell.col}=${nextValue}`
+}
+
 function excludeCandidate(cell: UiCell, value: number): void {
   if (!libraryInitialized.value) return
   const currentBoard = board.value
@@ -545,13 +643,17 @@ function excludeCandidate(cell: UiCell, value: number): void {
 }
 
 function onCellCandidateLeftClick(cell: UiCell, value: number): void {
-  if (cell.value > 0) return
-  placeValue(cell, value)
+  setOrClearCellValueByClick(cell, value)
 }
 
 function onCellCandidateRightClick(cell: UiCell, value: number): void {
   if (cell.value > 0) return
   excludeCandidate(cell, value)
+}
+
+function onCellValueLeftClick(cell: UiCell): void {
+  if (cell.value <= 0) return
+  setOrClearCellValueByClick(cell, cell.value)
 }
 
 function undoLast(): void {
@@ -579,6 +681,8 @@ function resetBoard(): void {
 }
 
 async function chooseLibraryFile(): Promise<void> {
+  if (!confirmReplaceCurrentLibrary()) return
+
   if (!supportsFileSystemAccess()) {
     fileInput.value?.click()
     return
@@ -616,6 +720,11 @@ async function onLibraryFileChosen(event: Event): Promise<void> {
   const file = input.files?.[0]
   if (!file) return
 
+  if (!confirmReplaceCurrentLibrary()) {
+    input.value = ''
+    return
+  }
+
   try {
     await loadLibraryFromFile(file)
   } catch {
@@ -648,7 +757,6 @@ function newPuzzleEntry(): void {
     const replacingSelected = selectedIndex >= 0
     const nextEntry: PuzzleLibraryEntry = {
       id: replacingSelected ? libraryEntries.value[selectedIndex].id : uuidv4(),
-      title: draftTitle.value.trim() || 'Custom Puzzle',
       difficulty: inferDifficultyByGivens(map),
       map,
       source: draftSource.value.trim() || 'Custom',
@@ -677,8 +785,8 @@ function newPuzzleEntry(): void {
     libraryDirty.value = true
     selectedPuzzleId.value = ''
     libraryMessage.value = replacingSelected
-      ? `Saved progress to "${nextEntry.title}" and started a new puzzle.`
-      : `Added "${nextEntry.title}" (${libraryEntries.value.length} total). Fill in meta for next puzzle.`
+      ? `Saved progress to "${nextEntry.page}" and started a new puzzle.`
+      : `Added "${nextEntry.page}" (${libraryEntries.value.length} total). Fill in meta for next puzzle.`
   } else {
     libraryMessage.value = 'Nothing to save yet. Add at least one given before starting a new puzzle.'
   }
@@ -693,7 +801,7 @@ function deleteSelectedPuzzleWithConfirm(): void {
   if (!selected) return
 
   const ok = window.confirm(
-    `Delete puzzle "${selected.title}" from this library?\n\nThis action cannot be undone.`
+    `Delete puzzle "${selected.page}" from this library?\n\nThis action cannot be undone.`
   )
   if (!ok) return
 
@@ -702,7 +810,7 @@ function deleteSelectedPuzzleWithConfirm(): void {
   selectedPuzzleId.value = ''
   prepareBlankPuzzle()
   lastAction.value = 'puzzle deleted'
-  libraryMessage.value = `Deleted "${selected.title}" (${libraryEntries.value.length} remaining).`
+  libraryMessage.value = `Deleted "${selected.page}" (${libraryEntries.value.length} remaining).`
 }
 
 function onPuzzleListDeleteKey(): void {
@@ -716,6 +824,7 @@ function newLibrary(): void {
   libraryEntries.value = []
   libraryName.value = 'Sudoku Library'
   selectedPuzzleId.value = ''
+  selectedPuzzleBaseline.value = ''
   loadedLibraryFileName.value = DEFAULT_LIBRARY_FILENAME
   libraryFileHandle.value = null
   prepareBlankPuzzle()
@@ -729,6 +838,7 @@ function unloadLibrary(): void {
   libraryEntries.value = []
   libraryName.value = 'Sudoku Library'
   selectedPuzzleId.value = ''
+  selectedPuzzleBaseline.value = ''
   loadedLibraryFileName.value = ''
   libraryFileHandle.value = null
   clearDraftFields()
@@ -736,6 +846,7 @@ function unloadLibrary(): void {
   board.value = null
   buildUiFromBoard()
   history.value = []
+  selectedPuzzleBaseline.value = ''
   lastAction.value = 'ready'
   openFold.value = 'library'
 }
@@ -753,6 +864,7 @@ async function saveLibraryFile(): Promise<void> {
       await writeLibraryToFileHandle(libraryFileHandle.value, filename)
       loadedLibraryFileName.value = filename
       libraryDirty.value = false
+      updateSelectionBaselineToCurrent()
       libraryMessage.value = `Saved ${libraryEntries.value.length} puzzle(s) to ${filename}`
       return
     }
@@ -790,6 +902,7 @@ async function saveLibraryAsFile(): Promise<void> {
     }
 
     libraryDirty.value = false
+    updateSelectionBaselineToCurrent()
     libraryMessage.value = `Saved ${libraryEntries.value.length} puzzle(s) to ${loadedLibraryFileName.value}`
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') return
@@ -802,7 +915,7 @@ watch(selectedPuzzleId, () => {
 })
 
 watch(
-  [draftTitle, draftSource, draftComment, draftPage, draftCredits, draftEmail],
+  [ draftSource, draftComment, draftPage, draftCredits, draftEmail],
   () => {
     syncSelectedEntryFromForm()
   }
@@ -812,6 +925,14 @@ watch(libraryName, (next, prev) => {
   if (!libraryInitialized.value) return
   if (next === prev) return
   libraryDirty.value = true
+})
+
+onMounted(() => {
+  window.addEventListener('keydown', onCreateViewKeydown)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onCreateViewKeydown)
 })
 
 function cellClass(cell: UiCell): Record<string, boolean> {
@@ -828,7 +949,13 @@ function cellClass(cell: UiCell): Record<string, boolean> {
 </script>
 
 <template>
-  <main class="create-view">
+  <main
+    class="create-view"
+    tabindex="0"
+    :data-library-state="libraryState"
+    :data-puzzle-state="puzzleState"
+    @keydown="onCreateViewKeydown"
+  >
 
     <section class="card-shell editor-shell">
       <div class="board-wrap" role="grid" aria-label="Sudoku board" @contextmenu.prevent="onBoardContextMenu">
@@ -839,7 +966,15 @@ function cellClass(cell: UiCell): Record<string, boolean> {
           :class="cellClass(cell)"
           role="gridcell"
         >
-          <span v-if="cell.value > 0" class="value">{{ cell.value }}</span>
+          <button
+            v-if="cell.value > 0"
+            type="button"
+            class="value value-button"
+            tabindex="-1"
+            @click.prevent.stop="onCellValueLeftClick(cell)"
+          >
+            {{ cell.value }}
+          </button>
           <div v-else class="candidates">
             <template
               v-for="n in 9"
@@ -864,7 +999,7 @@ function cellClass(cell: UiCell): Record<string, boolean> {
       <div class="muted bg-sudoku-primary p-2 rounded mt-1 text-white">
         <div class="row">
           <div class="col-9 no-wrap">
-            {{ activePuzzleTitle }}
+            {{ activePuzzlePage }}
           </div>
           <div class="col-3 no-wrap">{{ lastAction }}</div>
         </div>
@@ -886,7 +1021,7 @@ function cellClass(cell: UiCell): Record<string, boolean> {
           <div class="field-row">
             <div class="inline-row">
               <button type="button" class="secondary-button" :disabled="libraryInitialized" @click="newLibrary">New</button>
-              <button type="button" class="secondary-button" :disabled="libraryInitialized" @click="chooseLibraryFile">Load</button>
+              <button type="button" class="secondary-button" @click="chooseLibraryFile">Load</button>
               <button type="button" class="secondary-button" :disabled="!canSave" @click="saveLibraryFile">Save</button>
               <button type="button" class="secondary-button" :disabled="!libraryInitialized" @click="saveLibraryAsFile">Save As</button>
               <button type="button" class="secondary-button" :disabled="!libraryInitialized" @click="unloadLibrary">Unload</button>
@@ -952,16 +1087,12 @@ function cellClass(cell: UiCell): Record<string, boolean> {
             >
               <option value="">-- New puzzle --</option>
               <option v-for="entry in libraryEntries" :key="entry.id" :value="entry.id">
-                {{ entry.title }} ({{ entry.difficulty }})
+                {{ entry.source }}{{ entry.page || '' }} ({{ entry.difficulty }})
               </option>
             </select>
           </div>
 
           <div class="field-grid">
-            <div class="field-row">
-              <label for="draft-title">Title</label>
-              <input id="draft-title" v-model="draftTitle" class="input" type="text" />
-            </div>
             <div class="field-row">
               <label for="draft-source">Source</label>
               <input id="draft-source" v-model="draftSource" class="input" type="text" />
@@ -1219,6 +1350,15 @@ h2 {
 .value {
   font-size: 1.2rem;
   font-weight: 700;
+}
+
+.value-button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
 }
 
 .candidates {

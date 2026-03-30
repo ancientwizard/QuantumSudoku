@@ -586,7 +586,7 @@ function cellClass(cell: UiCell): Record<string, boolean> {
         <label for="puzzle-chooser">Puzzle Library</label>
         <select id="puzzle-chooser" v-model="selectedPuzzleId" class="select" :disabled="loadingLibrary || puzzleLibrary.length === 0">
           <option v-for="entry in puzzleLibrary" :key="entry.id" :value="entry.id">
-            {{ entry.title }} ({{ entry.difficulty }})
+            {{ entry.page }} ({{ entry.difficulty }})
           </option>
         </select>
       </div>
@@ -629,7 +629,7 @@ function cellClass(cell: UiCell): Record<string, boolean> {
         </div>
 
         <aside class="col-12 col-lg-3 col-xl-3 side-panel">
-          <h2>{{ chosenPuzzle?.title }}</h2>
+          <h2>{{ chosenPuzzle?.source }}{{ chosenPuzzle?.page || '' }}</h2>
           <p class="muted">Mode: {{ boardModeLabel }}</p>
           <p v-if="boardIsBroken" class="warn">Broken: conflicting values detected. Undo or choose puzzle.</p>
 

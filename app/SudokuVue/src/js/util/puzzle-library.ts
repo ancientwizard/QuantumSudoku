@@ -1,6 +1,5 @@
 export type PuzzleLibraryEntry = {
   id: string
-  title: string
   difficulty: 'easy' | 'medium' | 'hard'
   map: string
   comment?: string
@@ -32,21 +31,18 @@ export type PuzzleLibraryDocument = {
 export const PUZZLE_LIBRARY_FALLBACK: PuzzleLibraryEntry[] = [
   {
     id: 'easy-001',
-    title: 'Daily Warmup #1',
     difficulty: 'easy',
     map: '530070000600195000098000060800060003400803001700020006060000280000419005000080079',
     source: 'starter'
   },
   {
     id: 'medium-001',
-    title: 'Midnight Grid #7',
     difficulty: 'medium',
     map: '003020600900305001001806400008102900700000008006708200002609500800203009005010300',
     source: 'starter'
   },
   {
     id: 'hard-001',
-    title: 'Logic Forge #3',
     difficulty: 'hard',
     map: '000000907000420180000705026100904000050000040000507009920108000034059000507000000',
     source: 'starter'
@@ -152,11 +148,9 @@ export function parsePuzzleLibraryIniDocument(iniData: string): PuzzleLibraryDoc
       const p = parsed[section]
       const map = decodeMapString(p.map ?? '')
       const givens = map.split('').filter((ch) => ch !== '0').length
-      const parsedTitle = p.title?.trim()
 
       return {
         id: p.uuid ?? section,
-        title: parsedTitle || 'Untitled Puzzle',
         difficulty: inferDifficulty(givens),
         map,
         comment: p.comment,
@@ -198,7 +192,6 @@ export function serializePuzzleLibraryIniText(
     const section = entry.id || `entry-${index + 1}`
     lines.push(`[${section}]`)
     lines.push(`uuid=${entry.id}`)
-    lines.push(`title=${entry.title ?? 'Untitled Puzzle'}`)
     lines.push(`comment=${entry.comment ?? ''}`)
     lines.push(`source=${entry.source ?? 'Custom'}`)
     lines.push(`page=${entry.page ?? ''}`)
