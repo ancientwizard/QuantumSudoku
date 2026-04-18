@@ -114,7 +114,6 @@ class UnitModel<TCell extends CellModel = CellModel> implements iUnit
         distribution.forEach( val => {
             if ( val.length > 1 ) {
                 broken = true
-                // val.forEach( cell => { cell.showError() })
             }
         })
 
@@ -156,97 +155,10 @@ class UnitModel<TCell extends CellModel = CellModel> implements iUnit
         this.cells.forEach(( cell, idx ) => { callback( cell, idx ) })
     }
 
-  // public void solve()
-  // {
-  //   strategy_unique();
-  //   strategy_set_naked_pair();
-  //   strategy_set_hidden_pair();
-  //   strategy_set_naked_triple();
-  //   strategy_set_naked_quad();
-  //   //strategy_set_hidden_triple();   // never turned on in Java
-  //   //strategy_set_hidden_quad();     // never turned on in Java
-  // }
-
     public reset() : void
     {
         this.cells.forEach( c  => { c.reset() })
     }
-
-    // public toStringIII() : string
-    // {
-    //     let s : string = ""
-
-    //     this.cells.forEach( (c, index) => {
-    //             s += "|  " + ( c.isKnown ? c.label : " " ) + "  "
-    //         })
-
-    //     return s + "|\n";
-    // }
-
-//  public String toStringLine()
-//  {
-//  char [][] map = {
-//  {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '}
-//  ,   {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '}
-//  ,   {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '}
-//  };
-
-//  int x = 1, y = 1;
-
-//  for ( Cell c : cells)
-//  {
-//  if ( c.isKnown() )
-//  {
-//  //  System.out.println("# known - " + c.toString2());
-//  map[y][x-1] = '[';
-//  map[y][x  ] = (""+c.getValue()).charAt(0);
-//  map[y][x+1] = ']';
-//  }
-//  else
-//  {
-//  for ( Integer I : c.getSet() )
-//  {
-//  switch ( I )
-//  {
-//  case 1: map[y-1][x-1] = '1'; break;
-//  case 2: map[y-1][x  ] = '2'; break;
-//  case 3: map[y-1][x+1] = '3'; break;
-//  case 4: map[y  ][x-1] = '4'; break;
-//  case 5: map[y  ][x  ] = '5'; break;
-//  case 6: map[y  ][x+1] = '6'; break;
-//  case 7: map[y+1][x-1] = '7'; break;
-//  case 8: map[y+1][x  ] = '8'; break;
-//  case 9: map[y+1][x+1] = '9';
-//  }
-//  }
-//  }
-
-//  // Next Cell alignment
-//  x += 3;
-//  }
-
-//  String s = "+-----+-----+-----+-----+-----+-----+-----+-----+-----+\n";
-
-//  for ( y = 0 ; y < 3 ; y++ )
-//  {
-//  for ( x = 0 ; x < 27 ; x++ )
-//  {
-//  if ( x % 3 == 0 )
-//  s += "| ";
-//  s += "" + map[y][x];
-//  if ( x % 3 == 2 )
-//  s += " ";
-//  if ( x == 26 )
-//  s += "|\n";
-//  }
-
-//  if ( y == 2 )
-//  s += "+-----+-----+-----+-----+-----+-----+-----+-----+-----+\n";
-//  }
-
-//  return s;
-//  }
-
 }
 
 

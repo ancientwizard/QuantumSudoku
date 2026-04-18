@@ -5,28 +5,14 @@
 
 import type { CellModel         } from '../model/CellModel'
 
-// import type { iCellIndex        } from '@/js/interface/iCellIndex'
-// import type { iObservedState    } from '@/js/interface/iObservedState'
-
 export
 interface iBox
 {
-    // is      ( idx: iCellIndex, value: iObservedState ) : boolean;
-    // exclude ( idx: iCellIndex, value: iObservedState ) : boolean;
-
     get isSolved () : boolean;
     get isBroken () : boolean;
     get as_cell_array () : Array<CellModel>;
 
-    forEachCell ( callback: ( cell: CellModel, index: number) => void): void;    
-
-    // get isBox             (): boolean
-    // get isLine            (): boolean
-    // get isRow             (): boolean
-    // get isCol             (): boolean
-    // get isDiagional       (): boolean
-    // get isTopLeftBotRight (): boolean
-    // get isBotLeftTopRight (): boolean
+    forEachCell ( callback: ( cell: CellModel, index: number) => void): void;
   }
 
 

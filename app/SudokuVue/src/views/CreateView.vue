@@ -578,30 +578,30 @@ function loadFromMap(map: string): void {
   lastAction.value = 'Puzzle loaded'
 }
 
-function placeValue(cell: UiCell, value: number): void {
-  if (!libraryInitialized.value) return
-  const currentBoard = board.value
-  if (!currentBoard) return
-  if (boardIsBroken.value) {
-    lastAction.value = 'blocked: board is broken; undo or reset'
-    return
-  }
+// function placeValue(cell: UiCell, value: number): void {
+//   if (!libraryInitialized.value) return
+//   const currentBoard = board.value
+//   if (!currentBoard) return
+//   if (boardIsBroken.value) {
+//     lastAction.value = 'blocked: board is broken; undo or reset'
+//     return
+//   }
 
-  const modelCell = getLiveModelCell(cell.row, cell.col)
-  if (!modelCell || modelCell.isKnown) return
+//   const modelCell = getLiveModelCell(cell.row, cell.col)
+//   if (!modelCell || modelCell.isKnown) return
 
-  const modelValue = resolveCellValueFromModelCell(modelCell, value)
-  if (!modelValue) return
+//   const modelValue = resolveCellValueFromModelCell(modelCell, value)
+//   if (!modelValue) return
 
-  const changed = modelCell.is(modelValue)
-  if (changed) {
-    applyNeighborExcludes(cell.row, cell.col, CellValue.by(value))
-    buildUiFromBoard()
-    history.value.push(takeSnapshot())
-    syncSelectedEntryFromForm()
-    lastAction.value = `set r${cell.row}c${cell.col}=${value}`
-  }
-}
+//   const changed = modelCell.is(modelValue)
+//   if (changed) {
+//     applyNeighborExcludes(cell.row, cell.col, CellValue.by(value))
+//     buildUiFromBoard()
+//     history.value.push(takeSnapshot())
+//     syncSelectedEntryFromForm()
+//     lastAction.value = `set r${cell.row}c${cell.col}=${value}`
+//   }
+// }
 
 function setOrClearCellValueByClick(cell: UiCell, value: number): void {
   if (!libraryInitialized.value) return

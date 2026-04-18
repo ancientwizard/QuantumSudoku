@@ -80,8 +80,8 @@ class StrategySwordfish extends aStrategyBoard
         if ( this.logger )
         {
           const detectLabel = detectByRow ? 'ROW(detect)-COL(exclude)' : 'COL(detect)-ROW(exclude)'
-          const baseLabel = detectByRow ? 'ROWS' : 'COLS'
-          const crossLabel = detectByRow ? 'COLS' : 'ROWS'
+          const baseLabel   = detectByRow ? 'ROWS' : 'COLS'
+          const crossLabel  = detectByRow ? 'COLS' : 'ROWS'
 
           this.logger.add(`# (Swordfish[${detectLabel}]): ${cv.label} (VALUE)`)
           this.logger.add(`#  Include: ${baseLabel}:[ ${triple.join(', ')} ] x ${crossLabel}:[ ${crossIndexes.join(', ')} ]`)

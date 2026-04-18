@@ -215,10 +215,12 @@ class BoardModel implements iBoard
     return ! this.rowunits.some( row => ! row.isSolved );
   }
 
-  public get isBroken(): boolean
-  {
-    return this.rowunits.some( row => row.isBroken );
-  }
+  // public get isBroken(): boolean
+  // {
+  //   return this.rowunits.some( row => row.isBroken )
+  //       || this.colunits.some( col => col.isBroken )
+  //       || this.boxunits.some( box => box.isBroken );
+  // }
 
   // public reset(): void
   // {

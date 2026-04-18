@@ -4,7 +4,6 @@
 import type { iUnit                 } from '@/js/interface/iUnit'
 import type { CellModel             } from '@/js/model/CellModel'
 import      { aStrategyUnit         } from '@/js/abstract/aStrategyUnit'
-//import      { containsAll           } from '@/js/util/contains-all'
 import      { StrategyExtractHidden } from '@/js/strategy/StrategyExtractHidden'
 
 
@@ -18,7 +17,7 @@ class StrategyHiddenQuad extends aStrategyUnit
 
 
     // A Level 2 Strategy
-    //  Hidden Quad: Four value candidates are found only in four Cells. These calls
+    //  Hidden Quad: Four value candidates are found only in four Cells. These cells
     //     have other candidate values which may safely be eliminated as candidates because
     //     the fours unique candidate value set "will" solve the four cells.
     strategy_set_hidden_quad ( unit: iUnit) : boolean

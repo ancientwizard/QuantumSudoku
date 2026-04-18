@@ -1,6 +1,6 @@
 
 // ChangeHistory.ts
-//   Models changes made to a sudoku borad in the order they are applied
+//   Models changes made to a sudoku board in the order they are applied
 //  - Undo/Redo
 //  - History of changes
 //  - Replay changes into a reset [ empty ] board

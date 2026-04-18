@@ -478,17 +478,8 @@ text-align: center;
 
 /* ------- Helper Styles -------------*/
 
-.outer div {
-  position: xsrelative;
-  background: #f8f8f8;
-  width: 99%;
-  min-width: 500px;
-  x-width: 1100px;
+.outer {
   padding: 1em;
-  margin-top: 1.25em;
-  margin-bottom: 0.55em;
-  border: 1px solid rgba(0, 0, 0, 0.18);
-  border-radius: 0.95rem;
 }
 
 h1:before,

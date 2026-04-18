@@ -448,64 +448,7 @@ export class BasicMap
     }
 
     public get_uuid() : string { return this.uuid }
-
 }
-
-
-// public class BasicMap implements Comparable<BasicMap>
-// {
-//     public class InvalidMapDefinition extends IllegalArgumentException
-//     {
-//         private static final long serialVersionUID = 1L;
-//     }
-
-//     public BasicMap( ArrayList<ArrayList<Integer>> ary_map )
-//     {
-//         this._load( ary_map );
-//     }
-
-//     public BasicMap( BasicMap _map )
-//     {
-//         this._load( _map.map );
-//     }
-
-//     public int compareTo( BasicMap o )
-//     {
-//         return this.toString().compareTo(o.toString());
-//     }
-
-
-//     public Integer get( int x, int y )
-//     {
-//         if ( x < 1 || x > 9 || y < 1 || y > 9 )
-//             throw new IllegalArgumentException();
-
-//         return map.get( --y ).get( --x );
-//     }
-
-//     public static void main(String[] args)
-//     {
-//         System.out.println(" ---- PUZ#71 ----");
-
-//         // Solve and print
-//         System.out.println(" ---- Sudoku Board work ----");
-//         Board board = new Board(Board.BoardMode.NORMAL);
-//         board.setStart( map );
-
-//         System.out.print( board.toString2() );
-//         System.out.println( "Solved: " + board.isSolved());
-//         board.solve();
-
-//         System.out.print( board.toString2() );
-//         System.out.println( "Solved: " + board.isSolved());
-
-//         map = new BasicMap( board.to_arymap() );
-//         System.out.println( map.toStringMap() );
-//         System.out.println( "NOTE: ** When solved a map encodes the same using both formats" );
-//         System.out.println( map.encodeMapStringRL() );
-//         System.out.println( map.encodeMapString() );
-//     }
-// }
 
 
 // vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix

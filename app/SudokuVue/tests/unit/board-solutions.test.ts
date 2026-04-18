@@ -28,7 +28,6 @@ import      { StrategySwordfish                 } from '@/js/strategy/StrategySw
 import      { StrategyRemotePair                } from '@/js/strategy/StrategyRemotePair'
 import      { StrategySimpleColoring            } from '@/js/strategy/StrategySimpleColoring'
 import      { StrategyFiftyFifty                } from '@/js/strategy/StrategyFiftyFifty'
-// import      { BoardStringAdapter                } from '@/js/adapter/BoardStringAdapter'
 import      { TextBoardModel as BoardModel      } from '@/js/decorator/TextBoardModel'
 import      { TextAdapter                       } from '@/js/adapter/TextAdapter'
 

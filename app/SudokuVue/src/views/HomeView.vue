@@ -3,18 +3,22 @@
 </script>
 
 <template>
-  <main>
-    <h3>Lets explore the SCIENCE of Sudoku.</h3>
+  <main class="home-view">
+    <section class="home-shell card m-2 border-secondary-subtle shadow-sm">
+      <h3>Lets explore the SCIENCE of Sudoku.</h3>
+    </section>
   </main>
 </template>
 
 <style scoped>
 
-main {
-  margin: 1em;
+.home-view {
+  margin: 0;
+  width: 100%;
+}
+
+.home-shell {
   padding: 0.5em 1em 0em 1em;
-  border-radius: 15px;
-  border: 1px solid transparent;
 }
 
 /*

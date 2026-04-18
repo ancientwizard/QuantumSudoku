@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["tests/**/*"],
+  "compilerOptions": {
+    "moduleResolution": "node"
+  }
+}
+
+// vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix
+// END

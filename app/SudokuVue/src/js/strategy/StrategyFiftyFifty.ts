@@ -41,6 +41,8 @@ import      { StrategyLogger        } from '@/js/strategy/StrategyLogger'
 export
 class StrategyFiftyFifty extends aStrategyBoard
 {
+    private static readonly PROBE_DEPTH = 2
+
     protected applyStrategy ( board: iBoard ) : boolean
     {
         return this.strategy_set_fifty_fifty(board)
@@ -74,12 +76,12 @@ class StrategyFiftyFifty extends aStrategyBoard
               continue
             }
 
-            this.runDeterministicSolve(scratch)
+            const probe = this.probeBoard(scratch, StrategyFiftyFifty.PROBE_DEPTH)
 
             results.push({
                 candidate,
-                solved: scratch.isSolved,
-                broken: this.isBroken(scratch),
+                solved: probe.solved,
+                broken: probe.broken,
                 board: scratch
             })
           }
@@ -112,6 +114,42 @@ class StrategyFiftyFifty extends aStrategyBoard
         }
 
         return false
+    }
+
+    private probeBoard( board: BoardModel, depth: number ): { solved: boolean, broken: boolean }
+    {
+      this.runDeterministicSolve(board)
+
+      if ( board.isSolved ) return { solved: true, broken: false }
+      if ( this.isBroken(board) ) return { solved: false, broken: true }
+      if ( depth <= 0 ) return { solved: false, broken: false }
+
+      const pivots = this.pickPivotCells(board)
+      const pivot = pivots[0]
+      if ( !pivot ) return { solved: false, broken: false }
+
+      const candidates = pivot.as_candidate_array
+      let sawNonBroken = false
+
+      for ( const candidate of candidates )
+      {
+        const branch = this.cloneBoard(board)
+
+        if ( !branch.set(CellIndex.by(pivot.col - 1), CellIndex.by(pivot.row - 1), candidate) )
+          continue
+
+        const result = this.probeBoard(branch, depth - 1)
+
+        if ( result.solved )
+        {
+          this.applyKnownFromBoard(board, branch)
+          return { solved: true, broken: false }
+        }
+
+        if ( !result.broken ) sawNonBroken = true
+      }
+
+      return { solved: false, broken: !sawNonBroken }
     }
 
     private runDeterministicSolve( board: BoardModel ): void

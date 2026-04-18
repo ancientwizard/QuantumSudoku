@@ -4,7 +4,7 @@ import PuzzleTitle from './components/AppTitle.vue'
 
 <template>
   <div id="app">
-    <puzzle-title title="Sudoku Playground" tagline="A Programming Development Exercise" />
+    <puzzle-title class="content" title="Sudoku Playground" tagline="A Programming Development Exercise" />
 
     <header>
       <div class="wrapper">
@@ -30,21 +30,11 @@ import PuzzleTitle from './components/AppTitle.vue'
 
 <style scoped>
 
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
 nav {
   width: 100%;
   font-size: 1rem;
   text-align: center;
-  margin-top: 0.0rem;
+  margin-top: 0.1rem;
 }
 
 nav a.router-link-exact-active {
@@ -59,7 +49,6 @@ nav a.router-link-exact-active:hover {
 }
 
 nav a {
-  display: inline-block;
   padding: 0 1.2rem;
   border-left: 1px solid var(--color-border);
   transition: border-color 0.15s ease, background-color 0.15s ease;
@@ -79,8 +68,6 @@ nav a:first-of-type {
 }
 
 .content {
-  min-width: 900px;
-  max-width: 1200px;
   border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: 10px;
@@ -88,16 +75,12 @@ nav a:first-of-type {
   background: #f8f8f8;
 }
 
-@media (min-width: 1824px) {
+@media (min-width: 2824px) {
 
   header {
     display: flex;
     place-items: center;
     padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
   }
 
   header .wrapper {
@@ -108,11 +91,6 @@ nav a:first-of-type {
 
   nav {
     text-align: left;
-    x-margin-left: -1rem;
-    x-font-size: 1rem;
-
-    x-padding: 1rem 0;
-    x-margin-top: 1rem;
   }
 }
 

@@ -6,7 +6,7 @@ import { describe, expect, test   } from '@jest/globals'
 import { LineModel                } from '@/js/model/LineModel'
 import { CellModel                } from '@/js/model/CellModel'
 import { TextAdapter as Txt       } from '@/js/adapter/TextAdapter'
-// import { UnitStringAdaptor } from '@/js/adapter/UnitStringAdaptor'
+import { aStrategyUnit            } from '@/js/abstract/aStrategyUnit'
 
 
 describe('LineModel', () =>  {
@@ -87,6 +87,17 @@ function mk_diag ( TL: boolean ): Array<CellModel>
 
   return cell_diag
 }
+
+describe('LineModel/getCellNames', () => {
+  test('getCellNames returns name array from row cells', () => {
+    class Exposed extends aStrategyUnit {
+      public cellNames(list: Array<CellModel>) { return this.getCellNames(list) }
+      protected applyStrategy() { return false }
+    }
+    const names = new Exposed().cellNames(new LineModel(mk_row(1)).as_cell_array)
+    expect(names).toEqual(['A1','B1','C1','D1','E1','F1','G1','H1','I1'])
+  })
+})
 
 // vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix
 // END

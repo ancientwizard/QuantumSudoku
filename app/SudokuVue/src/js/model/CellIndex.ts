@@ -4,7 +4,7 @@
 
 import type { iCellIndex      } from '@/js/interface/iCellIndex'
 
-// Could have been a enum just as easily
+// Could have been an enum just as easily
 //  I like being a bit more expressive
 
 export
@@ -25,7 +25,7 @@ class CellIndex implements iCellIndex
 
     protected constructor ( index: number )
     {
-        // Yes; redundent
+        // Yes; redundant
         if ( index  > 8 || index < 0 )
             throw new Error(`Invalid Sudoku INDEX [ ${index} ]`)
 
@@ -52,7 +52,7 @@ class CellIndex implements iCellIndex
         }
     }
 
-    // Somthing of an iterator .forEach()
+    // Something of an iterator .forEach()
     static get arrayFactory () : Array<CellIndex>
     {
         return [

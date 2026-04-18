@@ -7,6 +7,7 @@ import { CellValue              } from '@/js/model/CellValue'
 import { TextCellModel          } from '@/js/decorator/TextCellModel'
 import { UnitModel              } from '@/js/model/UnitModel'
 import { TextAdapter            } from '@/js/adapter/TextAdapter'
+import { aStrategyUnit          } from '@/js/abstract/aStrategyUnit'
 import type { iUnit             } from '@/js/interface/iUnit'
 import type { CellModel         } from '@/js/model/CellModel'
 
@@ -233,6 +234,17 @@ describe('model/unit-model-solved', () => {
   })
 })
 
+
+describe('model/unit-model-getCellNames', () => {
+  test('getCellNames returns name array from unit cells', () => {
+    class Exposed extends aStrategyUnit {
+      public cellNames(list: Array<CellModel>) { return this.getCellNames(list) }
+      protected applyStrategy() { return false }
+    }
+    const names = new Exposed().cellNames(unit().as_cell_array)
+    expect(names).toEqual(['A1','A2','A3','A4','A5','A6','A7','A8','A9'])
+  })
+})
 
 // vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix
 // END

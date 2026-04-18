@@ -7,6 +7,8 @@ import { BoxModel               } from '@/js/model/BoxModel'
 import { CellIndex              } from '@/js/model/CellIndex'
 import { CellValue              } from '@/js/model/CellValue'
 import { TextAdapter            } from '@/js/adapter/TextAdapter'
+import { CellModel              } from '@/js/model/CellModel'
+import { aStrategyUnit          } from '@/js/abstract/aStrategyUnit'
 
 const TF = TextAdapter.factory
 
@@ -208,6 +210,17 @@ function to_string_coords () : string
 `
 }
 
+
+describe('model/block-model/getCellNames', () => {
+  test('getCellNames returns name array from box cells', () => {
+    class Exposed extends aStrategyUnit {
+      public cellNames(list: Array<CellModel>) { return this.getCellNames(list) }
+      protected applyStrategy() { return false }
+    }
+    const names = new Exposed().cellNames(mk_block().as_cell_array)
+    expect(names).toEqual(['A1','B1','C1','A2','B2','C2','A3','B3','C3'])
+  })
+})
 
 // vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix
 // END

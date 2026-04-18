@@ -7,6 +7,11 @@ import { CellIndex                        } from '@/js/model/CellIndex'
 import { CellValue                        } from '@/js/model/CellValue'
 import { TextAdapter                      } from '@/js/adapter/TextAdapter'
 import { UnitModel                        } from '@/js/model/UnitModel'
+import { aStrategyUnit                    } from '@/js/abstract/aStrategyUnit'
+import { aStrategyBoard                   } from '@/js/abstract/aStrategyBoard'
+import type { CellModel                   } from '@/js/model/CellModel'
+import type { iUnit                       } from '@/js/interface/iUnit'
+import type { iBoard                      } from '@/js/interface/iBoard'
 
 const TF = TextAdapter.factory
 
@@ -290,6 +295,41 @@ function board_string_state()
 `
 }
 
+
+describe('model/sudoku-board/getUndeterminedCellList', () => {
+  test('aStrategyUnit: returns only unsolved cells from a unit', () => {
+    class Exposed extends aStrategyUnit {
+      public undetermined(unit: iUnit) { return this.getUndeterminedCellList(unit) }
+      protected applyStrategy() { return false }
+    }
+    const board = new BoardModel(BoardMode.SOLVE)
+    board.set(CellIndex.ONE, CellIndex.ONE, CellValue.FIVE) // solve one cell in row 1
+
+    let row1: iUnit | null = null
+    board.forEachRow((row, i) => { if (i === 0) row1 = row })
+
+    const list: Array<CellModel> = new Exposed().undetermined(row1!)
+    expect(list.length).toBe(8)                    // 8 unsolved remain
+    expect(list.every(c => c.isUnknown)).toBe(true) // all are unknown
+  })
+
+  test('aStrategyBoard: returns only unsolved cells from a unit', () => {
+    class Exposed extends aStrategyBoard {
+      public undetermined(unit: iUnit) { return this.getUndeterminedCellList(unit) }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      protected applyStrategy(_board: iBoard) { return false }
+    }
+    const board = new BoardModel(BoardMode.SOLVE)
+    board.set(CellIndex.ONE, CellIndex.ONE, CellValue.FIVE) // solve one cell in row 1
+
+    let row1: iUnit | null = null
+    board.forEachRow((row, i) => { if (i === 0) row1 = row })
+
+    const list: Array<CellModel> = new Exposed().undetermined(row1!)
+    expect(list.length).toBe(8)                    // 8 unsolved remain
+    expect(list.every(c => c.isUnknown)).toBe(true) // all are unknown
+  })
+})
 
 // vim: expandtab number tabstop=2 shiftwidth=2 softtabstop=2 fileformat=unix
 // END

@@ -576,7 +576,7 @@ function cellClass(cell: UiCell): Record<string, boolean> {
 
 <template>
   <main class="play-view">
-    <section v-if="stage === 'choose'" class="chooser card-shell">
+    <section v-if="stage === 'choose'" class="chooser card-shell m-2">
       <h2>Play Sudoku</h2>
       <p class="muted">Pick a puzzle from the library file and press Go.</p>
       <p v-if="loadingLibrary" class="muted">Loading library...</p>
@@ -594,7 +594,7 @@ function cellClass(cell: UiCell): Record<string, boolean> {
       <button type="button" class="go-button" :disabled="loadingLibrary || !selectedPuzzleId" @click="loadSelectedPuzzle">Go</button>
     </section>
 
-    <section v-else class="play-shell card-shell">
+    <section v-else class="play-shell card-shell m-2">
       <div class="row g-3 align-items-start">
         <div class="col-12 col-lg-9 col-xl-9">
           <div class="board-wrap" role="grid" aria-label="Sudoku board" @contextmenu.prevent="onBoardContextMenu">

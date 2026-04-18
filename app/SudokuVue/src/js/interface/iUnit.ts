@@ -16,15 +16,6 @@ interface iUnit
     get as_cell_array () : Array<CellModel>;
 
     forEachCell ( callback: ( cell: CellModel, index: number) => void): void;
-
-    // get isBox             (): boolean
-    // get isLine            (): boolean
-    // get isRow             (): boolean
-    // get isCol             (): boolean
-    // get isDiagional       (): boolean
-    // get isTopLeftBotRight (): boolean
-    // get isBotLeftTopRight (): boolean
-
 }
 
 

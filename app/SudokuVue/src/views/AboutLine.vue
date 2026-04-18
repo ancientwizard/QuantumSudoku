@@ -125,7 +125,7 @@ export default {
 
 <template>
   <div>
-    <section class="card border-secondary-subtle shadow-sm">
+    <section class="card m-2 border-secondary-subtle shadow-sm">
       <div class="card-header bg-light text-secondary d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Anotomy of the Sudoku multi Cell Organism</h5>
         <button type="button" class="btn btn-primary btn-sm" @click="goToNext">Next: Block →</button>

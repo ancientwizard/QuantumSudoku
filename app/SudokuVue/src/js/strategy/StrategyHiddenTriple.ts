@@ -4,7 +4,6 @@
 import type { iUnit                 } from '@/js/interface/iUnit'
 import type { CellModel             } from '@/js/model/CellModel'
 import      { aStrategyUnit         } from '@/js/abstract/aStrategyUnit'
-//import      { containsAll           } from '@/js/util/contains-all'
 import      { StrategyExtractHidden } from '@/js/strategy/StrategyExtractHidden'
 
 export
@@ -17,7 +16,7 @@ class StrategyHiddenTriple extends aStrategyUnit
 
 
     // A Level 2 Strategy
-    //  Hidden Triple(Quad): Three value candidates are found only in three Cells. These calls
+    //  Hidden Triple: Three value candidates are found only in three Cells. These cells
     //     have other candidates which may safely be eliminated as value candidates because
     //     the three unique candidate set "will" solve the three cells.
     strategy_set_hidden_triple ( unit : iUnit) : boolean
