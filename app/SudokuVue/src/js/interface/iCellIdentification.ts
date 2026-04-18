@@ -11,8 +11,8 @@ interface iCellIdentification
 
     readonly    col: number;
     readonly    row: number;
-    readonly      x: number;  // Redundent "col"
-    readonly      y: number;  // Redundent "row"
+    readonly      x: number;  // Redundent "col" (1-9)
+    readonly      y: number;  // Redundent "row" (1-9)
 
     readonly  coord: string;
     readonly   name: string;

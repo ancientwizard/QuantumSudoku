@@ -41,13 +41,13 @@ describe('model/sudoku-board', () => {
       topLeft = row.as_cell_array[0]
     })
 
-    expect(topLeft?.autosolve).toBe(false)
+    expect(topLeft?.autosolve).toBe(true)
 
     board.toSolveMode()
     expect(topLeft?.autosolve).toBe(true)
 
     board.toPlayMode()
-    expect(topLeft?.autosolve).toBe(false)
+    expect(topLeft?.autosolve).toBe(true)
   })
 
   test('board/types', () => {

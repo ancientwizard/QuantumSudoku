@@ -99,7 +99,7 @@ class BoardModel implements iBoard
       cells[y - 1] = [];
       for ( let x = 1 ; x <= 9 ; x++ )
       {
-        cells[y - 1][x - 1] = this.cellConstructor.factory(x, y, this.MODE == BoardMode.SOLVE )
+        cells[y - 1][x - 1] = this.cellConstructor.factory(x, y, this.MODE == BoardMode.SOLVE || this.MODE == BoardMode.PLAY )
       }
     }
   }
@@ -178,6 +178,9 @@ class BoardModel implements iBoard
     this.rowunits.forEach(u => u.reset())
     this.MODE = BoardMode.EDIT
 
+    // EDIT mode does not solve cells
+    this.rowunits.forEach(u => u.forEachCell( c => c.autosolve = false ))
+
     // If we Had INIT(ial) history we'd play it in now OR our consumer would do so!
 
     return this
@@ -187,6 +190,10 @@ class BoardModel implements iBoard
   {
     this.rowunits.forEach(unit => unit.forEachCell(cell => { cell.autosolve = false }))
     this.MODE = BoardMode.PLAY
+
+    // PLAY mode solves cells
+    this.rowunits.forEach(u => u.forEachCell( c => c.autosolve = true ))
+
     return this
   }
 
@@ -194,6 +201,10 @@ class BoardModel implements iBoard
   {
     this.rowunits.forEach(unit => unit.forEachCell(cell => { cell.autosolve = true }))
     this.MODE = BoardMode.SOLVE
+
+    // SOLVE mode solves cells
+    this.rowunits.forEach(u => u.forEachCell( c => c.autosolve = true ))
+
     return this
   }
 
@@ -202,6 +213,11 @@ class BoardModel implements iBoard
   public get isSolved(): boolean
   {
     return ! this.rowunits.some( row => ! row.isSolved );
+  }
+
+  public get isBroken(): boolean
+  {
+    return this.rowunits.some( row => row.isBroken );
   }
 
   // public reset(): void

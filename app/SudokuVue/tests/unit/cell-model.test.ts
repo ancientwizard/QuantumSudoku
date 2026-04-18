@@ -8,9 +8,10 @@ describe('model/cell-model', () => {
 
   function _c_fac( x: number, y: number ) { return TextCellModel.factory(x,y); }
 
-  test('(0,0).label', () => expect(_c_fac(0,0).cv.label).toBe('?'))
+  test('(0,0).label',      () => expect(_c_fac(0,0).cv.label).toBe('?'))
   test('(0,0).toString()', () => expect(_c_fac(0,0).toString()).toBe('# X0: ? [ 1,2,3,4,5,6,7,8,9 ]'))
   test('(1,1).toString()', () => expect(_c_fac(1,1).toString()).toBe('# A1: ? [ 1,2,3,4,5,6,7,8,9 ]'))
+  test('(9,9).toString()', () => expect(_c_fac(9,9).toString()).toBe('# I9: ? [ 1,2,3,4,5,6,7,8,9 ]'))
 
   test('(0,0).as_candidate_array()', () => expect(_c_fac(0,0).as_candidate_array.length).toBe(9))
 
